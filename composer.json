@@ -1,0 +1,24 @@
+{
+    "name": "akitanabe/php-value-object",
+    "description": "php value object",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^11.2"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Akitanabe\\PhpValueObject\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "akitanabe",
+            "email": "tanabe@determaind.biz"
+        }
+    ],
+    "scripts":{
+        "test": "phpunit test"        
+    },
+    "require": {}
+}
