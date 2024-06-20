@@ -16,6 +16,11 @@ class PrimitiveTestValue extends BaseValueObject
     public $test;
 }
 
+class UnionTestValue extends BaseValueObject
+{
+    public readonly string|int $stringOrInt;
+    public readonly float|int $floatOrInt;
+}
 
 class BaseValueObjectPrimitiveTest extends TestCase
 {
@@ -35,7 +40,7 @@ class BaseValueObjectPrimitiveTest extends TestCase
         $this->assertSame(true, $scalarValue->boolVal);
     }
 
-    static public function primitiveProperyWithInvalidTypeProvider(): array
+    public static function primitiveProperyWithInvalidTypeProvider(): array
     {
         return [
             ["stringVal", 123],
@@ -51,5 +56,17 @@ class BaseValueObjectPrimitiveTest extends TestCase
     {
         $this->expectException(TypeError::class);
         new PrimitiveTestValue(...[$prop => $val]);
+    }
+
+    #[Test]
+    public function unionPropery()
+    {
+        $unionValue = new UnionTestValue(stringOrInt: "string");
+
+        $this->assertSame("string", $unionValue->stringOrInt);
+
+        $unionValue = new UnionTestValue(stringOrInt: 123);
+
+        $this->assertSame(123, $unionValue->stringOrInt);
     }
 }
