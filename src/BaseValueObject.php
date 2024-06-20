@@ -43,51 +43,6 @@ abstract class BaseValueObject
         }
     }
 
-    private function getValueType(mixed $value): string
-    {
-        $typeName = gettype($value);
-
-        return match ($typeName) {
-            'boolean' => 'bool',
-            'integer' => 'int',
-            'double' => 'float',
-            default => strtolower($typeName),
-        };
-    }
-
-    private function getTypeCheckDto(
-        ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
-        mixed $value,
-    ): TypeCheckDto {
-        $valueType = $this->getValueType($value);
-
-        if ($propertyType === null) {
-            return new TypeCheckDto('null', $valueType);
-        }
-
-        if ($propertyType === "mixed") {
-            return new TypeCheckDto('mixed', $valueType);
-        }
-
-        if ($propertyType instanceof ReflectionIntersectionType) {
-            return new TypeCheckDto('object', $valueType, isIntersection: true);
-        }
-
-        $typeName = $propertyType->getName();
-
-
-        if (in_array($typeName, [
-            'int',
-            'string',
-            'float',
-            'bool',
-        ], true)) {
-            return new TypeCheckDto($typeName, $valueType, isPrimivtive: true);
-        }
-
-        return new TypeCheckDto("object", $valueType);
-    }
-
     /**
      * 
      * 型のチェック
@@ -164,5 +119,67 @@ abstract class BaseValueObject
         throw new TypeError(
             "Cannot assign {$valueType} to property {$className}::\${$propertyName} of type {$errorTypeName}"
         );
+    }
+
+    /**
+     * gettypeの結果をPHPの型名に変換
+     * 
+     * @param mixed $value
+     * 
+     * @return string
+     * 
+     */
+    private function getValueType(mixed $value): string
+    {
+        $typeName = gettype($value);
+
+        return match ($typeName) {
+            'boolean' => 'bool',
+            'integer' => 'int',
+            'double' => 'float',
+            default => strtolower($typeName),
+        };
+    }
+
+    /**
+     * 
+     * プロパティの型と入力値の型をTypeCheckDtoに変換
+     * 
+     * @param ReflectionNamedType|ReflectionIntersectionType|null $propertyType
+     * @param mixed $value
+     * 
+     * @return TypeCheckDto
+     * 
+     */
+    private function getTypeCheckDto(
+        ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
+        mixed $value,
+    ): TypeCheckDto {
+        $valueType = $this->getValueType($value);
+
+        if ($propertyType === null) {
+            return new TypeCheckDto('null', $valueType);
+        }
+
+        if ($propertyType === "mixed") {
+            return new TypeCheckDto('mixed', $valueType);
+        }
+
+        if ($propertyType instanceof ReflectionIntersectionType) {
+            return new TypeCheckDto('object', $valueType, isIntersection: true);
+        }
+
+        $typeName = $propertyType->getName();
+
+        if (in_array($typeName, [
+            'int',
+            'string',
+            'float',
+            'bool',
+        ], true)) {
+            return new TypeCheckDto($typeName, $valueType, isPrimivtive: true);
+        }
+
+        return new TypeCheckDto("object", $valueType);
     }
 }
