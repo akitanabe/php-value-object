@@ -38,8 +38,7 @@ abstract class BaseValueObject
 
             $value = $args[$propertyName];
 
-
-            $this->typeCheck(
+            $this->checkType(
                 $property->getType(),
                 $propertyName,
                 $value,
@@ -113,7 +112,7 @@ abstract class BaseValueObject
      * @throws TypeError
      * 
      */
-    private function typeCheck(
+    private function checkType(
         ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
         string $propertyName,
         mixed $value
