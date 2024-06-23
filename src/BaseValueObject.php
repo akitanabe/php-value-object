@@ -12,15 +12,21 @@ use ReflectionMethod;
 use ReflectionParameter;
 use TypeError;
 use Akitanabe\PhpValueObject\Dto\TypeCheckDto;
+use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
+use Akitanabe\PhpValueObject\Options\Strict;
 
 abstract class BaseValueObject
 {
+    private Strict $strict;
+
     /**
      * @param mixed[] $args
      */
     public function __construct(...$args)
     {
         $refClass = new ReflectionClass($this);
+
+        $this->strict = new Strict($refClass);
 
         $refConstructor = $refClass->getConstructor();
 
@@ -33,7 +39,17 @@ abstract class BaseValueObject
             $propertyName = $property->getName();
 
             if (array_key_exists($propertyName, $args) === false) {
-                continue;
+                // 初期化していないプロパティを許可している場合、もしくは初期化されている場合はスキップ
+                if (
+                    $this->strict->uninitializedProperty->allow()
+                    || $property->isInitialized($this)
+                ) {
+                    continue;
+                }
+
+                throw new BaseValueObjectException(
+                    "{$refClass->name}::\${$propertyName} is not initialized. not allow uninitialized property."
+                );
             }
 
             $value = $args[$propertyName];
