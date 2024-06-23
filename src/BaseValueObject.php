@@ -13,7 +13,11 @@ use ReflectionParameter;
 use TypeError;
 use Akitanabe\PhpValueObject\Dto\TypeCheckDto;
 use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
+use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
+use Akitanabe\PhpValueObject\Validation\Validatable;
+use ReflectionAttribute;
+use ReflectionProperty;
 
 abstract class BaseValueObject
 {
@@ -39,11 +43,14 @@ abstract class BaseValueObject
             $propertyName = $property->getName();
 
             if (array_key_exists($propertyName, $args) === false) {
-                // 初期化していないプロパティを許可している場合、もしくは初期化されている場合はスキップ
-                if (
-                    $this->strict->uninitializedProperty->allow()
-                    || $property->isInitialized($this)
-                ) {
+                // 初期化されている場合はバリデーションのみ ※デフォルト値含む
+                if ($property->isInitialized($this)) {
+                    $this->validateProperty($property);
+                    continue;
+                }
+
+                // 未初期化プロパティが許可されている場合はスキップ
+                if ($this->strict->uninitializedProperty->allow()) {
                     continue;
                 }
 
@@ -64,6 +71,9 @@ abstract class BaseValueObject
                 $this,
                 $value,
             );
+
+            // プロパティ値バリデーション
+            $this->validateProperty($property);
         }
     }
 
@@ -253,5 +263,30 @@ abstract class BaseValueObject
         }
 
         return new TypeCheckDto("object", $valueType);
+    }
+
+    /**
+     * プロパティに設定されているAttributeからバリデーションを実行
+     * 
+     * @param ReflectionProperty $refProp
+     * @return void
+     * 
+     * @throws PhpValueObjectValidationException
+     */
+    private function validateProperty(ReflectionProperty $refProp): void
+    {
+        $attributes = $refProp->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
+        $value = $refProp->getValue($this);
+
+        foreach ($attributes as $attribute) {
+            $attributeInstance = $attribute->newInstance();
+
+            if ($attributeInstance->validate($value, $refProp) === false) {
+                throw new PhpValueObjectValidationException(
+                    $attributeInstance,
+                    $refProp,
+                );
+            }
+        }
     }
 }
