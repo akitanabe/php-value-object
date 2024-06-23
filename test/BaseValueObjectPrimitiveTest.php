@@ -43,30 +43,66 @@ class BaseValueObjectPrimitiveTest extends TestCase
     public static function primitiveProperyWithInvalidTypeProvider(): array
     {
         return [
-            ["stringVal", 123],
-            ["intVal", "string"],
-            ["floatVal", "0.01"],
-            ["boolVal", 1],
+            [
+                [
+                    "stringVal" => 123,
+                    "intVal" => 123,
+                    "floatVal" => 0.01,
+                    "boolVal" => true
+                ],
+            ],
+            [
+                [
+                    "stringVal" => "string",
+                    "intVal" => "123",
+                    "floatVal" => 0.01,
+                    "boolVal" => true
+                ],
+            ],
+            [
+                [
+                    "stringVal" => "string",
+                    "intVal" => 123,
+                    "floatVal" => "0.01",
+                    "boolVal" => true
+                ],
+            ],
+            [
+                [
+                    "stringVal" => "string",
+                    "intVal" => 123,
+                    "floatVal" => 0.01,
+                    "boolVal" => 1
+                ],
+            ],
         ];
     }
 
     #[Test]
     #[DataProvider("primitiveProperyWithInvalidTypeProvider")]
-    public function primitiveProperyWithInvalidType($prop, $val)
+    public function primitiveProperyWithInvalidType(array $args)
     {
         $this->expectException(TypeError::class);
-        new PrimitiveTestValue(...[$prop => $val]);
+        new PrimitiveTestValue(...$args);
     }
 
     #[Test]
     public function unionPropery()
     {
-        $unionValue = new UnionTestValue(stringOrInt: "string");
+        $unionValue = new UnionTestValue(
+            stringOrInt: "string",
+            floatOrInt: 0.01,
+        );
 
         $this->assertSame("string", $unionValue->stringOrInt);
+        $this->assertSame(0.01, $unionValue->floatOrInt);
 
-        $unionValue = new UnionTestValue(stringOrInt: 123);
+        $unionValue = new UnionTestValue(
+            stringOrInt: 123,
+            floatOrInt: 1,
+        );
 
         $this->assertSame(123, $unionValue->stringOrInt);
+        $this->assertSame(1, $unionValue->floatOrInt);
     }
 }

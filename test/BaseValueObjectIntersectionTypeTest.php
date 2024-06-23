@@ -53,18 +53,38 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
     public static function intersectionProperyWithInvalidTypeProvider(): array
     {
         return [
-            ["AandBorString", new TypeC()],
-            ["AandBorString", 1],
-            ["floatOrBool", "0.01"],
-            ["floatOrBool", 1],
+            [
+                [
+                    "AandBorString" => new TypeC(),
+                    "floatOrBool" => 0.01,
+                ]
+            ],
+            [
+                [
+                    "AandBorString" => 1,
+                    "floatOrBool" => false,
+                ]
+            ],
+            [
+                [
+                    "AandBorString" => "string",
+                    "floatOrBool" => "0.01",
+                ]
+            ],
+            [
+                [
+                    "AandBorString" => new TypeB(),
+                    "floatOrBool" => 1,
+                ]
+            ],
         ];
     }
 
     #[Test]
     #[DataProvider("intersectionProperyWithInvalidTypeProvider")]
-    public function interserctionProperyWithInvalidType($prop, $val)
+    public function interserctionProperyWithInvalidType(array $args)
     {
         $this->expectException(TypeError::class);
-        new IntersectionTypeValue(...[$prop => $val]);
+        new IntersectionTypeValue(...$args);
     }
 }
