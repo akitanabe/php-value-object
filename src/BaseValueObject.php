@@ -147,15 +147,9 @@ abstract class BaseValueObject
         $className = static::class;
         $valueType = $this->getValueType($value);
 
-        $types = ($propertyType instanceof ReflectionUnionType)
-            ? $propertyType->getTypes()
-            : [$propertyType];
+        $checkTypes = $this->extractPropertyTypeToTypeCheckDtos($propertyType, $value);
 
-        /** @var TypeCheckDto[] $checkTypes */
-        $checkTypes = [];
-        foreach ($types as $type) {
-            $typeCheckDto = $this->getTypeCheckDto($type, $value);
-
+        foreach ($checkTypes as $typeCheckDto) {
             // 型が指定されていない場合、もしくはmixedな場合はエラー
             if ($typeCheckDto->typeName === "null" || $typeCheckDto->typeName === 'mixed') {
                 throw new TypeError(
@@ -167,12 +161,10 @@ abstract class BaseValueObject
             if ($typeCheckDto->isIntersection && $typeCheckDto->valueType === 'object') {
                 return;
             }
-
-            $checkTypes[] = $typeCheckDto;
         }
 
-
         // プリミティブ型のみ型をチェックする
+        // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $checkTypes,
             fn (TypeCheckDto $typeCheckDto): bool => $typeCheckDto->isPrimivtive,
@@ -200,6 +192,29 @@ abstract class BaseValueObject
 
         throw new TypeError(
             "Cannot assign {$valueType} to property {$className}::\${$propertyName} of type {$errorTypeName}"
+        );
+    }
+
+    /**
+     * プロパティの型情報をTypeCheckDtoに変換して抽出
+     * 
+     * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
+     * @param mixed $inputValue
+     * 
+     * @return TypeCheckDto[]
+     */
+    private function extractPropertyTypeToTypeCheckDtos(
+        ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
+        mixed $inputValue,
+
+    ): array {
+        $types = ($propertyType instanceof ReflectionUnionType)
+            ? $propertyType->getTypes()
+            : [$propertyType];
+
+        return array_map(
+            fn (ReflectionNamedType|ReflectionIntersectionType $type): TypeCheckDto => $this->getTypeCheckDto($type, $inputValue),
+            $types,
         );
     }
 
