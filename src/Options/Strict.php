@@ -13,7 +13,7 @@ use Akitanabe\PhpValueObject\Helpers\AttributeHelper;
 final class Strict
 {
     /**
-     * @var Allowable
+     * @var AllowUninitializedProperty|NotAllow
      * 初期化していないプロパティを許可する
      */
     public Allowable $uninitializedProperty;
