@@ -17,6 +17,6 @@ final class EmptyStringValidator implements Validatable
 
     public function errorMessage(): string
     {
-        return 'is empty string.';
+        return 'property not allowed empty string.';
     }
 }
