@@ -150,10 +150,15 @@ abstract class BaseValueObject
         $checkTypes = $this->extractPropertyTypeToTypeCheckDtos($propertyType, $value);
 
         foreach ($checkTypes as $typeCheckDto) {
-            // 型が指定されていない場合、もしくはmixedな場合はエラー
-            if ($typeCheckDto->typeName === "null" || $typeCheckDto->typeName === 'mixed') {
+
+            if (
+                // 型が指定されていない場合
+                ($typeCheckDto->typeName === "none" && $this->strict->noneTypeProperty->allow() === false)
+                // mixed型の場合
+                || ($typeCheckDto->typeName === 'mixed' && $this->strict->mixedTypeProperty->allow() === false)
+            ) {
                 throw new TypeError(
-                    "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed unknown type."
+                    "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeCheckDto->typeName} type."
                 );
             }
 
@@ -213,7 +218,7 @@ abstract class BaseValueObject
             : [$propertyType];
 
         return array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType $type): TypeCheckDto => $this->getTypeCheckDto($type, $inputValue),
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeCheckDto => $this->getTypeCheckDto($type, $inputValue),
             $types,
         );
     }
@@ -255,11 +260,7 @@ abstract class BaseValueObject
         $valueType = $this->getValueType($value);
 
         if ($propertyType === null) {
-            return new TypeCheckDto('null', $valueType);
-        }
-
-        if ($propertyType === "mixed") {
-            return new TypeCheckDto('mixed', $valueType);
+            return new TypeCheckDto('none', $valueType);
         }
 
         if ($propertyType instanceof ReflectionIntersectionType) {
@@ -267,6 +268,10 @@ abstract class BaseValueObject
         }
 
         $typeName = $propertyType->getName();
+
+        if ($typeName === "mixed") {
+            return new TypeCheckDto('mixed', $valueType);
+        }
 
         if (in_array($typeName, [
             'int',

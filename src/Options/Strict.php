@@ -8,6 +8,8 @@ use ReflectionClass;
 use Akitanabe\PhpValueObject\Options\Allowable;
 use Akitanabe\PhpValueObject\Options\NotAllow;
 use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
+use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
+use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
 use Akitanabe\PhpValueObject\Helpers\AttributeHelper;
 
 final class Strict
@@ -18,11 +20,33 @@ final class Strict
      */
     public Allowable $uninitializedProperty;
 
+    /**
+     * @var AllowNoneTypeProperty|NotAllow
+     * 型がついていないプロパティを許可する
+     */
+    public Allowable $noneTypeProperty;
+
+    /**
+     * @var AllowMixedTypeProperty|NotAllow
+     * mixed型のプロパティを許可する
+     */
+    public Allowable $mixedTypeProperty;
+
     public function __construct(ReflectionClass $refClass)
     {
-        $this->uninitializedProperty = AttributeHelper::getAttribute(
-            $refClass,
-            AllowUninitializedProperty::class
-        )?->newInstance() ?? new NotAllow();
+        foreach ([
+            AllowUninitializedProperty::class,
+            AllowNoneTypeProperty::class,
+            AllowMixedTypeProperty::class,
+        ] as $attrClassName) {
+            $refAttrClass = new ReflectionClass($attrClassName);
+            // 先頭の5文字(Allow)を削除して、残った最初の文字を小文字に変換
+            $propertyName = lcfirst(substr($refAttrClass->getShortName(), 5));
+
+            $this->{$propertyName} = AttributeHelper::getAttribute(
+                $refClass,
+                $attrClassName
+            )?->newInstance() ?? new NotAllow();
+        };
     }
 }
