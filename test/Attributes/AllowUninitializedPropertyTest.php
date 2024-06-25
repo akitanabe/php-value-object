@@ -10,13 +10,13 @@ use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
 use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
 
 #[AllowUninitializedProperty]
-final class AllowUninitiallizedValue extends BaseValueObject
+final class AllowUninitiallizedPropertyValue extends BaseValueObject
 {
     public string $string;
     public int $int;
 }
 
-final class DefaultPropertyValue extends BaseValueObject
+final class AllowInitialziedPropertyValue extends BaseValueObject
 {
     public string $string = "string";
 
@@ -27,7 +27,7 @@ final class DefaultPropertyValue extends BaseValueObject
     }
 }
 
-final class ExceptionValue extends BaseValueObject
+final class NotAllowInitializedPropertyValue extends BaseValueObject
 {
     public string $string;
     public int $int;
@@ -40,20 +40,20 @@ class AllowUninitializedPropertyTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowUninitializedProperty()
     {
-        new AllowUninitiallizedValue();
+        new AllowUninitiallizedPropertyValue();
     }
 
     #[Test]
     #[DoesNotPerformAssertions]
-    public function defaultPropertyIsInitialized()
+    public function allowInitialziedPropertyValue()
     {
-        new DefaultPropertyValue();
+        new AllowInitialziedPropertyValue();
     }
 
     #[Test]
     public function execption()
     {
         $this->expectException(BaseValueObjectException::class);
-        new ExceptionValue();
+        new NotAllowInitializedPropertyValue();
     }
 }
