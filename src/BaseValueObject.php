@@ -173,7 +173,7 @@ abstract class BaseValueObject
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $checkTypes,
-            fn (TypeCheckDto $typeCheckDto): bool => $typeCheckDto->isPrimivtive,
+            fn (TypeCheckDto $typeCheckDto): bool => $typeCheckDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -219,51 +219,9 @@ abstract class BaseValueObject
             : [$propertyType];
 
         return array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeCheckDto => $this->getTypeCheckDto($type, $inputValue),
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeCheckDto => new TypeCheckDto($type, $inputValue),
             $types,
         );
-    }
-
-    /**
-     * 
-     * プロパティの型と入力値の型をTypeCheckDtoに変換
-     * 
-     * @param ReflectionNamedType|ReflectionIntersectionType|null $propertyType
-     * @param mixed $value
-     * 
-     * @return TypeCheckDto
-     * 
-     */
-    private function getTypeCheckDto(
-        ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
-        mixed $value,
-    ): TypeCheckDto {
-        $valueType = TypeHelper::getValueType($value);
-
-        if ($propertyType === null) {
-            return new TypeCheckDto('none', $valueType);
-        }
-
-        if ($propertyType instanceof ReflectionIntersectionType) {
-            return new TypeCheckDto('object', $valueType, isIntersection: true);
-        }
-
-        $typeName = $propertyType->getName();
-
-        if ($typeName === "mixed") {
-            return new TypeCheckDto('mixed', $valueType);
-        }
-
-        if (in_array($typeName, [
-            'int',
-            'string',
-            'float',
-            'bool',
-        ], true)) {
-            return new TypeCheckDto($typeName, $valueType, isPrimivtive: true);
-        }
-
-        return new TypeCheckDto("object", $valueType);
     }
 
     /**
