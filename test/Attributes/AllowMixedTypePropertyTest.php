@@ -16,7 +16,7 @@ class AllowMixedTypePropertyValue extends BaseValueObject
 }
 
 
-class StrictPropertyTypeValue extends BaseValueObject
+class StrictMixedPropertyTypeValue extends BaseValueObject
 {
     public mixed $string;
 }
@@ -35,6 +35,6 @@ class AllowMixedTypePropertyTest extends TestCase
     public function execption()
     {
         $this->expectException(TypeError::class);
-        new StrictPropertyTypeValue(string: "string");
+        new StrictMixedPropertyTypeValue(string: "string");
     }
 }

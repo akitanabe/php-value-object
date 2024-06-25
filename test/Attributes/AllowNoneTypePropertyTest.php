@@ -16,7 +16,7 @@ class AllowNoneTypePropertyValue extends BaseValueObject
 }
 
 
-class StrictPropertyTypeValue extends BaseValueObject
+class StrictNonePropertyTypeValue extends BaseValueObject
 {
     public $string;
 }
@@ -35,6 +35,6 @@ class AllowNoneTypePropertyTest extends TestCase
     public function execption()
     {
         $this->expectException(TypeError::class);
-        new StrictPropertyTypeValue(string: "string");
+        new StrictNonePropertyTypeValue(string: "string");
     }
 }
