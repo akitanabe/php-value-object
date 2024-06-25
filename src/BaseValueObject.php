@@ -33,6 +33,17 @@ abstract class BaseValueObject
 
         $this->strict = new Strict($refClass);
 
+        // finalクラスであることを強制(Attributeが設定されていなければ継承不可)
+        if (
+            $refClass->isFinal() === false
+            && $this->strict->inheritableClass->allow() === false
+        ) {
+
+            throw new BaseValueObjectException(
+                "{$refClass->name} is not allowed to inherit. not allow inheritable class."
+            );
+        }
+
         $refConstructor = $refClass->getConstructor();
 
         // コンストラクタがオーバーライドされている場合、子クラスのコンストラクタパラメータから引数を設定する

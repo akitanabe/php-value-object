@@ -10,6 +10,7 @@ use Akitanabe\PhpValueObject\Options\NotAllow;
 use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
 use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
 use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
+use Akitanabe\PhpValueObject\Attributes\AllowInheritableClass;
 use Akitanabe\PhpValueObject\Helpers\AttributeHelper;
 
 final class Strict
@@ -32,12 +33,20 @@ final class Strict
      */
     public Allowable $mixedTypeProperty;
 
+    /**
+     * @var AllowInheritableClass|NotAllow
+     * 継承可能クラスを許可する
+     * (finalキーワードをつけていないクラスを許可する)
+     */
+    public Allowable $inheritableClass;
+
     public function __construct(ReflectionClass $refClass)
     {
         foreach ([
             AllowUninitializedProperty::class,
             AllowNoneTypeProperty::class,
             AllowMixedTypeProperty::class,
+            AllowInheritableClass::class,
         ] as $attrClassName) {
             $refAttrClass = new ReflectionClass($attrClassName);
             // 先頭の5文字(Allow)を削除して、残った最初の文字を小文字に変換
