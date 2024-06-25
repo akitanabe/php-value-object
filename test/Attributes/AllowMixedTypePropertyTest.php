@@ -10,13 +10,13 @@ use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
 
 
 #[AllowMixedTypeProperty]
-class AllowMixedTypePropertyValue extends BaseValueObject
+final class AllowMixedTypePropertyValue extends BaseValueObject
 {
     public mixed $string = "string";
 }
 
 
-class StrictMixedPropertyTypeValue extends BaseValueObject
+final class StrictMixedPropertyTypeValue extends BaseValueObject
 {
     public mixed $string = "string";
 }

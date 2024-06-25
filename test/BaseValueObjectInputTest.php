@@ -7,8 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Akitanabe\PhpValueObject\BaseValueObject;
 
-
-class BasicInputTestValue extends BaseValueObject
+final class BasicInputTestValue extends BaseValueObject
 {
     public string $string;
     public bool $bool;
@@ -16,7 +15,7 @@ class BasicInputTestValue extends BaseValueObject
     public float $float;
 }
 
-class OverideContructorValue extends BaseValueObject
+final class OverideContructorValue extends BaseValueObject
 {
     public string $string;
     public bool $bool;
@@ -33,7 +32,7 @@ class OverideContructorValue extends BaseValueObject
     }
 }
 
-class DefaultOverrideContructorValue extends BaseValueObject
+final class DefaultOverrideContructorValue extends BaseValueObject
 {
     public function __construct(
         public string $string = "string",
@@ -45,7 +44,7 @@ class DefaultOverrideContructorValue extends BaseValueObject
     }
 }
 
-class AppendOverrideContructorValue extends BaseValueObject
+final class AppendOverrideContructorValue extends BaseValueObject
 {
     public bool $bool;
     public int $int;
@@ -58,7 +57,7 @@ class AppendOverrideContructorValue extends BaseValueObject
     }
 }
 
-class ExtendOverrideContructorValue extends BaseValueObject
+final class ExtendOverrideContructorValue extends BaseValueObject
 {
     public float $float;
 

@@ -10,13 +10,13 @@ use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
 
 
 #[AllowNoneTypeProperty]
-class AllowNoneTypePropertyValue extends BaseValueObject
+final class AllowNoneTypePropertyValue extends BaseValueObject
 {
     public $string = "string";
 }
 
 
-class StrictNonePropertyTypeValue extends BaseValueObject
+final class StrictNonePropertyTypeValue extends BaseValueObject
 {
     public $string = "string";
 }

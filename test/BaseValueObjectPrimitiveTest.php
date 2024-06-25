@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Akitanabe\PhpValueObject\BaseValueObject;
 
-class PrimitiveTestValue extends BaseValueObject
+final class PrimitiveTestValue extends BaseValueObject
 {
     public readonly string $stringVal;
     public readonly int $intVal;
@@ -15,7 +15,7 @@ class PrimitiveTestValue extends BaseValueObject
     public readonly bool $boolVal;
 }
 
-class UnionTestValue extends BaseValueObject
+final class UnionTestValue extends BaseValueObject
 {
     public readonly string|int $stringOrInt;
     public readonly float|int $floatOrInt;

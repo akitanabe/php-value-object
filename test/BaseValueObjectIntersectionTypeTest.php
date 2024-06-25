@@ -22,7 +22,7 @@ class TypeC
     public const TYPE = 'C';
 }
 
-class IntersectionTypeValue extends BaseValueObject
+final class IntersectionTypeValue extends BaseValueObject
 {
     public (ITypeA&TypeB)|string $AandBorString;
     public bool|float $floatOrBool;

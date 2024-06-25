@@ -9,12 +9,12 @@ use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\Validator\EmptyStringValidator;
 use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
 
-class AllowEmptyStringValue extends BaseValueObject
+final class AllowEmptyStringValue extends BaseValueObject
 {
     public string $string = '';
 }
 
-class NotAllowEmptyStringValue extends BaseValueObject
+final class NotAllowEmptyStringValue extends BaseValueObject
 {
     #[EmptyStringValidator]
     public string $string = '';

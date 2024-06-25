@@ -10,13 +10,13 @@ use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
 use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
 
 #[AllowUninitializedProperty]
-class AllowUninitiallizedValue extends BaseValueObject
+final class AllowUninitiallizedValue extends BaseValueObject
 {
     public string $string;
     public int $int;
 }
 
-class DefaultPropertyValue extends BaseValueObject
+final class DefaultPropertyValue extends BaseValueObject
 {
     public string $string = "string";
 
@@ -27,7 +27,7 @@ class DefaultPropertyValue extends BaseValueObject
     }
 }
 
-class ExceptionValue extends BaseValueObject
+final class ExceptionValue extends BaseValueObject
 {
     public string $string;
     public int $int;

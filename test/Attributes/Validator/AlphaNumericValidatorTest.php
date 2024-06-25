@@ -9,13 +9,13 @@ use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\Validator\AlphaNumericValidator;
 use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
 
-class EmptyStringValue extends BaseValueObject
+final class EmptyStringValue extends BaseValueObject
 {
     #[AlphaNumericValidator]
     public string $string = '';
 }
 
-class AlphaNumericValue extends BaseValueObject
+final class AlphaNumericValue extends BaseValueObject
 {
     #[AlphaNumericValidator]
     public string $alphanumeric = 'abc123';
@@ -27,7 +27,7 @@ class AlphaNumericValue extends BaseValueObject
     public string $alphabet = 'abc';
 }
 
-class ExceptionAlphaNumericValue extends BaseValueObject
+final class ExceptionAlphaNumericValue extends BaseValueObject
 {
     #[AlphaNumericValidator]
     public string $alphanumeric = '_abc123';
