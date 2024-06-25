@@ -16,6 +16,7 @@ use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
 use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
+use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use ReflectionAttribute;
 use ReflectionProperty;
 
@@ -145,7 +146,7 @@ abstract class BaseValueObject
     ): void {
 
         $className = static::class;
-        $valueType = $this->getValueType($value);
+        $valueType = TypeHelper::getValueType($value);
 
         $checkTypes = $this->extractPropertyTypeToTypeCheckDtos($propertyType, $value);
 
@@ -224,26 +225,6 @@ abstract class BaseValueObject
     }
 
     /**
-     * gettypeの結果をPHPの型名に変換
-     * 
-     * @param mixed $value
-     * 
-     * @return string
-     * 
-     */
-    private function getValueType(mixed $value): string
-    {
-        $typeName = gettype($value);
-
-        return match ($typeName) {
-            'boolean' => 'bool',
-            'integer' => 'int',
-            'double' => 'float',
-            default => strtolower($typeName),
-        };
-    }
-
-    /**
      * 
      * プロパティの型と入力値の型をTypeCheckDtoに変換
      * 
@@ -257,7 +238,7 @@ abstract class BaseValueObject
         ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
         mixed $value,
     ): TypeCheckDto {
-        $valueType = $this->getValueType($value);
+        $valueType = TypeHelper::getValueType($value);
 
         if ($propertyType === null) {
             return new TypeCheckDto('none', $valueType);
