@@ -12,13 +12,13 @@ use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
 #[AllowMixedTypeProperty]
 class AllowMixedTypePropertyValue extends BaseValueObject
 {
-    public mixed $string;
+    public mixed $string = "string";
 }
 
 
 class StrictMixedPropertyTypeValue extends BaseValueObject
 {
-    public mixed $string;
+    public mixed $string = "string";
 }
 
 
@@ -28,13 +28,13 @@ class AllowMixedTypePropertyTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowMixedTypeProperty()
     {
-        new AllowMixedTypePropertyValue(string: "string");
+        new AllowMixedTypePropertyValue();
     }
 
     #[Test]
     public function execption()
     {
         $this->expectException(TypeError::class);
-        new StrictMixedPropertyTypeValue(string: "string");
+        new StrictMixedPropertyTypeValue();
     }
 }

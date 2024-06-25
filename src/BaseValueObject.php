@@ -43,13 +43,14 @@ abstract class BaseValueObject
         foreach ($refClass->getProperties() as $property) {
             $propertyName = $property->getName();
 
-            if (array_key_exists($propertyName, $args) === false) {
-                // 初期化されている場合はバリデーションのみ ※デフォルト値含む
-                if ($property->isInitialized($this)) {
-                    $this->validateProperty($property);
-                    continue;
-                }
+            $initializedProperty = $property->isInitialized($this);
+            $inputValueExists = array_key_exists($propertyName, $args);
 
+            // 入力値と初期化済みプロパティの両方が存在しない場合
+            if (
+                $inputValueExists === false
+                && $initializedProperty === false
+            ) {
                 // 未初期化プロパティが許可されている場合はスキップ
                 if ($this->strict->uninitializedProperty->allow()) {
                     continue;
@@ -60,7 +61,9 @@ abstract class BaseValueObject
                 );
             }
 
-            $value = $args[$propertyName];
+            $value = ($inputValueExists)
+                ? $args[$propertyName]
+                : $property->getValue($this);
 
             $this->checkType(
                 $property->getType(),
