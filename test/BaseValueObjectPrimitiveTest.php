@@ -13,7 +13,6 @@ class PrimitiveTestValue extends BaseValueObject
     public readonly int $intVal;
     public readonly float $floatVal;
     public readonly bool $boolVal;
-    public $test;
 }
 
 class UnionTestValue extends BaseValueObject
@@ -25,7 +24,7 @@ class UnionTestValue extends BaseValueObject
 class BaseValueObjectPrimitiveTest extends TestCase
 {
     #[Test]
-    public function primitivePropery()
+    public function primitivePropetry()
     {
         $scalarValue = new PrimitiveTestValue(
             stringVal: "string",
