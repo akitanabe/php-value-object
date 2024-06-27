@@ -17,4 +17,9 @@ final class AllowMixedTypeProperty implements Allowable
     {
         return true;
     }
+
+    public function disallow(): bool
+    {
+        return false;
+    }
 }

@@ -18,4 +18,9 @@ final class AllowInheritableClass implements Allowable
     {
         return true;
     }
+
+    public function disallow(): bool
+    {
+        return false;
+    }
 }

@@ -12,4 +12,9 @@ final class NotAllow implements Allowable
     {
         return false;
     }
+
+    public function disallow(): bool
+    {
+        return true;
+    }
 }
