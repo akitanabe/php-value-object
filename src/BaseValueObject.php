@@ -101,7 +101,7 @@ abstract class BaseValueObject
      * @param ReflectionMethod $refConstructor
      * @param mixed[] $args
      * 
-     * @return mixed[]
+     * @return array<string, mixed>
      * 
      */
     private function toNamedArgs(ReflectionMethod $refConstructor, array $args): array
