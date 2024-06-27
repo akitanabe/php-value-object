@@ -263,4 +263,16 @@ abstract class BaseValueObject
             }
         }
     }
+
+    /**
+     * クローン時にはimmutableにするためオブジェクトはcloneする
+     */
+    public function __clone()
+    {
+        foreach (get_object_vars($this) as $prop => $value) {
+            if (is_object($value)) {
+                $this->{$prop} = clone $value;
+            }
+        };
+    }
 }
