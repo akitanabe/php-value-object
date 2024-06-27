@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Akitanabe\PhpValueObject\BaseValueObject;
-use Akitanabe\PhpValueObject\Attributes\Validator\EmptyStringValidator;
+use Akitanabe\PhpValueObject\Attributes\Validator\NotEmptyStringValidator;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 
 final class AllowEmptyStringValue extends BaseValueObject
@@ -16,11 +16,11 @@ final class AllowEmptyStringValue extends BaseValueObject
 
 final class NotAllowEmptyStringValue extends BaseValueObject
 {
-    #[EmptyStringValidator]
+    #[NotEmptyStringValidator]
     public string $string = '';
 }
 
-class EmptyStringValidatorTest extends TestCase
+class NotEmptyStringValidatorTest extends TestCase
 {
     #[Test]
     #[DoesNotPerformAssertions]

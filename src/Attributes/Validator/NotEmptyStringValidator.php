@@ -8,7 +8,7 @@ use Attribute;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class EmptyStringValidator implements Validatable
+final class NotEmptyStringValidator implements Validatable
 {
     public function validate(mixed $value): bool
     {
