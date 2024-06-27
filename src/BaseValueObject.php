@@ -12,8 +12,9 @@ use ReflectionMethod;
 use ReflectionParameter;
 use TypeError;
 use Akitanabe\PhpValueObject\Dto\TypeCheckDto;
-use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
-use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
+use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
+use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
+use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
@@ -39,7 +40,7 @@ abstract class BaseValueObject
             && $this->strict->inheritableClass->allow() === false
         ) {
 
-            throw new BaseValueObjectException(
+            throw new InheritableClassException(
                 "{$refClass->name} is not allowed to inherit. not allow inheritable class."
             );
         }
@@ -67,7 +68,7 @@ abstract class BaseValueObject
                     continue;
                 }
 
-                throw new BaseValueObjectException(
+                throw new UninitializedException(
                     "{$refClass->name}::\${$propertyName} is not initialized. not allow uninitialized property."
                 );
             }
@@ -255,7 +256,7 @@ abstract class BaseValueObject
             $attributeInstance = $attribute->newInstance();
 
             if ($attributeInstance->validate($value, $refProp) === false) {
-                throw new PhpValueObjectValidationException(
+                throw new ValidationException(
                     $attributeInstance,
                     $refProp,
                 );

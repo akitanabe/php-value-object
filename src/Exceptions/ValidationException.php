@@ -6,7 +6,7 @@ use Exception;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 use ReflectionProperty;
 
-class PhpValueObjectValidationException extends Exception
+class ValidationException extends Exception
 {
     public function __construct(Validatable $validator, ReflectionProperty $refProp)
     {
