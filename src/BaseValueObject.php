@@ -10,16 +10,16 @@ use ReflectionNamedType;
 use ReflectionUnionType;
 use ReflectionMethod;
 use ReflectionParameter;
+use ReflectionAttribute;
+use ReflectionProperty;
 use TypeError;
 use Akitanabe\PhpValueObject\Dto\TypeCheckDto;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
+use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
-use Akitanabe\PhpValueObject\Helpers\TypeHelper;
-use ReflectionAttribute;
-use ReflectionProperty;
 
 abstract class BaseValueObject
 {
