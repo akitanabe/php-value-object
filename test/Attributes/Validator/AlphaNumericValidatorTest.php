@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\Validator\AlphaNumericValidator;
-use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
+use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 
 final class EmptyStringValue extends BaseValueObject
 {
@@ -55,7 +55,7 @@ class AlphaNumericValidatorTest extends TestCase
     #[Test]
     public function isExceptionAlphanumericValue()
     {
-        $this->expectException(PhpValueObjectValidationException::class);
+        $this->expectException(ValidationException::class);
         new ExceptionAlphaNumericValue();
     }
 }

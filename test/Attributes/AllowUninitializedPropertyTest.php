@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
-use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
+use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 
 #[AllowUninitializedProperty]
 final class AllowUninitiallizedPropertyValue extends BaseValueObject
@@ -53,7 +53,7 @@ class AllowUninitializedPropertyTest extends TestCase
     #[Test]
     public function execption()
     {
-        $this->expectException(BaseValueObjectException::class);
+        $this->expectException(UninitializedException::class);
         new NotAllowInitializedPropertyValue();
     }
 }

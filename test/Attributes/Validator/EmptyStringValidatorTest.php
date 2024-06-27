@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\Validator\EmptyStringValidator;
-use Akitanabe\PhpValueObject\Exceptions\PhpValueObjectValidationException;
+use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 
 final class AllowEmptyStringValue extends BaseValueObject
 {
@@ -32,7 +32,7 @@ class EmptyStringValidatorTest extends TestCase
     #[Test]
     public function notAllowEmptyString()
     {
-        $this->expectException(PhpValueObjectValidationException::class);
+        $this->expectException(ValidationException::class);
         new NotAllowEmptyStringValue();
     }
 }

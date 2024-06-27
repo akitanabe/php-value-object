@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\AllowInheritableClass;
-use Akitanabe\PhpValueObject\Exceptions\BaseValueObjectException;
+use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 
 #[AllowInheritableClass]
 class AllowInheritableClassValue extends BaseValueObject
@@ -31,7 +31,7 @@ class AllowInheritableClassTest extends TestCase
     #[Test]
     public function notAllowInheritableClass()
     {
-        $this->expectException(BaseValueObjectException::class);
+        $this->expectException(InheritableClassException::class);
         new NotAllowInheritableValue();
     }
 }
