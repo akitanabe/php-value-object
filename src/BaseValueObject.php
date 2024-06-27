@@ -37,7 +37,7 @@ abstract class BaseValueObject
         // finalクラスであることを強制(Attributeが設定されていなければ継承不可)
         if (
             $refClass->isFinal() === false
-            && $this->strict->inheritableClass->allow() === false
+            && $this->strict->inheritableClass->disallow()
         ) {
 
             throw new InheritableClassException(
@@ -169,9 +169,9 @@ abstract class BaseValueObject
 
             if (
                 // 型が指定されていない場合
-                ($typeCheckDto->typeName === "none" && $this->strict->noneTypeProperty->allow() === false)
+                ($typeCheckDto->typeName === "none" && $this->strict->noneTypeProperty->disallow())
                 // mixed型の場合
-                || ($typeCheckDto->typeName === 'mixed' && $this->strict->mixedTypeProperty->allow() === false)
+                || ($typeCheckDto->typeName === 'mixed' && $this->strict->mixedTypeProperty->disallow())
             ) {
                 throw new TypeError(
                     "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeCheckDto->typeName} type."
