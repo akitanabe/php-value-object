@@ -27,6 +27,8 @@ abstract class BaseValueObject
 
     /**
      * @param mixed[] $args
+     * 
+     * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
     public function __construct(...$args)
     {
@@ -245,7 +247,7 @@ abstract class BaseValueObject
      * @param ReflectionProperty $refProp
      * @return void
      * 
-     * @throws PhpValueObjectValidationException
+     * @throws ValidationException
      */
     private function validateProperty(ReflectionProperty $refProp): void
     {
