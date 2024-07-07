@@ -27,14 +27,10 @@ class TypeHintsDto
             $this->typeName = $propertyType->getName();
         }
 
-        if (in_array($this->typeName, [
-            'int',
-            'string',
-            'float',
-            'bool',
-        ], true)) {
-            $this->isPrimitive = true;
-        }
+        $this->isPrimitive = match ($this->typeName) {
+            'int', 'string', 'float', 'bool' => true,
+            default => false,
+        };
 
         $this->valueType = $propertyDto->valueType;
     }
