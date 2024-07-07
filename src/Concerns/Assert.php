@@ -38,11 +38,8 @@ trait Assert
     ): bool {
 
 
-        // 入力値と初期化済みプロパティの両方が存在しない場合
-        if (
-            $propertyDto->isInputValue === false
-            && $propertyDto->isInitialized === false
-        ) {
+        // プロパティが未初期化の場合
+        if ($propertyDto->isUninitialized()) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($strict->uninitializedProperty->allow()) {
                 return true;
