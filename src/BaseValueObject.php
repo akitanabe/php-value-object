@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Akitanabe\PhpValueObject;
 
 use ReflectionClass;
-use ReflectionIntersectionType;
-use ReflectionNamedType;
-use ReflectionUnionType;
 use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionAttribute;
 use ReflectionProperty;
 use TypeError;
-use Akitanabe\PhpValueObject\Dto\TypeCheckDto;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
@@ -34,12 +30,13 @@ abstract class BaseValueObject
     {
         $refClass = new ReflectionClass($this);
 
-        $this->strict = new Strict($refClass);
+        $strict = new Strict($refClass);
+        $this->strict = $strict;
 
         // finalクラスであることを強制(Attributeが設定されていなければ継承不可)
         if (
             $refClass->isFinal() === false
-            && $this->strict->inheritableClass->disallow()
+            && $strict->inheritableClass->disallow()
         ) {
 
             throw new InheritableClassException(
@@ -66,7 +63,7 @@ abstract class BaseValueObject
                 && $initializedProperty === false
             ) {
                 // 未初期化プロパティが許可されている場合はスキップ
-                if ($this->strict->uninitializedProperty->allow()) {
+                if ($strict->uninitializedProperty->allow()) {
                     continue;
                 }
 
@@ -79,7 +76,9 @@ abstract class BaseValueObject
                 ? $args[$propertyName]
                 : $property->getValue($this);
 
-            $this->checkType(
+            TypeHelper::checkType(
+                $refClass,
+                $strict,
                 $property->getType(),
                 $propertyName,
                 $value,
@@ -141,104 +140,6 @@ abstract class BaseValueObject
         }
 
         return $overrideArgs;
-    }
-
-    /**
-     * 
-     * 型のチェック
-     * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるため
-     * プリミティブ型のみ型をチェックする
-     * 
-     * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
-     * @param string $propertyName
-     * @param mixed $value
-     * 
-     * @throws TypeError
-     * 
-     */
-    private function checkType(
-        ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
-        string $propertyName,
-        mixed $value
-    ): void {
-
-        $className = static::class;
-        $valueType = TypeHelper::getValueType($value);
-
-        $checkTypes = $this->extractPropertyTypeToTypeCheckDtos($propertyType, $value);
-
-        foreach ($checkTypes as $typeCheckDto) {
-
-            if (
-                // 型が指定されていない場合
-                ($typeCheckDto->typeName === "none" && $this->strict->noneTypeProperty->disallow())
-                // mixed型の場合
-                || ($typeCheckDto->typeName === 'mixed' && $this->strict->mixedTypeProperty->disallow())
-            ) {
-                throw new TypeError(
-                    "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeCheckDto->typeName} type."
-                );
-            }
-
-            // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
-            if ($typeCheckDto->isIntersection && $typeCheckDto->valueType === 'object') {
-                return;
-            }
-        }
-
-        // プリミティブ型のみ型をチェックする
-        // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
-        $onlyPrimitiveTypes = array_filter(
-            $checkTypes,
-            fn (TypeCheckDto $typeCheckDto): bool => $typeCheckDto->isPrimitive,
-        );
-
-        // プリミティブ型が存在しない場合はPHPの型検査に任せる
-        if (count($onlyPrimitiveTypes) === 0) {
-            return;
-        }
-
-        // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
-        foreach ($onlyPrimitiveTypes as $typeCheckDto) {
-            if ($typeCheckDto->typeName === $typeCheckDto->valueType) {
-                return;
-            }
-        }
-
-        $errorTypeName = join(
-            '|',
-            array_map(
-                fn (TypeCheckDto $typeCheckDto): string => $typeCheckDto->typeName,
-                $onlyPrimitiveTypes,
-            ),
-        );
-
-        throw new TypeError(
-            "Cannot assign {$valueType} to property {$className}::\${$propertyName} of type {$errorTypeName}"
-        );
-    }
-
-    /**
-     * プロパティの型情報をTypeCheckDtoに変換して抽出
-     * 
-     * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
-     * @param mixed $inputValue
-     * 
-     * @return TypeCheckDto[]
-     */
-    private function extractPropertyTypeToTypeCheckDtos(
-        ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
-        mixed $inputValue,
-
-    ): array {
-        $types = ($propertyType instanceof ReflectionUnionType)
-            ? $propertyType->getTypes()
-            : [$propertyType];
-
-        return array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeCheckDto => new TypeCheckDto($type, $inputValue),
-            $types,
-        );
     }
 
     /**
