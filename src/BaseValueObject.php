@@ -16,9 +16,11 @@ use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
+use Akitanabe\PhpValueObject\Concerns\Assert;
 
 abstract class BaseValueObject
 {
+    use Assert;
     private Strict $strict;
 
     /**
@@ -34,15 +36,7 @@ abstract class BaseValueObject
         $this->strict = $strict;
 
         // finalクラスであることを強制(Attributeが設定されていなければ継承不可)
-        if (
-            $refClass->isFinal() === false
-            && $strict->inheritableClass->disallow()
-        ) {
-
-            throw new InheritableClassException(
-                "{$refClass->name} is not allowed to inherit. not allow inheritable class."
-            );
-        }
+        $this->assertInheritableClass($refClass, $strict);
 
         $refConstructor = $refClass->getConstructor();
 
@@ -54,22 +48,10 @@ abstract class BaseValueObject
         foreach ($refClass->getProperties() as $property) {
             $propertyName = $property->getName();
 
-            $initializedProperty = $property->isInitialized($this);
             $inputValueExists = array_key_exists($propertyName, $args);
 
-            // 入力値と初期化済みプロパティの両方が存在しない場合
-            if (
-                $inputValueExists === false
-                && $initializedProperty === false
-            ) {
-                // 未初期化プロパティが許可されている場合はスキップ
-                if ($strict->uninitializedProperty->allow()) {
-                    continue;
-                }
-
-                throw new UninitializedException(
-                    "{$refClass->name}::\${$propertyName} is not initialized. not allow uninitialized property."
-                );
+            if ($this->assertUninitializedPropertyOrSkip($refClass, $property, $strict, $args)) {
+                continue;
             }
 
             $value = ($inputValueExists)
