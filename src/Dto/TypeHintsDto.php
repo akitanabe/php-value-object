@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Dto;
 
-use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 
@@ -17,7 +16,7 @@ class TypeHintsDto
 
     public function __construct(
         ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
-        mixed $value,
+        PropertyDto $propertyDto,
     ) {
         if ($propertyType === null) {
             $this->typeName = 'none';
@@ -37,6 +36,6 @@ class TypeHintsDto
             $this->isPrimitive = true;
         }
 
-        $this->valueType = TypeHelper::getValueType($value);
+        $this->valueType = $propertyDto->valueType;
     }
 }

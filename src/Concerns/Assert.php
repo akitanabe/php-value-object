@@ -5,6 +5,7 @@ namespace Akitanabe\PhpValueObject\Concerns;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
+use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -32,20 +33,15 @@ trait Assert
      */
     public function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
-        ReflectionProperty $property,
         Strict $strict,
-        array $args,
+        PropertyDto $propertyDto,
     ): bool {
 
-        $propertyName = $property->name;
-
-        $initializedProperty = $property->isInitialized($this);
-        $inputValueExists = array_key_exists($propertyName, $args);
 
         // 入力値と初期化済みプロパティの両方が存在しない場合
         if (
-            $inputValueExists === false
-            && $initializedProperty === false
+            $propertyDto->isInputValue === false
+            && $propertyDto->isInitialized === false
         ) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($strict->uninitializedProperty->allow()) {
@@ -53,7 +49,7 @@ trait Assert
             }
 
             throw new UninitializedException(
-                "{$refClass->name}::\${$propertyName} is not initialized. not allow uninitialized property."
+                "{$refClass->name}::\${$propertyDto->name} is not initialized. not allow uninitialized property."
             );
         }
 

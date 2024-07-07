@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Helpers;
 
+use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use ReflectionNamedType;
 use ReflectionUnionType;
 use ReflectionIntersectionType;
@@ -52,14 +53,12 @@ final class TypeHelper
     static public function checkType(
         ReflectionClass $refClass,
         Strict $strict,
-        ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
-        string $propertyName,
-        mixed $value
+        PropertyDto $propertyDto,
     ): void {
-
-        $valueType = self::getValueType($value);
-
-        $typeHints = self::toTypeHintsDtos($propertyType, $value);
+        $typeHints = array_map(
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type, $propertyDto),
+            $propertyDto->types,
+        );
 
         foreach ($typeHints as $typeHintsDto) {
 
@@ -70,7 +69,7 @@ final class TypeHelper
                 || ($typeHintsDto->typeName === 'mixed' && $strict->mixedTypeProperty->disallow())
             ) {
                 throw new TypeError(
-                    "{$refClass->name}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeHintsDto->typeName} type."
+                    "{$refClass->name}::\${$propertyDto->name} is not type defined. ValueObject does not allowed {$typeHintsDto->typeName} type."
                 );
             }
 
@@ -108,30 +107,7 @@ final class TypeHelper
         );
 
         throw new TypeError(
-            "Cannot assign {$valueType} to property {$refClass->name}::\${$propertyName} of type {$errorTypeName}"
-        );
-    }
-
-    /**
-     * プロパティの型情報をTypeHintsDtoに変換して抽出
-     * 
-     * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
-     * @param mixed $inputValue
-     * 
-     * @return TypeHintsDto[]
-     */
-    static private function toTypeHintsDtos(
-        ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
-        mixed $inputValue,
-
-    ): array {
-        $types = ($propertyType instanceof ReflectionUnionType)
-            ? $propertyType->getTypes()
-            : [$propertyType];
-
-        return array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type, $inputValue),
-            $types,
+            "Cannot assign {$propertyDto->valueType} to property {$refClass->name}::\${$propertyDto->name} of type {$errorTypeName}"
         );
     }
 }

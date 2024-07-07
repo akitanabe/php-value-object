@@ -17,6 +17,7 @@ use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 use Akitanabe\PhpValueObject\Concerns\Assert;
+use Akitanabe\PhpValueObject\Dto\PropertyDto;
 
 abstract class BaseValueObject
 {
@@ -46,29 +47,21 @@ abstract class BaseValueObject
         }
 
         foreach ($refClass->getProperties() as $property) {
-            $propertyName = $property->getName();
+            $propertyDto = new PropertyDto($this, $property, $args);
 
-            $inputValueExists = array_key_exists($propertyName, $args);
-
-            if ($this->assertUninitializedPropertyOrSkip($refClass, $property, $strict, $args)) {
+            if ($this->assertUninitializedPropertyOrSkip($refClass, $strict, $propertyDto)) {
                 continue;
             }
-
-            $value = ($inputValueExists)
-                ? $args[$propertyName]
-                : $property->getValue($this);
 
             TypeHelper::checkType(
                 $refClass,
                 $strict,
-                $property->getType(),
-                $propertyName,
-                $value,
+                $propertyDto,
             );
 
             $property->setValue(
                 $this,
-                $value,
+                $propertyDto->value,
             );
 
             // プロパティ値バリデーション
