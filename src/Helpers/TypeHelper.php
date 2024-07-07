@@ -59,7 +59,7 @@ final class TypeHelper
 
         $valueType = self::getValueType($value);
 
-        $typeHints = self::extractPropertyTypeToTypeHintsDtos($propertyType, $value);
+        $typeHints = self::toTypeHintsDtos($propertyType, $value);
 
         foreach ($typeHints as $typeHintsDto) {
 
@@ -120,7 +120,7 @@ final class TypeHelper
      * 
      * @return TypeHintsDto[]
      */
-    static private function extractPropertyTypeToTypeHintsDtos(
+    static private function toTypeHintsDtos(
         ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
         mixed $inputValue,
 
