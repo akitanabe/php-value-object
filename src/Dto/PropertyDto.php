@@ -23,7 +23,7 @@ final class PropertyDto
     public function __construct(
         BaseValueObject $vo,
         ReflectionProperty $refProperty,
-        array $inputArgs
+        array $inputArgs,
     ) {
         $this->name = $refProperty->name;
         $this->isInitialized = $refProperty->isInitialized($vo);
