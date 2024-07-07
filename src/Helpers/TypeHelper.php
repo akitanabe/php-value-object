@@ -57,7 +57,6 @@ final class TypeHelper
         mixed $value
     ): void {
 
-        $className = $refClass->name;
         $valueType = self::getValueType($value);
 
         $typeHints = self::extractPropertyTypeToTypeHintsDtos($propertyType, $value);
@@ -71,7 +70,7 @@ final class TypeHelper
                 || ($typeHintsDto->typeName === 'mixed' && $strict->mixedTypeProperty->disallow())
             ) {
                 throw new TypeError(
-                    "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeHintsDto->typeName} type."
+                    "{$refClass->name}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeHintsDto->typeName} type."
                 );
             }
 
@@ -109,7 +108,7 @@ final class TypeHelper
         );
 
         throw new TypeError(
-            "Cannot assign {$valueType} to property {$className}::\${$propertyName} of type {$errorTypeName}"
+            "Cannot assign {$valueType} to property {$refClass->name}::\${$propertyName} of type {$errorTypeName}"
         );
     }
 
