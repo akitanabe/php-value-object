@@ -14,7 +14,7 @@ trait Assert
     /**
      * @throws InheritableClassException
      */
-    public function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
+    private function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
     {
         if (
             $refClass->isFinal() === false
@@ -31,7 +31,7 @@ trait Assert
      * @return bool
      * @throws UninitializedException
      */
-    public function assertUninitializedPropertyOrSkip(
+    private function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
         Strict $strict,
         PropertyDto $propertyDto,
