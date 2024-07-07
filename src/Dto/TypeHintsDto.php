@@ -8,7 +8,7 @@ use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 
-class TypeCheckDto
+class TypeHintsDto
 {
     public string $typeName;
     public string $valueType;

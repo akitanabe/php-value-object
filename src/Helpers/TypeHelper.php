@@ -8,7 +8,7 @@ use ReflectionNamedType;
 use ReflectionUnionType;
 use ReflectionIntersectionType;
 use TypeError;
-use Akitanabe\PhpValueObject\Dto\TypeCheckDto;
+use Akitanabe\PhpValueObject\Dto\TypeHintsDto;
 use Akitanabe\PhpValueObject\Options\Strict;
 use ReflectionClass;
 
@@ -60,23 +60,23 @@ final class TypeHelper
         $className = $refClass->name;
         $valueType = self::getValueType($value);
 
-        $checkTypes = self::extractPropertyTypeToTypeCheckDtos($propertyType, $value);
+        $typeHints = self::extractPropertyTypeToTypeHintsDtos($propertyType, $value);
 
-        foreach ($checkTypes as $typeCheckDto) {
+        foreach ($typeHints as $typeHintsDto) {
 
             if (
                 // 型が指定されていない場合
-                ($typeCheckDto->typeName === "none" && $strict->noneTypeProperty->disallow())
+                ($typeHintsDto->typeName === "none" && $strict->noneTypeProperty->disallow())
                 // mixed型の場合
-                || ($typeCheckDto->typeName === 'mixed' && $strict->mixedTypeProperty->disallow())
+                || ($typeHintsDto->typeName === 'mixed' && $strict->mixedTypeProperty->disallow())
             ) {
                 throw new TypeError(
-                    "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeCheckDto->typeName} type."
+                    "{$className}::\${$propertyName} is not type defined. ValueObject does not allowed {$typeHintsDto->typeName} type."
                 );
             }
 
             // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
-            if ($typeCheckDto->isIntersection && $typeCheckDto->valueType === 'object') {
+            if ($typeHintsDto->isIntersection && $typeHintsDto->valueType === 'object') {
                 return;
             }
         }
@@ -84,8 +84,8 @@ final class TypeHelper
         // プリミティブ型のみ型をチェックする
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
-            $checkTypes,
-            fn (TypeCheckDto $typeCheckDto): bool => $typeCheckDto->isPrimitive,
+            $typeHints,
+            fn (TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -94,8 +94,8 @@ final class TypeHelper
         }
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
-        foreach ($onlyPrimitiveTypes as $typeCheckDto) {
-            if ($typeCheckDto->typeName === $typeCheckDto->valueType) {
+        foreach ($onlyPrimitiveTypes as $typeHintsDto) {
+            if ($typeHintsDto->typeName === $typeHintsDto->valueType) {
                 return;
             }
         }
@@ -103,7 +103,7 @@ final class TypeHelper
         $errorTypeName = join(
             '|',
             array_map(
-                fn (TypeCheckDto $typeCheckDto): string => $typeCheckDto->typeName,
+                fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->typeName,
                 $onlyPrimitiveTypes,
             ),
         );
@@ -114,14 +114,14 @@ final class TypeHelper
     }
 
     /**
-     * プロパティの型情報をTypeCheckDtoに変換して抽出
+     * プロパティの型情報をTypeHintsDtoに変換して抽出
      * 
      * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
      * @param mixed $inputValue
      * 
-     * @return TypeCheckDto[]
+     * @return TypeHintsDto[]
      */
-    static private function extractPropertyTypeToTypeCheckDtos(
+    static private function extractPropertyTypeToTypeHintsDtos(
         ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType,
         mixed $inputValue,
 
@@ -131,7 +131,7 @@ final class TypeHelper
             : [$propertyType];
 
         return array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeCheckDto => new TypeCheckDto($type, $inputValue),
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type, $inputValue),
             $types,
         );
     }
