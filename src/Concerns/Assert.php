@@ -2,12 +2,11 @@
 
 namespace Akitanabe\PhpValueObject\Concerns;
 
+use ReflectionClass;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
-use ReflectionClass;
-use ReflectionProperty;
 
 trait Assert
 {
