@@ -1,13 +1,13 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Concerns;
+namespace Akitanabe\PhpValueObject\Helpers;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 
-trait Arguments
+class ArgumentsHelper
 {
     /**
      * コンストラクタへの入力値を取得
@@ -18,13 +18,13 @@ trait Arguments
      * 
      * @return array<string|int,mixed>
      */
-    private function getInputArgs(ReflectionClass $refClass, array $args): array
+    static public function getInputArgs(ReflectionClass $refClass, array $args): array
     {
         $refConstructor = $refClass->getConstructor();
 
         // コンストラクタがオーバーライドされている場合、子クラスのコンストラクタパラメータから引数を設定する
         return ($refConstructor->getDeclaringClass()->name !== BaseValueObject::class)
-            ? $this->toNamedArgs($refConstructor, $args)
+            ? self::toNamedArgs($refConstructor, $args)
             : $args;
     }
 
@@ -39,7 +39,7 @@ trait Arguments
      * @return array<string,mixed>
      * 
      */
-    private function toNamedArgs(ReflectionMethod $refConstructor, array $args): array
+    static private function toNamedArgs(ReflectionMethod $refConstructor, array $args): array
     {
         $overrideArgs = array_reduce(
             $refConstructor->getParameters(),

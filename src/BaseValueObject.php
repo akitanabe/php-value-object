@@ -11,20 +11,19 @@ use TypeError;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
-use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 use Akitanabe\PhpValueObject\Helpers\AssertHelper;
-use Akitanabe\PhpValueObject\Concerns\Arguments;
+use Akitanabe\PhpValueObject\Helpers\ArgumentsHelper;
+use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 
 abstract class BaseValueObject
 {
-    use Arguments;
     private Strict $strict;
 
     /**
-     * @param mixed[] $args
+     * @param array<string|int,mixed> $args
      * 
      * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
@@ -39,7 +38,7 @@ abstract class BaseValueObject
         AssertHelper::assertInheritableClass($refClass, $strict);
 
         // 入力値を取得
-        $inputArgs = $this->getInputArgs($refClass, $args);
+        $inputArgs = ArgumentsHelper::getInputArgs($refClass, $args);
 
         foreach ($refClass->getProperties() as $property) {
             $propertyDto = new PropertyDto($this, $property, $inputArgs);
