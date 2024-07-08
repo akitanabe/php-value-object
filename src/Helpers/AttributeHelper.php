@@ -24,8 +24,6 @@ final class AttributeHelper
         ReflectionClass|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionObject|ReflectionParameter $reflection,
         string $attributeName
     ): ?ReflectionAttribute {
-        $attributes = $reflection->getAttributes($attributeName) ?? [];
-
-        return $attributes[0] ?? null;
+        return $reflection->getAttributes($attributeName)[0] ?? null;
     }
 }
