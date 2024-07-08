@@ -14,13 +14,12 @@ use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
-use Akitanabe\PhpValueObject\Concerns\Assert;
+use Akitanabe\PhpValueObject\Helpers\AssertHelper;
 use Akitanabe\PhpValueObject\Concerns\Arguments;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 
 abstract class BaseValueObject
 {
-    use Assert;
     use Arguments;
     private Strict $strict;
 
@@ -37,7 +36,7 @@ abstract class BaseValueObject
         $this->strict = $strict;
 
         // finalクラスであることを強制(Attributeが設定されていなければ継承不可)
-        $this->assertInheritableClass($refClass, $strict);
+        AssertHelper::assertInheritableClass($refClass, $strict);
 
         // 入力値を取得
         $inputArgs = $this->getInputArgs($refClass, $args);
@@ -45,7 +44,11 @@ abstract class BaseValueObject
         foreach ($refClass->getProperties() as $property) {
             $propertyDto = new PropertyDto($this, $property, $inputArgs);
 
-            if ($this->assertUninitializedPropertyOrSkip($refClass, $strict, $propertyDto)) {
+            if (AssertHelper::assertUninitializedPropertyOrSkip(
+                $refClass,
+                $strict,
+                $propertyDto,
+            )) {
                 continue;
             }
 

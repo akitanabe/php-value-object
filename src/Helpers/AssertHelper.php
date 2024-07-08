@@ -1,6 +1,6 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Concerns;
+namespace Akitanabe\PhpValueObject\Helpers;
 
 use ReflectionClass;
 use Akitanabe\PhpValueObject\Options\Strict;
@@ -8,12 +8,12 @@ use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 
-trait Assert
+class AssertHelper
 {
     /**
      * @throws InheritableClassException
      */
-    private function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
+    static public function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
     {
         if (
             $refClass->isFinal() === false
@@ -30,7 +30,7 @@ trait Assert
      * @return bool
      * @throws UninitializedException
      */
-    private function assertUninitializedPropertyOrSkip(
+    static public function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
         Strict $strict,
         PropertyDto $propertyDto,
