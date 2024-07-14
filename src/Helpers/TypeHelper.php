@@ -44,8 +44,8 @@ final class TypeHelper
      * @param ReflectionClass $refClass
      * @param Strict $strict
      * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
-     * @param string $propertyName
-     * @param mixed $value
+     * 
+     * @return void
      * 
      * @throws TypeError
      * 
