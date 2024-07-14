@@ -6,6 +6,8 @@ namespace Akitanabe\PhpValueObject\Dto;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
+use ReflectionIntersectionType;
+use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 
@@ -16,6 +18,8 @@ final class PropertyDto
     public string $name;
     public bool $isInitialized;
     public bool $isInputValue;
+
+    /**  @var (ReflectionNamedType|ReflectionIntersectionType|null)[]  */
     public array $types;
     public mixed $value = null;
     public string $valueType = self::UNINITIALIZED_VALUE_TYPE;
