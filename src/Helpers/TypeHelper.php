@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Helpers;
 
-use Akitanabe\PhpValueObject\Dto\PropertyDto;
+use ReflectionClass;
 use ReflectionNamedType;
-use ReflectionUnionType;
 use ReflectionIntersectionType;
 use TypeError;
+use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Dto\TypeHintsDto;
 use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
 use Akitanabe\PhpValueObject\Options\Strict;
-use ReflectionClass;
 
 final class TypeHelper
 {
@@ -42,9 +41,10 @@ final class TypeHelper
      * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるため
      * プリミティブ型のみ型をチェックする
      * 
-     * @param ReflectionClass $refClass
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
      * @param Strict $strict
-     * @param ReflectionNamedType|ReflectionUnionType|ReflectionIntersectionType|null $propertyType
+     * @param PropertyDto $propertyDto
      * 
      * @return void
      * 

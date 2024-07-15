@@ -15,7 +15,7 @@ final class BasicInputTestValue extends BaseValueObject
     public float $float;
 }
 
-final class OverideContructorValue extends BaseValueObject
+final class OverrideContructorValue extends BaseValueObject
 {
     public string $string;
     public bool $bool;
@@ -53,7 +53,10 @@ final class AppendOverrideContructorValue extends BaseValueObject
     public function __construct(
         public string $string = "string"
     ) {
-        parent::__construct(...func_get_args(), bool: false, int: 1, float: 0.1);
+        parent::__construct(
+            ...func_get_args(),
+            ...["bool" => false, "int" => 1, "float" => 0.1]
+        );
     }
 }
 
@@ -66,7 +69,10 @@ final class ExtendOverrideContructorValue extends BaseValueObject
         public bool $bool = false,
         public int $int = 1,
     ) {
-        parent::__construct(...func_get_args(), float: 0.3);
+        parent::__construct(
+            ...func_get_args(),
+            ...["float" => 0.3]
+        );
     }
 }
 
@@ -74,7 +80,7 @@ class BaseValueObjectInputTest extends TestCase
 {
     // 基本入力テスト
     #[Test]
-    public function basicInput()
+    public function basicInput(): void
     {
         $value = new BasicInputTestValue(
             string: "string",
@@ -89,16 +95,19 @@ class BaseValueObjectInputTest extends TestCase
         $this->assertSame(0.1, $value->float);
     }
 
+    /**
+     * @return array<array{OverrideContructorValue}>
+     */
     public static function overrideConstructorProvider(): array
     {
         return [
-            [new OverideContructorValue(
+            [new OverrideContructorValue(
                 string: "string",
                 bool: true,
                 int: 1,
                 float: 0.1,
             )],
-            [new OverideContructorValue(
+            [new OverrideContructorValue(
                 "string",
                 true,
                 1,
@@ -107,12 +116,16 @@ class BaseValueObjectInputTest extends TestCase
         ];
     }
 
-    // コンストラクタをオーバーライドされた場合のテスト
+    /**
+     * コンストラクタをオーバーライドされた場合のテスト
+     * @param OverrideContructorValue $overrideValue
+     * @return void
+     */
     #[Test]
     #[DataProvider("overrideConstructorProvider")]
     public function overrideConstructor(
-        OverideContructorValue $overrideValue
-    ) {
+        OverrideContructorValue $overrideValue
+    ): void {
 
         $this->assertSame("string", $overrideValue->string);
         $this->assertSame(true, $overrideValue->bool);
@@ -122,7 +135,7 @@ class BaseValueObjectInputTest extends TestCase
 
     // デフォルト値をオーバーライドされた場合、されていない場合のテスト
     #[Test]
-    public function defaultOverrideConstructor()
+    public function defaultOverrideConstructor(): void
     {
         $value = new DefaultOverrideContructorValue(
             "default",
@@ -137,7 +150,7 @@ class BaseValueObjectInputTest extends TestCase
 
     // コンストラクタ内で値を追加した場合のテスト
     #[Test]
-    public function appendOverrideConstructor()
+    public function appendOverrideConstructor(): void
     {
         $value = new AppendOverrideContructorValue(
             "append",
@@ -151,7 +164,7 @@ class BaseValueObjectInputTest extends TestCase
 
     // 全部入りのテスト
     #[Test]
-    public function extendOverrideConstructor()
+    public function extendOverrideConstructor(): void
     {
         $value = new ExtendOverrideContructorValue(
             "extend",

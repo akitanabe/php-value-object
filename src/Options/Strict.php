@@ -40,6 +40,10 @@ final class Strict
      */
     public Allowable $inheritableClass;
 
+    /**
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
+     */
     public function __construct(ReflectionClass $refClass)
     {
         foreach ([

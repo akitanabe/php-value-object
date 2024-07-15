@@ -11,6 +11,13 @@ use Akitanabe\PhpValueObject\Dto\PropertyDto;
 class AssertHelper
 {
     /**
+     * @template T of object
+     * 
+     * @param ReflectionClass<T> $refClass
+     * @param Strict $strict
+     * 
+     * @return void
+     * 
      * @throws InheritableClassException
      */
     static public function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
@@ -27,6 +34,11 @@ class AssertHelper
     }
 
     /**
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
+     * @param Strict $strict
+     * @param PropertyDto $propertyDto
+     * 
      * @return bool
      * @throws UninitializedException
      */

@@ -12,12 +12,14 @@ use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
 #[AllowNoneTypeProperty]
 final class AllowNoneTypePropertyValue extends BaseValueObject
 {
+    // @phpstan-ignore missingType.property
     public $string = "string";
 }
 
 
 final class StrictNonePropertyTypeValue extends BaseValueObject
 {
+    // @phpstan-ignore missingType.property
     public $string = "string";
 }
 
@@ -26,13 +28,13 @@ class AllowNoneTypePropertyTest extends TestCase
 {
     #[Test]
     #[DoesNotPerformAssertions]
-    public function allowNoneTypeProperty()
+    public function allowNoneTypeProperty(): void
     {
         new AllowNoneTypePropertyValue();
     }
 
     #[Test]
-    public function execption()
+    public function execption(): void
     {
         $this->expectException(TypeError::class);
         new StrictNonePropertyTypeValue();

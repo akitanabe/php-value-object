@@ -26,13 +26,13 @@ class AllowMixedTypePropertyTest extends TestCase
 {
     #[Test]
     #[DoesNotPerformAssertions]
-    public function allowMixedTypeProperty()
+    public function allowMixedTypeProperty(): void
     {
         new AllowMixedTypePropertyValue();
     }
 
     #[Test]
-    public function execption()
+    public function execption(): void
     {
         $this->expectException(TypeError::class);
         new StrictMixedPropertyTypeValue();

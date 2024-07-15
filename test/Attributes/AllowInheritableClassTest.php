@@ -23,13 +23,13 @@ class AllowInheritableClassTest extends TestCase
 {
     #[Test]
     #[DoesNotPerformAssertions]
-    public function allowInheritableClass()
+    public function allowInheritableClass(): void
     {
         new AllowInheritableClassValue();
     }
 
     #[Test]
-    public function notAllowInheritableClass()
+    public function notAllowInheritableClass(): void
     {
         $this->expectException(InheritableClassException::class);
         new NotAllowInheritableValue();

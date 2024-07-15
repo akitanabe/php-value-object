@@ -24,7 +24,7 @@ final class UnionTestValue extends BaseValueObject
 class BaseValueObjectPrimitiveTest extends TestCase
 {
     #[Test]
-    public function primitivePropetry()
+    public function primitivePropetry(): void
     {
         $scalarValue = new PrimitiveTestValue(
             stringVal: "string",
@@ -39,6 +39,9 @@ class BaseValueObjectPrimitiveTest extends TestCase
         $this->assertSame(true, $scalarValue->boolVal);
     }
 
+    /**
+     * @return array<array{stringVal:mixed,intVal:mixed,floatVal:mixed,boolVal:mixed}[]>
+     */
     public static function primitiveProperyWithInvalidTypeProvider(): array
     {
         return [
@@ -77,16 +80,20 @@ class BaseValueObjectPrimitiveTest extends TestCase
         ];
     }
 
+    /**
+     * @param array{stringVal:mixed,intVal:mixed,floatVal:mixed,boolVal:mixed} $args
+     * @return void
+     */
     #[Test]
     #[DataProvider("primitiveProperyWithInvalidTypeProvider")]
-    public function primitiveProperyWithInvalidType(array $args)
+    public function primitiveProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);
         new PrimitiveTestValue(...$args);
     }
 
     #[Test]
-    public function unionPropery()
+    public function unionPropery(): void
     {
         $unionValue = new UnionTestValue(
             stringOrInt: "string",

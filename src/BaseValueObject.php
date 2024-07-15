@@ -84,7 +84,7 @@ abstract class BaseValueObject
         foreach ($attributes as $attribute) {
             $attributeInstance = $attribute->newInstance();
 
-            if ($attributeInstance->validate($value, $refProp) === false) {
+            if ($attributeInstance->validate($value) === false) {
                 throw new ValidationException(
                     $attributeInstance,
                     $refProp,

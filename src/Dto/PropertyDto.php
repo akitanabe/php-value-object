@@ -24,6 +24,12 @@ final class PropertyDto
     public mixed $value = null;
     public string $valueType = self::UNINITIALIZED_VALUE_TYPE;
 
+    /**
+     * @param BaseValueObject $vo
+     * @param ReflectionProperty $refProperty
+     * @param array<string|int,mixed> $inputArgs
+     * 
+     */
     public function __construct(
         BaseValueObject $vo,
         ReflectionProperty $refProperty,
@@ -34,6 +40,9 @@ final class PropertyDto
         $this->isInputValue = array_key_exists($refProperty->name, $inputArgs);
 
         $propertyType = $refProperty->getType();
+
+        // PHPStanのチェックで継承元のReflectionType|nullが入ってくるので無視する(設定にある？)
+        // @phpstan-ignore assign.propertyType
         $this->types = ($propertyType instanceof ReflectionUnionType)
             ? $propertyType->getTypes()
             : [$propertyType];

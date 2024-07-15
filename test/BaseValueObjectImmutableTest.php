@@ -20,7 +20,7 @@ final class ImmutableTestValue extends BaseValueObject
 class BaseValueObjectImmutableTest extends TestCase
 {
     #[Test]
-    public function immutableClone()
+    public function immutableClone(): void
     {
         $test = new Immutable();
         $immutable = new ImmutableTestValue(

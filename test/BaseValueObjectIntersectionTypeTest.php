@@ -31,7 +31,7 @@ final class IntersectionTypeValue extends BaseValueObject
 class BaseValueObjectIntersectionTypeTest extends TestCase
 {
     #[Test]
-    public function intersectionTypeObject()
+    public function intersectionTypeObject(): void
     {
         $intersectionTypeValue = new IntersectionTypeValue(
             AandBorString: new TypeB(),
@@ -50,6 +50,9 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
         $this->assertSame(0.01, $intersectionTypeValue->floatOrBool);
     }
 
+    /**
+     * @return array<array{AandBorString:mixed,floatOrBool:mixed}[]>
+     */
     public static function intersectionProperyWithInvalidTypeProvider(): array
     {
         return [
@@ -80,9 +83,13 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
         ];
     }
 
+    /**
+     * @param array{AandBorString:mixed,floatOrBool:mixed} $args
+     * @return void
+     */
     #[Test]
     #[DataProvider("intersectionProperyWithInvalidTypeProvider")]
-    public function interserctionProperyWithInvalidType(array $args)
+    public function interserctionProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);
         new IntersectionTypeValue(...$args);

@@ -38,20 +38,20 @@ class AllowUninitializedPropertyTest extends TestCase
 {
     #[Test]
     #[DoesNotPerformAssertions]
-    public function allowUninitializedProperty()
+    public function allowUninitializedProperty(): void
     {
         new AllowUninitiallizedPropertyValue();
     }
 
     #[Test]
     #[DoesNotPerformAssertions]
-    public function allowInitialziedPropertyValue()
+    public function allowInitialziedPropertyValue(): void
     {
         new AllowInitialziedPropertyValue();
     }
 
     #[Test]
-    public function execption()
+    public function execption(): void
     {
         $this->expectException(UninitializedException::class);
         new NotAllowInitializedPropertyValue();

@@ -13,7 +13,8 @@ class ArgumentsHelper
      * コンストラクタへの入力値を取得
      * オーバーライドされていない場合は、そのまま引数を返す
      * 
-     * @param ReflectionClass $refClass
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
      * @param array<string|int,mixed> $args
      * 
      * @return array<string|int,mixed>
@@ -23,7 +24,10 @@ class ArgumentsHelper
         $refConstructor = $refClass->getConstructor();
 
         // コンストラクタがオーバーライドされている場合、子クラスのコンストラクタパラメータから引数を設定する
-        return ($refConstructor->getDeclaringClass()->name !== BaseValueObject::class)
+        return (
+            isset($refConstructor)
+            && $refConstructor->getDeclaringClass()->name !== BaseValueObject::class
+        )
             ? self::toNamedArgs($refConstructor, $args)
             : $args;
     }
