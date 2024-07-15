@@ -10,6 +10,7 @@ use ReflectionUnionType;
 use ReflectionIntersectionType;
 use TypeError;
 use Akitanabe\PhpValueObject\Dto\TypeHintsDto;
+use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
 use Akitanabe\PhpValueObject\Options\Strict;
 use ReflectionClass;
 
@@ -64,12 +65,12 @@ final class TypeHelper
 
             if (
                 // 型が指定されていない場合
-                ($typeHintsDto->typeName === "none" && $strict->noneTypeProperty->disallow())
+                ($typeHintsDto->type === TypeHintsDtoType::NONE && $strict->noneTypeProperty->disallow())
                 // mixed型の場合
-                || ($typeHintsDto->typeName === 'mixed' && $strict->mixedTypeProperty->disallow())
+                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $strict->mixedTypeProperty->disallow())
             ) {
                 throw new TypeError(
-                    "{$refClass->name}::\${$propertyDto->name} is not type defined. ValueObject does not allowed {$typeHintsDto->typeName} type."
+                    "{$refClass->name}::\${$propertyDto->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type."
                 );
             }
 
@@ -93,7 +94,7 @@ final class TypeHelper
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
         foreach ($onlyPrimitiveTypes as $typeHintsDto) {
-            if ($typeHintsDto->typeName === $typeHintsDto->valueType) {
+            if ($typeHintsDto->type->value === $typeHintsDto->valueType) {
                 return;
             }
         }
@@ -101,7 +102,7 @@ final class TypeHelper
         $errorTypeName = join(
             '|',
             array_map(
-                fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->typeName,
+                fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value,
                 $onlyPrimitiveTypes,
             ),
         );

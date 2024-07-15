@@ -6,12 +6,14 @@ namespace Akitanabe\PhpValueObject\Dto;
 
 use ReflectionIntersectionType;
 use ReflectionNamedType;
+use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
+
 
 class TypeHintsDto
 {
-    public string $typeName;
+    public TypeHintsDtoType $type;
     public string $valueType;
-    public bool $isPrimitive = false;
+    public bool $isPrimitive;
     public bool $isIntersection = false;
 
     public function __construct(
@@ -19,15 +21,16 @@ class TypeHintsDto
         PropertyDto $propertyDto,
     ) {
         if ($propertyType === null) {
-            $this->typeName = 'none';
+            $this->type = TypeHintsDtoType::NONE;
         } else if ($propertyType instanceof ReflectionIntersectionType) {
-            $this->typeName = 'object';
+            $this->type = TypeHintsDtoType::OBJECT;
             $this->isIntersection = true;
         } else {
-            $this->typeName = $propertyType->getName();
+            $this->type = TypeHintsDtoType::tryFrom($propertyType->getName())
+                ?? TypeHintsDtoType::OBJECT;
         }
 
-        $this->isPrimitive = match ($this->typeName) {
+        $this->isPrimitive = match ($this->type->value) {
             'int', 'string', 'float', 'bool' => true,
             default => false,
         };
