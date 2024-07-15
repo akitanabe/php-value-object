@@ -15,14 +15,14 @@ final class PropertyDto
 {
     private const string UNINITIALIZED_VALUE_TYPE = "uninitialized";
 
-    public string $name;
-    public bool $isInitialized;
-    public bool $isInputValue;
+    public readonly string $name;
+    public readonly bool $isInitialized;
+    public readonly bool $isInputValue;
 
     /**  @var (ReflectionNamedType|ReflectionIntersectionType|null)[]  */
-    public array $types;
-    public mixed $value = null;
-    public string $valueType = self::UNINITIALIZED_VALUE_TYPE;
+    public readonly array $types;
+    public readonly mixed $value;
+    public readonly string $valueType;
 
     /**
      * @param BaseValueObject $vo
@@ -50,6 +50,8 @@ final class PropertyDto
 
         // 入力値と初期化済みプロパティの両方が存在しない場合
         if ($this->isInputValue === false && $this->isInitialized === false) {
+            $this->value = null;
+            $this->valueType = self::UNINITIALIZED_VALUE_TYPE;
             return;
         }
 
