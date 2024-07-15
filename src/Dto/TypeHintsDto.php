@@ -31,8 +31,11 @@ class TypeHintsDto
             $this->isIntersection = false;
         }
 
-        $this->isPrimitive = match ($this->type->value) {
-            'int', 'string', 'float', 'bool' => true,
+        $this->isPrimitive = match ($this->type) {
+            TypeHintsDtoType::STRING => true,
+            TypeHintsDtoType::INT => true,
+            TypeHintsDtoType::FLOAT => true,
+            TypeHintsDtoType::BOOL => true,
             default => false,
         };
     }
