@@ -57,7 +57,7 @@ final class TypeHelper
         PropertyDto $propertyDto,
     ): void {
         $typeHints = array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type, $propertyDto),
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
             $propertyDto->types,
         );
 
@@ -94,7 +94,7 @@ final class TypeHelper
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
         foreach ($onlyPrimitiveTypes as $typeHintsDto) {
-            if ($typeHintsDto->type->value === $typeHintsDto->valueType) {
+            if ($typeHintsDto->type->value === $propertyDto->valueType) {
                 return;
             }
         }

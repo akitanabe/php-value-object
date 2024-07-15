@@ -18,7 +18,6 @@ class TypeHintsDto
 
     public function __construct(
         ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
-        PropertyDto $propertyDto,
     ) {
         if ($propertyType === null) {
             $this->type = TypeHintsDtoType::NONE;
@@ -36,7 +35,5 @@ class TypeHintsDto
             'int', 'string', 'float', 'bool' => true,
             default => false,
         };
-
-        $this->valueType = $propertyDto->valueType;
     }
 }
