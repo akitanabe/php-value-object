@@ -63,7 +63,7 @@ abstract class BaseValueObject
             );
 
             // プロパティ値バリデーション
-            $this->validateProperty($property);
+            $this->validateProperty($property, $propertyDto->value);
         }
     }
 
@@ -76,10 +76,9 @@ abstract class BaseValueObject
      * 
      * @throws ValidationException
      */
-    private function validateProperty(ReflectionProperty $refProp): void
+    private function validateProperty(ReflectionProperty $refProp, mixed $value): void
     {
         $attributes = $refProp->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
-        $value = $refProp->getValue($this);
 
         foreach ($attributes as $attribute) {
             $attributeInstance = $attribute->newInstance();
