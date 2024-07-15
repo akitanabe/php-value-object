@@ -75,7 +75,7 @@ final class TypeHelper
             }
 
             // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
-            if ($typeHintsDto->isIntersection && $typeHintsDto->valueType === 'object') {
+            if ($typeHintsDto->isIntersection && $propertyDto->valueType === 'object') {
                 return;
             }
         }
