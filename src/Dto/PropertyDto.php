@@ -63,7 +63,7 @@ final class PropertyDto
     }
 
     /**
-     * プロパティが未初期かどうか判定する
+     * プロパティが未初期化状態か判定する
      * 
      * @return bool
      */
