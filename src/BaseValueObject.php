@@ -12,16 +12,13 @@ use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Validation\Validatable;
 use Akitanabe\PhpValueObject\Helpers\AssertHelper;
 use Akitanabe\PhpValueObject\Helpers\ArgumentsHelper;
-use Akitanabe\PhpValueObject\Helpers\TypeHelper;
-use Akitanabe\PhpValueObject\Dto\PropertyDto;
+use Akitanabe\PhpValueObject\Helpers\PropertyHelper;
+
 
 abstract class BaseValueObject
 {
-    private Strict $strict;
-
     /**
      * @param array<string|int,mixed> $args
      * 
@@ -32,7 +29,6 @@ abstract class BaseValueObject
         $refClass = new ReflectionClass($this);
 
         $strict = new Strict($refClass);
-        $this->strict = $strict;
 
         // finalクラスであることを強制(Attributeが設定されていなければ継承不可)
         AssertHelper::assertInheritableClass($refClass, $strict);
@@ -40,56 +36,8 @@ abstract class BaseValueObject
         // 入力値を取得
         $inputArgs = ArgumentsHelper::getInputArgs($refClass, $args);
 
-        foreach ($refClass->getProperties() as $property) {
-            $propertyDto = new PropertyDto($this, $property, $inputArgs);
-
-            if (AssertHelper::assertUninitializedPropertyOrSkip(
-                $refClass,
-                $strict,
-                $propertyDto,
-            )) {
-                continue;
-            }
-
-            TypeHelper::checkType(
-                $refClass,
-                $strict,
-                $propertyDto,
-            );
-
-            $property->setValue(
-                $this,
-                $propertyDto->value,
-            );
-
-            // プロパティ値バリデーション
-            $this->validateProperty($property, $propertyDto->value);
-        }
-    }
-
-
-    /**
-     * プロパティに設定されているAttributeからバリデーションを実行
-     * 
-     * @param ReflectionProperty $refProp
-     * @return void
-     * 
-     * @throws ValidationException
-     */
-    private function validateProperty(ReflectionProperty $refProp, mixed $value): void
-    {
-        $attributes = $refProp->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
-
-        foreach ($attributes as $attribute) {
-            $attributeInstance = $attribute->newInstance();
-
-            if ($attributeInstance->validate($value) === false) {
-                throw new ValidationException(
-                    $attributeInstance,
-                    $refProp,
-                );
-            }
-        }
+        $propHelper = new PropertyHelper($this, $refClass, $strict, $inputArgs);
+        $propHelper->execute();
     }
 
     /**
