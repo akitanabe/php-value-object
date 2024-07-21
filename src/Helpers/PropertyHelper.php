@@ -9,6 +9,7 @@ use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
+use Akitanabe\PhpValueObject\Support\Assertion;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
@@ -18,6 +19,7 @@ class PropertyHelper
     public function __construct(
         private BaseValueObject $vo,
         private ReflectionClass $refClass,
+        private Assertion $assertion,
         private Strict $strict,
         private array $inputArgs,
     ) {
@@ -25,12 +27,11 @@ class PropertyHelper
 
     public function execute()
     {
+        $this->assertion->assertInheritableClass();
         foreach ($this->refClass->getProperties() as $property) {
             $propertyDto = new PropertyDto($this->vo, $property, $this->inputArgs);
 
-            if (AssertHelper::assertUninitializedPropertyOrSkip(
-                $this->refClass,
-                $this->strict,
+            if ($this->assertion->assertUninitializedPropertyOrSkip(
                 $propertyDto,
             )) {
                 continue;
