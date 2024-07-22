@@ -1,14 +1,52 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Helpers;
+namespace Akitanabe\PhpValueObject\Support;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 
-class ArgumentsHelper
+class InputArguments
 {
+    /**
+     * @var array<string|int,mixed>
+     */
+    private array $inputs;
+
+    /**
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
+     * @param array<string|int,mixed> $args
+     */
+    public function __construct(ReflectionClass $refClass, array $args)
+    {
+        $this->inputs = $this->getInputs($refClass, $args);
+    }
+
+    /**
+     * コンストラクタへの入力値が存在しているか
+     * 
+     * @param string $name
+     * @return bool
+     */
+
+    public function hasValue(string $name): bool
+    {
+        return array_key_exists($name, $this->inputs);
+    }
+
+    /**
+     * コンストラクタへの入力値を取得
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function getValue(string $name): mixed
+    {
+        return $this->inputs[$name] ?? null;
+    }
+
     /**
      * コンストラクタへの入力値を取得
      * オーバーライドされていない場合は、そのまま引数を返す
@@ -19,7 +57,7 @@ class ArgumentsHelper
      * 
      * @return array<string|int,mixed>
      */
-    static public function getInputArgs(ReflectionClass $refClass, array $args): array
+    private function getInputs(ReflectionClass $refClass, array $args): array
     {
         $refConstructor = $refClass->getConstructor();
 
@@ -43,7 +81,7 @@ class ArgumentsHelper
      * @return array<string,mixed>
      * 
      */
-    static private function toNamedArgs(ReflectionMethod $refConstructor, array $args): array
+    private function toNamedArgs(ReflectionMethod $refConstructor, array $args): array
     {
         $overrideArgs = array_reduce(
             $refConstructor->getParameters(),

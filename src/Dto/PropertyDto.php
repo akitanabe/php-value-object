@@ -6,6 +6,7 @@ namespace Akitanabe\PhpValueObject\Dto;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
+use Akitanabe\PhpValueObject\Support\InputArguments;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
@@ -27,17 +28,17 @@ final class PropertyDto
     /**
      * @param BaseValueObject $vo
      * @param ReflectionProperty $refProperty
-     * @param array<string|int,mixed> $inputArgs
+     * @param InputArguments $inputArguments
      * 
      */
     public function __construct(
         BaseValueObject $vo,
         ReflectionProperty $refProperty,
-        array $inputArgs,
+        InputArguments $inputArguments,
     ) {
         $this->name = $refProperty->name;
         $this->isInitialized = $refProperty->isInitialized($vo);
-        $this->isInputValue = array_key_exists($refProperty->name, $inputArgs);
+        $this->isInputValue = $inputArguments->hasValue($refProperty->name);
 
         $propertyType = $refProperty->getType();
 
@@ -56,7 +57,7 @@ final class PropertyDto
         }
 
         $this->value = ($this->isInputValue)
-            ? $inputArgs[$refProperty->name]
+            ? $inputArguments->getValue($refProperty->name)
             : $refProperty->getValue($vo);
 
         $this->valueType = TypeHelper::getValueType($this->value);

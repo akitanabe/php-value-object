@@ -10,26 +10,35 @@ use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 use Akitanabe\PhpValueObject\Support\Assertion;
+use Akitanabe\PhpValueObject\Support\InputArguments;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 
 class PropertyHelper
 {
+    /**
+     * @template T of object
+     * @param BaseValueObject $vo
+     * @param ReflectionClass<T> $refClass
+     * @param Assertion $assertion
+     * @param Strict $strict
+     * @param InputArguments $inputArguments
+     */
     public function __construct(
         private BaseValueObject $vo,
         private ReflectionClass $refClass,
         private Assertion $assertion,
         private Strict $strict,
-        private array $inputArgs,
+        private InputArguments $inputArguments,
     ) {
     }
 
-    public function execute()
+    public function execute(): void
     {
         $this->assertion->assertInheritableClass();
         foreach ($this->refClass->getProperties() as $property) {
-            $propertyDto = new PropertyDto($this->vo, $property, $this->inputArgs);
+            $propertyDto = new PropertyDto($this->vo, $property, $this->inputArguments);
 
             if ($this->assertion->assertUninitializedPropertyOrSkip(
                 $propertyDto,

@@ -11,9 +11,8 @@ use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Support\Assertion;
-use Akitanabe\PhpValueObject\Helpers\ArgumentsHelper;
+use Akitanabe\PhpValueObject\Support\InputArguments;
 use Akitanabe\PhpValueObject\Helpers\PropertyHelper;
-
 
 abstract class BaseValueObject
 {
@@ -31,9 +30,15 @@ abstract class BaseValueObject
         $assertion = new Assertion($refClass, $strict);
 
         // 入力値を取得
-        $inputArgs = ArgumentsHelper::getInputArgs($refClass, $args);
+        $inputArguments =  new InputArguments($refClass, $args);
 
-        $propHelper = new PropertyHelper($this, $refClass, $assertion, $strict, $inputArgs);
+        $propHelper = new PropertyHelper(
+            $this,
+            $refClass,
+            $assertion,
+            $strict,
+            $inputArguments
+        );
         $propHelper->execute();
     }
 
