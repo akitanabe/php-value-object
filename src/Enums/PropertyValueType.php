@@ -14,6 +14,7 @@ enum PropertyValueType: string
     case ARRAY = "array";
     case RESORCE = "resource";
     case CLOSED_RESORCE = "resource (closed)";
+    case NULL = "NULL";
     case UNKNOWN_TYPE = "unknown type";
     case UNINITIALIZED = "uninitialized";
 
@@ -23,6 +24,7 @@ enum PropertyValueType: string
             'boolean' => 'bool',
             'integer' => 'int',
             'double' => 'float',
+            'NULL' => 'null',
             default => $this->value,
         };
     }
