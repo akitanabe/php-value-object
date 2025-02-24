@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Akitanabe\PhpValueObject\Dto;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
+use Akitanabe\PhpValueObject\Enums\PropertyValueType;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Support\InputArguments;
 use ReflectionIntersectionType;
@@ -14,8 +15,6 @@ use ReflectionUnionType;
 
 final class PropertyDto
 {
-    private const string UNINITIALIZED_VALUE_TYPE = "uninitialized";
-
     public readonly string $name;
     public readonly bool $isInitialized;
     public readonly bool $isInputValue;
@@ -23,7 +22,7 @@ final class PropertyDto
     /**  @var (ReflectionNamedType|ReflectionIntersectionType|null)[]  */
     public readonly array $types;
     public readonly mixed $value;
-    public readonly string $valueType;
+    public readonly PropertyValueType $valueType;
 
     /**
      * @param BaseValueObject $vo
@@ -52,7 +51,7 @@ final class PropertyDto
         // 入力値と初期化済みプロパティの両方が存在しない場合
         if ($this->isInputValue === false && $this->isInitialized === false) {
             $this->value = null;
-            $this->valueType = self::UNINITIALIZED_VALUE_TYPE;
+            $this->valueType = PropertyValueType::UNINITIALIZED;
             return;
         }
 
@@ -63,13 +62,4 @@ final class PropertyDto
         $this->valueType = TypeHelper::getValueType($this->value);
     }
 
-    /**
-     * プロパティが未初期化状態か判定する
-     * 
-     * @return bool
-     */
-    public function isUninitialized(): bool
-    {
-        return $this->valueType === self::UNINITIALIZED_VALUE_TYPE;
-    }
 }

@@ -2,6 +2,7 @@
 
 namespace Akitanabe\PhpValueObject\Support;
 
+use Akitanabe\PhpValueObject\Enums\PropertyValueType;
 use ReflectionClass;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
@@ -52,7 +53,7 @@ class Assertion
 
 
         // プロパティが未初期化の場合
-        if ($propertyDto->isUninitialized()) {
+        if ($propertyDto->valueType === PropertyValueType::UNINITIALIZED) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($this->strict->uninitializedProperty->allow()) {
                 return true;

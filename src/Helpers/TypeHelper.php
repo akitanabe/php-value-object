@@ -12,6 +12,7 @@ use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Dto\TypeHintsDto;
 use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
 use Akitanabe\PhpValueObject\Options\Strict;
+use Akitanabe\PhpValueObject\Enums\PropertyValueType;
 
 final class TypeHelper
 {
@@ -20,19 +21,14 @@ final class TypeHelper
      * 
      * @param mixed $value
      * 
-     * @return string
+     * @return PropertyValueType
      * 
      */
-    static public function getValueType(mixed $value): string
+    static public function getValueType(mixed $value): PropertyValueType
     {
-        $typeName = gettype($value);
+        $typeName = gettype(value: $value);
 
-        return match ($typeName) {
-            'boolean' => 'bool',
-            'integer' => 'int',
-            'double' => 'float',
-            default => strtolower($typeName),
-        };
+        return PropertyValueType::from(value: $typeName);
     }
 
     /**
@@ -57,17 +53,15 @@ final class TypeHelper
         PropertyDto $propertyDto,
     ): void {
         $typeHints = array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
+            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
             $propertyDto->types,
         );
 
         foreach ($typeHints as $typeHintsDto) {
 
             if (
-                // 型が指定されていない場合
-                ($typeHintsDto->type === TypeHintsDtoType::NONE && $strict->noneTypeProperty->disallow())
-                // mixed型の場合
-                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $strict->mixedTypeProperty->disallow())
+                ($typeHintsDto->type === TypeHintsDtoType::NONE && $strict->noneTypeProperty->disallow()) // 型が指定されていない場合
+                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $strict->mixedTypeProperty->disallow()) // mixed型の場合
             ) {
                 throw new TypeError(
                     "{$refClass->name}::\${$propertyDto->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type."
@@ -75,7 +69,7 @@ final class TypeHelper
             }
 
             // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
-            if ($typeHintsDto->isIntersection && $propertyDto->valueType === 'object') {
+            if ($typeHintsDto->isIntersection && $propertyDto->valueType === PropertyValueType::OBJECT) {
                 return;
             }
         }
@@ -84,7 +78,7 @@ final class TypeHelper
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $typeHints,
-            fn (TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
+            fn(TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -94,7 +88,7 @@ final class TypeHelper
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
         foreach ($onlyPrimitiveTypes as $typeHintsDto) {
-            if ($typeHintsDto->type->value === $propertyDto->valueType) {
+            if ($typeHintsDto->type->value === $propertyDto->valueType->shorthand()) {
                 return;
             }
         }
@@ -102,13 +96,13 @@ final class TypeHelper
         $errorTypeName = join(
             '|',
             array_map(
-                fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value,
+                fn(TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value,
                 $onlyPrimitiveTypes,
             ),
         );
 
         throw new TypeError(
-            "Cannot assign {$propertyDto->valueType} to property {$refClass->name}::\${$propertyDto->name} of type {$errorTypeName}"
+            "Cannot assign {$propertyDto->valueType->value} to property {$refClass->name}::\${$propertyDto->name} of type {$errorTypeName}"
         );
     }
 }
