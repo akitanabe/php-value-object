@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Akitanabe\PhpValueObject\Dto;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
+use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
 use Akitanabe\PhpValueObject\Enums\PropertyValueType;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
 use Akitanabe\PhpValueObject\Support\InputArguments;
@@ -16,7 +17,7 @@ use ReflectionUnionType;
 final class PropertyDto
 {
     public readonly string $name;
-    public readonly bool $isInitialized;
+    public readonly PropertyInitializedStatus $initializedStatus;
     public readonly bool $isInputValue;
 
     /**  @var (ReflectionNamedType|ReflectionIntersectionType|null)[]  */
@@ -36,7 +37,17 @@ final class PropertyDto
         InputArguments $inputArguments,
     ) {
         $this->name = $refProperty->name;
-        $this->isInitialized = $refProperty->isInitialized($vo);
+
+        // 初期化状態
+        $this->initializedStatus = match (true) {
+            // 外部入力が存在
+            $inputArguments->hasValue($refProperty->name) => PropertyInitializedStatus::INPUTED,
+            // デフォルト値により初期化済み
+            $refProperty->isInitialized($vo) => PropertyInitializedStatus::BY_DEFAULT,
+            // 未初期化
+            default => PropertyInitializedStatus::UNINITIALIZED,
+        };
+
         $this->isInputValue = $inputArguments->hasValue($refProperty->name);
 
         $propertyType = $refProperty->getType();
@@ -49,9 +60,9 @@ final class PropertyDto
 
 
         // 入力値と初期化済みプロパティの両方が存在しない場合
-        if ($this->isInputValue === false && $this->isInitialized === false) {
+        if ($this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
             $this->value = null;
-            $this->valueType = PropertyValueType::UNINITIALIZED;
+            $this->valueType = PropertyValueType::NULL;
             return;
         }
 

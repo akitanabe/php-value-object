@@ -16,7 +16,6 @@ enum PropertyValueType: string
     case CLOSED_RESORCE = "resource (closed)";
     case NULL = "NULL";
     case UNKNOWN_TYPE = "unknown type";
-    case UNINITIALIZED = "uninitialized";
 
     public function shorthand(): string
     {
