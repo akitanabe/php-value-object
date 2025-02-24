@@ -18,7 +18,6 @@ final class PropertyDto
 {
     public readonly string $name;
     public readonly PropertyInitializedStatus $initializedStatus;
-    public readonly bool $isInputValue;
 
     /**  @var (ReflectionNamedType|ReflectionIntersectionType|null)[]  */
     public readonly array $types;
@@ -48,7 +47,12 @@ final class PropertyDto
             default => PropertyInitializedStatus::UNINITIALIZED,
         };
 
-        $this->isInputValue = $inputArguments->hasValue($refProperty->name);
+        // 入力値と初期化済みプロパティの両方が存在しない場合
+        if ($this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
+            $this->value = null;
+            $this->valueType = PropertyValueType::NULL;
+            return;
+        }
 
         $propertyType = $refProperty->getType();
 
@@ -59,14 +63,7 @@ final class PropertyDto
             : [$propertyType];
 
 
-        // 入力値と初期化済みプロパティの両方が存在しない場合
-        if ($this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
-            $this->value = null;
-            $this->valueType = PropertyValueType::NULL;
-            return;
-        }
-
-        $this->value = ($this->isInputValue)
+        $this->value = ($this->initializedStatus === PropertyInitializedStatus::INPUTED)
             ? $inputArguments->getValue($refProperty->name)
             : $refProperty->getValue($vo);
 
