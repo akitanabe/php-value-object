@@ -23,8 +23,8 @@ class BaseValueObjectImmutableTest extends TestCase
     public function immutableClone(): void
     {
         $test = new Immutable();
-        $immutable = new ImmutableTestValue(
-            test: $test,
+        $immutable = ImmutableTestValue::fromArray(
+            ["test" => $test],
         );
 
         $cloneImmutable = clone $immutable;

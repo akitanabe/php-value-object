@@ -30,13 +30,13 @@ class AllowNoneTypePropertyTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowNoneTypeProperty(): void
     {
-        new AllowNoneTypePropertyValue();
+        AllowNoneTypePropertyValue::fromArray();
     }
 
     #[Test]
     public function execption(): void
     {
         $this->expectException(TypeError::class);
-        new StrictNonePropertyTypeValue();
+        StrictNonePropertyTypeValue::fromArray();
     }
 }

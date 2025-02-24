@@ -26,11 +26,13 @@ class BaseValueObjectPrimitiveTest extends TestCase
     #[Test]
     public function primitivePropetry(): void
     {
-        $scalarValue = new PrimitiveTestValue(
-            stringVal: "string",
-            intVal: 123,
-            floatVal: 0.01,
-            boolVal: true,
+        $scalarValue = PrimitiveTestValue::fromArray(
+            [
+                "stringVal" => "string",
+                "intVal" => 123,
+                "floatVal" => 0.01,
+                "boolVal" => true,
+            ],
         );
 
         $this->assertSame("string", $scalarValue->stringVal);
@@ -89,23 +91,27 @@ class BaseValueObjectPrimitiveTest extends TestCase
     public function primitiveProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);
-        new PrimitiveTestValue(...$args);
+        PrimitiveTestValue::fromArray($args);
     }
 
     #[Test]
     public function unionPropery(): void
     {
-        $unionValue = new UnionTestValue(
-            stringOrInt: "string",
-            floatOrInt: 0.01,
+        $unionValue = UnionTestValue::fromArray(
+            [
+                "stringOrInt" => "string",
+                "floatOrInt" => 0.01,
+            ],
         );
 
         $this->assertSame("string", $unionValue->stringOrInt);
         $this->assertSame(0.01, $unionValue->floatOrInt);
 
-        $unionValue = new UnionTestValue(
-            stringOrInt: 123,
-            floatOrInt: 1,
+        $unionValue = UnionTestValue::fromArray(
+            [
+                "stringOrInt" => 123,
+                "floatOrInt" => 1,
+            ],
         );
 
         $this->assertSame(123, $unionValue->stringOrInt);

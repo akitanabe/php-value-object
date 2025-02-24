@@ -42,20 +42,20 @@ class AlphaNumericValidatorTest extends TestCase
     #[DoesNotPerformAssertions]
     public function isAlphaNumericValue(): void
     {
-        new AlphaNumericValue();
+        AlphaNumericValue::fromArray();
     }
 
     #[Test]
     #[DoesNotPerformAssertions]
     public function isEmptyString(): void
     {
-        new EmptyStringValue();
+        EmptyStringValue::fromArray();
     }
 
     #[Test]
     public function isExceptionAlphanumericValue(): void
     {
         $this->expectException(ValidationException::class);
-        new ExceptionAlphaNumericValue();
+        ExceptionAlphaNumericValue::fromArray();
     }
 }

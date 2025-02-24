@@ -19,12 +19,7 @@ final class AllowUninitiallizedPropertyValue extends BaseValueObject
 final class AllowInitialziedPropertyValue extends BaseValueObject
 {
     public string $string = "string";
-
-    public function __construct(
-        public int $int = 123
-    ) {
-        parent::__construct(...func_get_args());
-    }
+    public int $int = 123;
 }
 
 final class NotAllowInitializedPropertyValue extends BaseValueObject
@@ -40,20 +35,20 @@ class AllowUninitializedPropertyTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowUninitializedProperty(): void
     {
-        new AllowUninitiallizedPropertyValue();
+        AllowUninitiallizedPropertyValue::fromArray();
     }
 
     #[Test]
     #[DoesNotPerformAssertions]
     public function allowInitialziedPropertyValue(): void
     {
-        new AllowInitialziedPropertyValue();
+        AllowInitialziedPropertyValue::fromArray();
     }
 
     #[Test]
     public function execption(): void
     {
         $this->expectException(UninitializedException::class);
-        new NotAllowInitializedPropertyValue();
+        NotAllowInitializedPropertyValue::fromArray();
     }
 }

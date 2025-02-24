@@ -33,17 +33,21 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
     #[Test]
     public function intersectionTypeObject(): void
     {
-        $intersectionTypeValue = new IntersectionTypeValue(
-            AandBorString: new TypeB(),
-            floatOrBool: false,
+        $intersectionTypeValue = IntersectionTypeValue::fromArray(
+            [
+                "AandBorString" => new TypeB(),
+                "floatOrBool" => false,
+            ],
         );
 
         $this->assertSame(TypeB::class, $intersectionTypeValue->AandBorString::class);
         $this->assertSame(false, $intersectionTypeValue->floatOrBool);
 
-        $intersectionTypeValue = new IntersectionTypeValue(
-            AandBorString: "string",
-            floatOrBool: 0.01,
+        $intersectionTypeValue = IntersectionTypeValue::fromArray(
+            [
+                "AandBorString" => "string",
+                "floatOrBool" => 0.01,
+            ],
         );
 
         $this->assertSame("string", $intersectionTypeValue->AandBorString);
@@ -92,6 +96,6 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
     public function interserctionProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);
-        new IntersectionTypeValue(...$args);
+        IntersectionTypeValue::fromArray($args);
     }
 }

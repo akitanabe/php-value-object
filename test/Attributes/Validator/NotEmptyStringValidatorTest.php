@@ -26,13 +26,13 @@ class NotEmptyStringValidatorTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowEmptyString(): void
     {
-        new AllowEmptyStringValue();
+        AllowEmptyStringValue::fromArray();
     }
 
     #[Test]
     public function notAllowEmptyString(): void
     {
         $this->expectException(ValidationException::class);
-        new NotAllowEmptyStringValue();
+        NotAllowEmptyStringValue::fromArray();
     }
 }
