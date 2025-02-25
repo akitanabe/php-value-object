@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Dto;
 
+use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
-use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
-
 
 class TypeHintsDto
 {
     public readonly TypeHintsDtoType $type;
+
     public readonly string $valueType;
+
     public readonly bool $isPrimitive;
+
     public readonly bool $isIntersection;
 
     public function __construct(
@@ -22,7 +24,7 @@ class TypeHintsDto
         if ($propertyType === null) {
             $this->type = TypeHintsDtoType::NONE;
             $this->isIntersection = false;
-        } else if ($propertyType instanceof ReflectionIntersectionType) {
+        } elseif ($propertyType instanceof ReflectionIntersectionType) {
             $this->type = TypeHintsDtoType::OBJECT;
             $this->isIntersection = true;
         } else {

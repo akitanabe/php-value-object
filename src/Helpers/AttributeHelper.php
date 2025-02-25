@@ -17,7 +17,7 @@ final class AttributeHelper
      * @template T of object
      * @param ReflectionClass<T>|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionObject|ReflectionParameter $reflection
      * @param class-string<T> $attributeName
-     * 
+     *
      * @return ?ReflectionAttribute<T>
      */
     public static function getAttribute(

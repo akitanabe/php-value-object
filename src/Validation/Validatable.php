@@ -7,5 +7,6 @@ namespace Akitanabe\PhpValueObject\Validation;
 interface Validatable
 {
     public function validate(mixed $value): bool;
+
     public function errorMessage(): string;
 }

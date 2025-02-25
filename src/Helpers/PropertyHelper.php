@@ -8,9 +8,8 @@ use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Helpers\AssertionHelper;
-use Akitanabe\PhpValueObject\Validation\Validatable;
 use Akitanabe\PhpValueObject\Support\InputArguments;
+use Akitanabe\PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
@@ -19,10 +18,7 @@ class PropertyHelper
 {
     /**
      * @template T of object
-     * @param BaseValueObject $vo
      * @param ReflectionClass<T> $refClass
-     * @param Strict $strict
-     * @param InputArguments $inputArguments
      */
     public function __construct(
         private BaseValueObject $vo,
@@ -49,16 +45,9 @@ class PropertyHelper
                 continue;
             }
 
-            TypeHelper::checkType(
-                $this->refClass,
-                $this->strict,
-                $propertyDto,
-            );
+            TypeHelper::checkType($this->refClass, $this->strict, $propertyDto);
 
-            $property->setValue(
-                $this->vo,
-                $propertyDto->value,
-            );
+            $property->setValue($this->vo, $propertyDto->value);
 
             // プロパティ値バリデーション
             $this->validateProperty($property, $propertyDto->value);
@@ -67,10 +56,7 @@ class PropertyHelper
 
     /**
      * プロパティに設定されているAttributeからバリデーションを実行
-     * 
-     * @param ReflectionProperty $refProp
-     * @return void
-     * 
+     *
      * @throws ValidationException
      */
     private function validateProperty(ReflectionProperty $refProp, mixed $value): void
@@ -81,10 +67,7 @@ class PropertyHelper
             $attributeInstance = $attribute->newInstance();
 
             if ($attributeInstance->validate($value) === false) {
-                throw new ValidationException(
-                    $attributeInstance,
-                    $refProp,
-                );
+                throw new ValidationException($attributeInstance, $refProp);
             }
         }
     }

@@ -2,25 +2,22 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
-use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
-
+use Akitanabe\PhpValueObject\BaseValueObject;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[AllowMixedTypeProperty]
 final class AllowMixedTypePropertyValue extends BaseValueObject
 {
-    public mixed $string = "string";
+    public mixed $string = 'string';
 }
-
 
 final class StrictMixedPropertyTypeValue extends BaseValueObject
 {
-    public mixed $string = "string";
+    public mixed $string = 'string';
 }
-
 
 class AllowMixedTypePropertyTest extends TestCase
 {

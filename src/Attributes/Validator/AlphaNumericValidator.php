@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Attributes\Validator;
 
-use Attribute;
 use Akitanabe\PhpValueObject\Validation\Validatable;
+use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class AlphaNumericValidator implements Validatable

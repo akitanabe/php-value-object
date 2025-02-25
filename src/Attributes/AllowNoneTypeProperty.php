@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Attributes;
 
-use Attribute;
 use Akitanabe\PhpValueObject\Options\Allowable;
+use Attribute;
 
 /**
  * プロパティが型が指定されていないことを許可する

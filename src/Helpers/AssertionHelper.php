@@ -2,22 +2,19 @@
 
 namespace Akitanabe\PhpValueObject\Helpers;
 
-use ReflectionClass;
-use Akitanabe\PhpValueObject\Options\Strict;
+use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
-use Akitanabe\PhpValueObject\Dto\PropertyDto;
+use Akitanabe\PhpValueObject\Options\Strict;
+use ReflectionClass;
 
 class AssertionHelper
 {
-    /** 
+    /**
      * @template T of object
      * @param ReflectionClass<T> $refClass
-     * @param Strict $strict
-     * 
-     * @return void
-     * 
+     *
      * @throws InheritableClassException
      */
     public static function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
@@ -36,11 +33,7 @@ class AssertionHelper
     /**
      * @template T of object
      * @param ReflectionClass<T> $refClass
-     * @param Strict $strict
-     * @param PropertyDto $propertyDto
-     * 
-     * @return bool
-     * 
+     *
      * @throws UninitializedException
      */
     public static function assertUninitializedPropertyOrSkip(
@@ -48,7 +41,6 @@ class AssertionHelper
         Strict $strict,
         PropertyDto $propertyDto,
     ): bool {
-
 
         // プロパティが未初期化の場合
         if ($propertyDto->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {

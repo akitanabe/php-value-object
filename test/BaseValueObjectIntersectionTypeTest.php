@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Akitanabe\PhpValueObject\BaseValueObject;
-
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 interface ITypeA
 {
@@ -25,6 +24,7 @@ class TypeC
 final class IntersectionTypeValue extends BaseValueObject
 {
     public (ITypeA&TypeB)|string $AandBorString;
+
     public bool|float $floatOrBool;
 }
 
@@ -35,8 +35,8 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
     {
         $intersectionTypeValue = IntersectionTypeValue::fromArray(
             [
-                "AandBorString" => new TypeB(),
-                "floatOrBool" => false,
+                'AandBorString' => new TypeB(),
+                'floatOrBool' => false,
             ],
         );
 
@@ -45,12 +45,12 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
 
         $intersectionTypeValue = IntersectionTypeValue::fromArray(
             [
-                "AandBorString" => "string",
-                "floatOrBool" => 0.01,
+                'AandBorString' => 'string',
+                'floatOrBool' => 0.01,
             ],
         );
 
-        $this->assertSame("string", $intersectionTypeValue->AandBorString);
+        $this->assertSame('string', $intersectionTypeValue->AandBorString);
         $this->assertSame(0.01, $intersectionTypeValue->floatOrBool);
     }
 
@@ -62,37 +62,36 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
         return [
             [
                 [
-                    "AandBorString" => new TypeC(),
-                    "floatOrBool" => 0.01,
-                ]
+                    'AandBorString' => new TypeC(),
+                    'floatOrBool' => 0.01,
+                ],
             ],
             [
                 [
-                    "AandBorString" => 1,
-                    "floatOrBool" => false,
-                ]
+                    'AandBorString' => 1,
+                    'floatOrBool' => false,
+                ],
             ],
             [
                 [
-                    "AandBorString" => "string",
-                    "floatOrBool" => "0.01",
-                ]
+                    'AandBorString' => 'string',
+                    'floatOrBool' => '0.01',
+                ],
             ],
             [
                 [
-                    "AandBorString" => new TypeB(),
-                    "floatOrBool" => 1,
-                ]
+                    'AandBorString' => new TypeB(),
+                    'floatOrBool' => 1,
+                ],
             ],
         ];
     }
 
     /**
      * @param array{AandBorString:mixed,floatOrBool:mixed} $args
-     * @return void
      */
     #[Test]
-    #[DataProvider("intersectionProperyWithInvalidTypeProvider")]
+    #[DataProvider('intersectionProperyWithInvalidTypeProvider')]
     public function interserctionProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);

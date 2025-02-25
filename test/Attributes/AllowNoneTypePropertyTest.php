@@ -2,27 +2,24 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
-use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
-
+use Akitanabe\PhpValueObject\BaseValueObject;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[AllowNoneTypeProperty]
 final class AllowNoneTypePropertyValue extends BaseValueObject
 {
     // @phpstan-ignore missingType.property
-    public $string = "string";
+    public $string = 'string';
 }
-
 
 final class StrictNonePropertyTypeValue extends BaseValueObject
 {
     // @phpstan-ignore missingType.property
-    public $string = "string";
+    public $string = 'string';
 }
-
 
 class AllowNoneTypePropertyTest extends TestCase
 {

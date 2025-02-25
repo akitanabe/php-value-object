@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject;
 
-use ReflectionClass;
-use TypeError;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
+use Akitanabe\PhpValueObject\Helpers\PropertyHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Support\InputArguments;
-use Akitanabe\PhpValueObject\Helpers\PropertyHelper;
+use ReflectionClass;
 use stdClass;
+use TypeError;
 
 abstract class BaseValueObject
 {
     /**
      * @param array<string, mixed> $args
-     * 
+     *
      * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
     final protected function __construct(...$args)
@@ -30,12 +30,7 @@ abstract class BaseValueObject
         // 入力値を取得
         $inputArguments = new InputArguments($refClass, $args);
 
-        $propHelper = new PropertyHelper(
-            $this,
-            $refClass,
-            $strict,
-            $inputArguments
-        );
+        $propHelper = new PropertyHelper($this, $refClass, $strict, $inputArguments);
         $propHelper->execute();
     }
 
@@ -53,9 +48,8 @@ abstract class BaseValueObject
 
     /**
      * 連想配列からValueObjectを作成する
-     * 
+     *
      * @param array<string, mixed> $array
-     * @return static
      */
     final public static function fromArray(array $array = []): static
     {
@@ -64,9 +58,6 @@ abstract class BaseValueObject
 
     /**
      * オブジェクトからValueObjectを作成する
-     * 
-     * @param object $object
-     * @return static
      */
     final public static function fromObject(object $object = new stdClass()): static
     {

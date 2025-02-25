@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Options;
 
-use ReflectionClass;
-use Akitanabe\PhpValueObject\Options\Allowable;
-use Akitanabe\PhpValueObject\Options\NotAllow;
-use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
-use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
-use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
 use Akitanabe\PhpValueObject\Attributes\AllowInheritableClass;
+use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
+use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
+use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
 use Akitanabe\PhpValueObject\Helpers\AttributeHelper;
+use ReflectionClass;
 
 final class Strict
 {
@@ -60,6 +58,6 @@ final class Strict
                 $refClass,
                 $attrClassName
             )?->newInstance() ?? new NotAllow();
-        };
+        }
     }
 }

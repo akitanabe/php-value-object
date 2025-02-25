@@ -26,11 +26,7 @@ class InputArguments
 
     /**
      * コンストラクタへの入力値が存在しているか
-     * 
-     * @param string $name
-     * @return bool
      */
-
     public function hasValue(string $name): bool
     {
         return array_key_exists($name, $this->inputs);
@@ -38,9 +34,6 @@ class InputArguments
 
     /**
      * コンストラクタへの入力値を取得
-     * 
-     * @param string $name
-     * @return mixed
      */
     public function getValue(string $name): mixed
     {
@@ -50,11 +43,11 @@ class InputArguments
     /**
      * コンストラクタへの入力値を取得
      * オーバーライドされていない場合は、そのまま引数を返す
-     * 
+     *
      * @template T of object
      * @param ReflectionClass<T> $refClass
      * @param array<string|int,mixed> $args
-     * 
+     *
      * @return array<string|int,mixed>
      */
     private function getInputs(ReflectionClass $refClass, array $args): array
@@ -71,15 +64,12 @@ class InputArguments
     }
 
     /**
-     * 
      * 子クラスのコンストラクタから引数情報を取得して、
      * 渡された引数を名前付き引数で渡されたように変換する
-     * 
-     * @param ReflectionMethod $refConstructor
+     *
      * @param array<string|int,mixed> $args
-     * 
+     *
      * @return array<string,mixed>
-     * 
      */
     private function toNamedArgs(ReflectionMethod $refConstructor, array $args): array
     {

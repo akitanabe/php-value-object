@@ -17,19 +17,18 @@ use ReflectionUnionType;
 final class PropertyDto
 {
     public readonly string $name;
+
     public readonly PropertyInitializedStatus $initializedStatus;
 
-    /**  @var (ReflectionNamedType|ReflectionIntersectionType|null)[]  */
+    /**
+     * @var (ReflectionNamedType|ReflectionIntersectionType|null)[]
+     */
     public readonly array $types;
+
     public readonly mixed $value;
+
     public readonly PropertyValueType $valueType;
 
-    /**
-     * @param BaseValueObject $vo
-     * @param ReflectionProperty $refProperty
-     * @param InputArguments $inputArguments
-     * 
-     */
     public function __construct(
         BaseValueObject $vo,
         ReflectionProperty $refProperty,
@@ -62,12 +61,10 @@ final class PropertyDto
             ? $propertyType->getTypes()
             : [$propertyType];
 
-
         $this->value = ($this->initializedStatus === PropertyInitializedStatus::INPUTED)
             ? $inputArguments->getValue($refProperty->name)
             : $refProperty->getValue($vo);
 
         $this->valueType = TypeHelper::getValueType($this->value);
     }
-
 }

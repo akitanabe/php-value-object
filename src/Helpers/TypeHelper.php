@@ -4,27 +4,22 @@ declare(strict_types=1);
 
 namespace Akitanabe\PhpValueObject\Helpers;
 
-use ReflectionClass;
-use ReflectionNamedType;
-use ReflectionIntersectionType;
-use TypeError;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Dto\TypeHintsDto;
+use Akitanabe\PhpValueObject\Enums\PropertyValueType;
 use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
 use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Enums\PropertyValueType;
+use ReflectionClass;
+use ReflectionIntersectionType;
+use ReflectionNamedType;
+use TypeError;
 
 final class TypeHelper
 {
     /**
      * gettypeの結果をPHPの型名に変換
-     * 
-     * @param mixed $value
-     * 
-     * @return PropertyValueType
-     * 
      */
-    static public function getValueType(mixed $value): PropertyValueType
+    public static function getValueType(mixed $value): PropertyValueType
     {
         $typeName = gettype(value: $value);
 
@@ -32,28 +27,19 @@ final class TypeHelper
     }
 
     /**
-     * 
      * 型のチェック
      * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるため
      * プリミティブ型のみ型をチェックする
-     * 
+     *
      * @template T of object
      * @param ReflectionClass<T> $refClass
-     * @param Strict $strict
-     * @param PropertyDto $propertyDto
-     * 
-     * @return void
-     * 
+     *
      * @throws TypeError
-     * 
      */
-    static public function checkType(
-        ReflectionClass $refClass,
-        Strict $strict,
-        PropertyDto $propertyDto,
-    ): void {
+    public static function checkType(ReflectionClass $refClass, Strict $strict, PropertyDto $propertyDto): void
+    {
         $typeHints = array_map(
-            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
             $propertyDto->types,
         );
 
@@ -78,7 +64,7 @@ final class TypeHelper
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $typeHints,
-            fn(TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
+            fn (TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -95,10 +81,7 @@ final class TypeHelper
 
         $errorTypeName = join(
             '|',
-            array_map(
-                fn(TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value,
-                $onlyPrimitiveTypes,
-            ),
+            array_map(fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
         );
 
         throw new TypeError(

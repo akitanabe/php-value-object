@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
-use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Attributes\Validator\NotEmptyStringValidator;
+use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 final class AllowEmptyStringValue extends BaseValueObject
 {

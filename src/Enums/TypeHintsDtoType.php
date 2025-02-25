@@ -6,11 +6,11 @@ namespace Akitanabe\PhpValueObject\Enums;
 
 enum TypeHintsDtoType: string
 {
-    case NONE = "none";
-    case MIXED = "mixed";
-    case OBJECT = "object";
-    case INT = "int";
-    case STRING = "string";
-    case FLOAT = "float";
-    case BOOL = "bool";
+    case NONE = 'none';
+    case MIXED = 'mixed';
+    case OBJECT = 'object';
+    case INT = 'int';
+    case STRING = 'string';
+    case FLOAT = 'float';
+    case BOOL = 'bool';
 }
