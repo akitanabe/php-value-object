@@ -7,9 +7,10 @@ namespace Akitanabe\PhpValueObject;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
-use Akitanabe\PhpValueObject\Helpers\PropertyHelper;
+use Akitanabe\PhpValueObject\Helpers\AssertionHelper;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Support\InputArguments;
+use Akitanabe\PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use stdClass;
 use TypeError;
@@ -30,8 +31,31 @@ abstract class BaseValueObject
         // 入力値を取得
         $inputArguments = new InputArguments($refClass, $args);
 
-        $propHelper = new PropertyHelper($this, $refClass, $strict, $inputArguments);
-        $propHelper->execute();
+        AssertionHelper::assertInheritableClass(refClass: $refClass, strict: $strict);
+
+        foreach ($refClass->getProperties() as $property) {
+            $propertyOperator = new PropertyOperator(
+                vo: $this,
+                refProperty: $property,
+                inputArguments: $inputArguments
+            );
+
+            if (
+                AssertionHelper::assertUninitializedPropertyOrSkip(
+                    refClass: $refClass,
+                    strict: $strict,
+                    propertyOperator: $propertyOperator,
+                )
+            ) {
+                continue;
+            }
+
+            $propertyOperator->checkPropertyType(refClass: $refClass, strict: $strict);
+
+            $propertyOperator->setPropertyValue();
+            $propertyOperator->validatePropertyValue();
+
+        }
     }
 
     /**
