@@ -10,7 +10,6 @@ use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Support\Assertion;
 use Akitanabe\PhpValueObject\Support\InputArguments;
 use Akitanabe\PhpValueObject\Helpers\PropertyHelper;
 use stdClass;
@@ -28,15 +27,12 @@ abstract class BaseValueObject
 
         $strict = new Strict($refClass);
 
-        $assertion = new Assertion($refClass, $strict);
-
         // 入力値を取得
         $inputArguments = new InputArguments($refClass, $args);
 
         $propHelper = new PropertyHelper(
             $this,
             $refClass,
-            $assertion,
             $strict,
             $inputArguments
         );

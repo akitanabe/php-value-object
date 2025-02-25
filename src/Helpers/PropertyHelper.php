@@ -8,8 +8,8 @@ use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
+use Akitanabe\PhpValueObject\Helpers\AssertionHelper;
 use Akitanabe\PhpValueObject\Validation\Validatable;
-use Akitanabe\PhpValueObject\Support\Assertion;
 use Akitanabe\PhpValueObject\Support\InputArguments;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -21,14 +21,12 @@ class PropertyHelper
      * @template T of object
      * @param BaseValueObject $vo
      * @param ReflectionClass<T> $refClass
-     * @param Assertion $assertion
      * @param Strict $strict
      * @param InputArguments $inputArguments
      */
     public function __construct(
         private BaseValueObject $vo,
         private ReflectionClass $refClass,
-        private Assertion $assertion,
         private Strict $strict,
         private InputArguments $inputArguments,
     ) {
@@ -36,13 +34,18 @@ class PropertyHelper
 
     public function execute(): void
     {
-        $this->assertion->assertInheritableClass();
+        AssertionHelper::assertInheritableClass(refClass: $this->refClass, strict: $this->strict);
+
         foreach ($this->refClass->getProperties() as $property) {
             $propertyDto = new PropertyDto($this->vo, $property, $this->inputArguments);
 
-            if ($this->assertion->assertUninitializedPropertyOrSkip(
-                $propertyDto,
-            )) {
+            if (
+                AssertionHelper::assertUninitializedPropertyOrSkip(
+                    refClass: $this->refClass,
+                    strict: $this->strict,
+                    propertyDto: $propertyDto,
+                )
+            ) {
                 continue;
             }
 

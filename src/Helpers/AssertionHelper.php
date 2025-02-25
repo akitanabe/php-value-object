@@ -1,6 +1,6 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Support;
+namespace Akitanabe\PhpValueObject\Helpers;
 
 use ReflectionClass;
 use Akitanabe\PhpValueObject\Options\Strict;
@@ -9,45 +9,43 @@ use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Dto\PropertyDto;
 
-class Assertion
+class AssertionHelper
 {
-    /**
+    /** 
      * @template T of object
      * @param ReflectionClass<T> $refClass
      * @param Strict $strict
-     */
-    public function __construct(
-        private ReflectionClass $refClass,
-        private Strict $strict,
-    ) {
-    }
-
-
-    /** 
+     * 
      * @return void
      * 
      * @throws InheritableClassException
      */
-    public function assertInheritableClass(): void
+    public static function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
     {
         if (
-            $this->refClass->isFinal() === false
-            && $this->strict->inheritableClass->disallow()
+            $refClass->isFinal() === false
+            && $strict->inheritableClass->disallow()
         ) {
 
             throw new InheritableClassException(
-                "{$this->refClass->name} is not allowed to inherit. not allow inheritable class."
+                "{$refClass->name} is not allowed to inherit. not allow inheritable class."
             );
         }
     }
 
     /**
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
+     * @param Strict $strict
      * @param PropertyDto $propertyDto
      * 
      * @return bool
+     * 
      * @throws UninitializedException
      */
-    public function assertUninitializedPropertyOrSkip(
+    public static function assertUninitializedPropertyOrSkip(
+        ReflectionClass $refClass,
+        Strict $strict,
         PropertyDto $propertyDto,
     ): bool {
 
@@ -55,12 +53,12 @@ class Assertion
         // プロパティが未初期化の場合
         if ($propertyDto->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
             // 未初期化プロパティが許可されている場合はスキップ
-            if ($this->strict->uninitializedProperty->allow()) {
+            if ($strict->uninitializedProperty->allow()) {
                 return true;
             }
 
             throw new UninitializedException(
-                "{$this->refClass->name}::\${$propertyDto->name} is not initialized. not allow uninitialized property."
+                "{$refClass->name}::\${$propertyDto->name} is not initialized. not allow uninitialized property."
             );
         }
 
