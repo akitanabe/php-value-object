@@ -66,4 +66,15 @@ final class PropertyOperator
 
         $this->valueType = TypeHelper::getValueType($this->value);
     }
+
+    /**
+     * プロパティが未初期化状態か
+     * 
+     * @return bool
+     */
+    public function isUninitialized(): bool
+    {
+        return $this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED;
+    }
+
 }
