@@ -2,11 +2,11 @@
 
 namespace Akitanabe\PhpValueObject\Helpers;
 
-use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Options\Strict;
+use Akitanabe\PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 
 class AssertionHelper
@@ -39,18 +39,18 @@ class AssertionHelper
     public static function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
         Strict $strict,
-        PropertyDto $propertyDto,
+        PropertyOperator $propertyOperator,
     ): bool {
 
         // プロパティが未初期化の場合
-        if ($propertyDto->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
+        if ($propertyOperator->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($strict->uninitializedProperty->allow()) {
                 return true;
             }
 
             throw new UninitializedException(
-                "{$refClass->name}::\${$propertyDto->name} is not initialized. not allow uninitialized property."
+                "{$refClass->name}::\${$propertyOperator->name} is not initialized. not allow uninitialized property."
             );
         }
 

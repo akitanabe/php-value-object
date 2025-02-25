@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Akitanabe\PhpValueObject\Helpers;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
-use Akitanabe\PhpValueObject\Dto\PropertyDto;
 use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Options\Strict;
 use Akitanabe\PhpValueObject\Support\InputArguments;
+use Akitanabe\PhpValueObject\Support\PropertyOperator;
 use Akitanabe\PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -33,24 +33,24 @@ class PropertyHelper
         AssertionHelper::assertInheritableClass(refClass: $this->refClass, strict: $this->strict);
 
         foreach ($this->refClass->getProperties() as $property) {
-            $propertyDto = new PropertyDto($this->vo, $property, $this->inputArguments);
+            $propertyOperator = new PropertyOperator($this->vo, $property, $this->inputArguments);
 
             if (
                 AssertionHelper::assertUninitializedPropertyOrSkip(
                     refClass: $this->refClass,
                     strict: $this->strict,
-                    propertyDto: $propertyDto,
+                    propertyOperator: $propertyOperator,
                 )
             ) {
                 continue;
             }
 
-            TypeHelper::checkType($this->refClass, $this->strict, $propertyDto);
+            TypeHelper::checkType($this->refClass, $this->strict, $propertyOperator);
 
-            $property->setValue($this->vo, $propertyDto->value);
+            $property->setValue($this->vo, $propertyOperator->value);
 
             // プロパティ値バリデーション
-            $this->validateProperty($property, $propertyDto->value);
+            $this->validateProperty($property, $propertyOperator->value);
         }
     }
 

@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Dto;
+namespace Akitanabe\PhpValueObject\Support;
 
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
 use Akitanabe\PhpValueObject\Enums\PropertyValueType;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
-use Akitanabe\PhpValueObject\Support\InputArguments;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 
-final class PropertyDto
+final class PropertyOperator
 {
     public readonly string $name;
 
@@ -30,8 +29,8 @@ final class PropertyDto
     public readonly PropertyValueType $valueType;
 
     public function __construct(
-        BaseValueObject $vo,
-        ReflectionProperty $refProperty,
+        protected BaseValueObject $vo,
+        protected ReflectionProperty $refProperty,
         InputArguments $inputArguments,
     ) {
         $this->name = $refProperty->name;
