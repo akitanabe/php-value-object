@@ -7,11 +7,17 @@ namespace Akitanabe\PhpValueObject\Support;
 use Akitanabe\PhpValueObject\BaseValueObject;
 use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
 use Akitanabe\PhpValueObject\Enums\PropertyValueType;
+use Akitanabe\PhpValueObject\Exceptions\ValidationException;
 use Akitanabe\PhpValueObject\Helpers\TypeHelper;
+use Akitanabe\PhpValueObject\Options\Strict;
+use Akitanabe\PhpValueObject\Validation\Validatable;
+use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
+use TypeError;
 
 final class PropertyOperator
 {
@@ -69,12 +75,55 @@ final class PropertyOperator
 
     /**
      * プロパティが未初期化状態か
-     * 
-     * @return bool
      */
     public function isUninitialized(): bool
     {
         return $this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED;
     }
 
+    /**
+     * プロパティの型をチェック
+     * @template T of object
+     * @param ReflectionClass<T> $refClass
+     * @param Strict $strict
+     * 
+     * @return void
+     * @throws TypeError
+     */
+    public function checkPropertyType(ReflectionClass $refClass, Strict $strict): void
+    {
+        TypeHelper::checkType($refClass, $strict, $this);
+    }
+
+    /**
+     * プロパティに値を設定
+     */
+    public function setPropertyValue(): void
+    {
+        $this->refProperty->setValue($this->vo, $this->value);
+    }
+
+    /**
+     * プロパティに設定されているAttributeからバリデーションを実行
+     *
+     * @throws ValidationException
+     */
+    public function validatePropertyValue(): void
+    {
+        $attributes = $this->refProperty->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
+
+        if (count($attributes) === 0) {
+            return;
+        }
+
+        $value = $this->refProperty->getValue($this->vo);
+
+        foreach ($attributes as $attribute) {
+            $attributeInstance = $attribute->newInstance();
+
+            if ($attributeInstance->validate($value) === false) {
+                throw new ValidationException($attributeInstance, $this->refProperty);
+            }
+        }
+    }
 }
