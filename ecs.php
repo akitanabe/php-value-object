@@ -20,4 +20,4 @@ return ECSConfig::configure()
         'import_functions' => true,
     ])
     ->withRules([LineLengthFixer::class])
-    ->withPreparedSets(psr12: true, common: true);
+    ->withPhpCsFixerSets(perCS20: true);
