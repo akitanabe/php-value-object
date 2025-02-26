@@ -27,6 +27,6 @@
   "scripts": {
     "test": "phpunit test",
     "analyze": "phpstan analyze",
-    "format": "ecs --config=ecs.php --verbose --fix"
+    "format": "ecs --config=ecs.php --verbose --fix --ansi"
   }
 }
