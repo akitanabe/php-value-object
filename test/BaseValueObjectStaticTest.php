@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Akitanabe\PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseValueObject;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class BaseValueObjectStaticTest extends TestCase
         $staticTestObject = StaticTestObject::fromArray([
             'name' => 'John',
             'age' => 20,
-        ],);
+        ], );
 
         $this->assertSame('John', $staticTestObject->name);
         $this->assertSame(20, $staticTestObject->age);

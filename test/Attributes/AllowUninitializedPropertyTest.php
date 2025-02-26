@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
-use Akitanabe\PhpValueObject\BaseValueObject;
-use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
+use PhpValueObject\Attributes\AllowUninitializedProperty;
+use PhpValueObject\BaseValueObject;
+use PhpValueObject\Exceptions\UninitializedException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

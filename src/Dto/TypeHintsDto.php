@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Dto;
+namespace PhpValueObject\Dto;
 
-use Akitanabe\PhpValueObject\Enums\TypeHintsDtoType;
+use PhpValueObject\Enums\TypeHintsDtoType;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Akitanabe\PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseValueObject;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -56,7 +56,7 @@ class BaseValueObjectInputTest extends TestCase
         $value = DefaultOverrideContructorValue::fromArray([
             'string' => 'default',
             'bool' => false,
-        ],);
+        ], );
 
         $this->assertSame('default', $value->string);
         $this->assertSame(false, $value->bool);

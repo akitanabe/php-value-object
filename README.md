@@ -24,7 +24,7 @@ PHP で DDD を実装する際に 以下の制約を満たす ValueObject を作
 ```
 <?php
 
-use Akitanabe\PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseValueObject;
 
 final class BasicValue extends BaseValueObject
 {
@@ -115,7 +115,7 @@ $value->uninitialized;
 各プロパティの Attribute に Validator を指定してください。
 
 ```
-use Akitanabe\PhpValueObject\Attribute\Validator\NotEmptyStringValidator;
+use PhpValueObject\Attribute\Validator\NotEmptyStringValidator;
 
 final class ValidationValue extends BaseValueObject
 {
@@ -144,7 +144,7 @@ Validation\Validatable インターフェースを実装したアトリビュー
 
 ```
 use Attribute;
-use Akitanabe\PhpValueObject\Validation\Validatable;
+use PhpValueObject\Validation\Validatable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class CustomValidator implements Validatable

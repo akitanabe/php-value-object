@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
-use Akitanabe\PhpValueObject\BaseValueObject;
+use PhpValueObject\Attributes\AllowNoneTypeProperty;
+use PhpValueObject\BaseValueObject;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Exceptions;
+namespace PhpValueObject\Exceptions;
 
-use Akitanabe\PhpValueObject\Validation\Validatable;
+use PhpValueObject\Validation\Validatable;
 use Exception;
 use ReflectionProperty;
 
@@ -15,7 +15,7 @@ class ValidationException extends Exception
 
         parent::__construct(
             "Validataion Error {$className}::\${$propName} "
-                . $validator->errorMessage(),
+            . $validator->errorMessage(),
         );
     }
 }

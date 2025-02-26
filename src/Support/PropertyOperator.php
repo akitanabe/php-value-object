@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Support;
+namespace PhpValueObject\Support;
 
-use Akitanabe\PhpValueObject\BaseValueObject;
-use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
-use Akitanabe\PhpValueObject\Enums\PropertyValueType;
-use Akitanabe\PhpValueObject\Exceptions\ValidationException;
-use Akitanabe\PhpValueObject\Helpers\TypeHelper;
-use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Validation\Validatable;
+use PhpValueObject\BaseValueObject;
+use PhpValueObject\Enums\PropertyInitializedStatus;
+use PhpValueObject\Enums\PropertyValueType;
+use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Helpers\TypeHelper;
+use PhpValueObject\Options\Strict;
+use PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionIntersectionType;

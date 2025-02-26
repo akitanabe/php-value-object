@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Attributes;
+namespace PhpValueObject\Attributes;
 
-use Akitanabe\PhpValueObject\Options\Allowable;
+use PhpValueObject\Options\Allowable;
 use Attribute;
 
 /**

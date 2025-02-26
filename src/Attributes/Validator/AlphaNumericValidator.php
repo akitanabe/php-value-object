@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Attributes\Validator;
+namespace PhpValueObject\Attributes\Validator;
 
-use Akitanabe\PhpValueObject\Validation\Validatable;
+use PhpValueObject\Validation\Validatable;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]

@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
-use Akitanabe\PhpValueObject\Attributes\AllowInheritableClass;
-use Akitanabe\PhpValueObject\BaseValueObject;
-use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
+use PhpValueObject\Attributes\AllowInheritableClass;
+use PhpValueObject\BaseValueObject;
+use PhpValueObject\Exceptions\InheritableClassException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[AllowInheritableClass]
-class AllowInheritableClassValue extends BaseValueObject {}
+class AllowInheritableClassValue extends BaseValueObject
+{
+}
 
-class NotAllowInheritableValue extends BaseValueObject {}
+class NotAllowInheritableValue extends BaseValueObject
+{
+}
 
 class AllowInheritableClassTest extends TestCase
 {

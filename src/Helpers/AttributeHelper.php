@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Helpers;
+namespace PhpValueObject\Helpers;
 
 use ReflectionAttribute;
 use ReflectionClass;

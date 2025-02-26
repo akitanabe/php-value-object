@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Options;
+namespace PhpValueObject\Options;
 
 interface Allowable
 {

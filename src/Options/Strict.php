@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Options;
+namespace PhpValueObject\Options;
 
-use Akitanabe\PhpValueObject\Attributes\AllowInheritableClass;
-use Akitanabe\PhpValueObject\Attributes\AllowMixedTypeProperty;
-use Akitanabe\PhpValueObject\Attributes\AllowNoneTypeProperty;
-use Akitanabe\PhpValueObject\Attributes\AllowUninitializedProperty;
-use Akitanabe\PhpValueObject\Helpers\AttributeHelper;
+use PhpValueObject\Attributes\AllowInheritableClass;
+use PhpValueObject\Attributes\AllowMixedTypeProperty;
+use PhpValueObject\Attributes\AllowNoneTypeProperty;
+use PhpValueObject\Attributes\AllowUninitializedProperty;
+use PhpValueObject\Helpers\AttributeHelper;
 use ReflectionClass;
 
 final class Strict
@@ -44,12 +44,7 @@ final class Strict
      */
     public function __construct(ReflectionClass $refClass)
     {
-        foreach ([
-            AllowUninitializedProperty::class,
-            AllowNoneTypeProperty::class,
-            AllowMixedTypeProperty::class,
-            AllowInheritableClass::class,
-        ] as $attrClassName) {
+        foreach ([AllowUninitializedProperty::class, AllowNoneTypeProperty::class, AllowMixedTypeProperty::class, AllowInheritableClass::class,] as $attrClassName) {
             $refAttrClass = new ReflectionClass($attrClassName);
             // 先頭の5文字(Allow)を削除して、残った最初の文字を小文字に変換
             $propertyName = lcfirst(substr($refAttrClass->getShortName(), 5));

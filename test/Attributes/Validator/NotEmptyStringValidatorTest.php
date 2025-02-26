@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Akitanabe\PhpValueObject\Attributes\Validator\NotEmptyStringValidator;
-use Akitanabe\PhpValueObject\BaseValueObject;
-use Akitanabe\PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Attributes\Validator\NotEmptyStringValidator;
+use PhpValueObject\BaseValueObject;
+use PhpValueObject\Exceptions\ValidationException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

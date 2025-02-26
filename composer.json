@@ -10,12 +10,12 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Akitanabe\\PhpValueObject\\": "src/"
+      "PhpValueObject\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Akitanabe\\PhpValueObject\\Test\\": "test/"
+      "PhpValueObject\\Test\\": "test/"
     }
   },
   "authors": [

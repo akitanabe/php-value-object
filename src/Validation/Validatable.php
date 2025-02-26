@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject\Validation;
+namespace PhpValueObject\Validation;
 
 interface Validatable
 {

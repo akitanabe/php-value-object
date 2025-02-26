@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Akitanabe\PhpValueObject;
+namespace PhpValueObject;
 
-use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
-use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
-use Akitanabe\PhpValueObject\Exceptions\ValidationException;
-use Akitanabe\PhpValueObject\Helpers\AssertionHelper;
-use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Support\InputArguments;
-use Akitanabe\PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Exceptions\InheritableClassException;
+use PhpValueObject\Exceptions\UninitializedException;
+use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Helpers\AssertionHelper;
+use PhpValueObject\Options\Strict;
+use PhpValueObject\Support\InputArguments;
+use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use stdClass;
 use TypeError;

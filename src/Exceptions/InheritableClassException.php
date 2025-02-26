@@ -1,7 +1,9 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Exceptions;
+namespace PhpValueObject\Exceptions;
 
 use Exception;
 
-class InheritableClassException extends Exception {}
+class InheritableClassException extends Exception
+{
+}

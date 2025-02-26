@@ -1,8 +1,8 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Support;
+namespace PhpValueObject\Support;
 
-use Akitanabe\PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseValueObject;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;

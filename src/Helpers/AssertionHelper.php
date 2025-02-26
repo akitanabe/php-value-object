@@ -1,11 +1,11 @@
 <?php
 
-namespace Akitanabe\PhpValueObject\Helpers;
+namespace PhpValueObject\Helpers;
 
-use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
-use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
-use Akitanabe\PhpValueObject\Options\Strict;
-use Akitanabe\PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Exceptions\InheritableClassException;
+use PhpValueObject\Exceptions\UninitializedException;
+use PhpValueObject\Options\Strict;
+use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 
 class AssertionHelper
