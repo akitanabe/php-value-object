@@ -2,7 +2,6 @@
 
 namespace Akitanabe\PhpValueObject\Helpers;
 
-use Akitanabe\PhpValueObject\Enums\PropertyInitializedStatus;
 use Akitanabe\PhpValueObject\Exceptions\InheritableClassException;
 use Akitanabe\PhpValueObject\Exceptions\UninitializedException;
 use Akitanabe\PhpValueObject\Options\Strict;

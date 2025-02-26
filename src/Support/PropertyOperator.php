@@ -85,9 +85,7 @@ final class PropertyOperator
      * プロパティの型をチェック
      * @template T of object
      * @param ReflectionClass<T> $refClass
-     * @param Strict $strict
-     * 
-     * @return void
+     *
      * @throws TypeError
      */
     public function checkPropertyType(ReflectionClass $refClass, Strict $strict): void

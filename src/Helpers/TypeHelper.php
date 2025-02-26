@@ -36,10 +36,13 @@ final class TypeHelper
      *
      * @throws TypeError
      */
-    public static function checkType(ReflectionClass $refClass, Strict $strict, PropertyOperator $propertyOperator): void
-    {
+    public static function checkType(
+        ReflectionClass $refClass,
+        Strict $strict,
+        PropertyOperator $propertyOperator
+    ): void {
         $typeHints = array_map(
-            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
+            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
             $propertyOperator->types,
         );
 
@@ -64,7 +67,7 @@ final class TypeHelper
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $typeHints,
-            fn(TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
+            fn (TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -81,7 +84,7 @@ final class TypeHelper
 
         $errorTypeName = join(
             '|',
-            array_map(fn(TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
+            array_map(fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
         );
 
         throw new TypeError(
