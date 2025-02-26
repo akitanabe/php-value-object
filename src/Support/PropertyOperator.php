@@ -76,7 +76,7 @@ final class PropertyOperator
     /**
      * プロパティが未初期化状態か
      */
-    public function isUninitialized(): bool
+    public function isUninitializedProperty(): bool
     {
         return $this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED;
     }

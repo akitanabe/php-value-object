@@ -43,7 +43,7 @@ class AssertionHelper
     ): bool {
 
         // プロパティが未初期化の場合
-        if ($propertyOperator->isUninitialized()) {
+        if ($propertyOperator->isUninitializedProperty()) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($strict->uninitializedProperty->allow()) {
                 return true;
