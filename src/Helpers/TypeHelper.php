@@ -39,10 +39,10 @@ final class TypeHelper
     public static function checkType(
         ReflectionClass $refClass,
         Strict $strict,
-        PropertyOperator $propertyOperator
+        PropertyOperator $propertyOperator,
     ): void {
         $typeHints = array_map(
-            fn (ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
+            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHintsDto => new TypeHintsDto($type),
             $propertyOperator->types,
         );
 
@@ -53,7 +53,7 @@ final class TypeHelper
                 || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $strict->mixedTypeProperty->disallow()) // mixed型の場合
             ) {
                 throw new TypeError(
-                    "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type."
+                    "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type.",
                 );
             }
 
@@ -67,7 +67,7 @@ final class TypeHelper
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $typeHints,
-            fn (TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
+            fn(TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -84,11 +84,11 @@ final class TypeHelper
 
         $errorTypeName = join(
             '|',
-            array_map(fn (TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
+            array_map(fn(TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
         );
 
         throw new TypeError(
-            "Cannot assign {$propertyOperator->valueType->value} to property {$refClass->name}::\${$propertyOperator->name} of type {$errorTypeName}"
+            "Cannot assign {$propertyOperator->valueType->value} to property {$refClass->name}::\${$propertyOperator->name} of type {$errorTypeName}",
         );
     }
 }

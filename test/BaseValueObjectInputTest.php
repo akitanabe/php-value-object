@@ -54,9 +54,9 @@ class BaseValueObjectInputTest extends TestCase
     public function defaultOverrideConstructor(): void
     {
         $value = DefaultOverrideContructorValue::fromArray([
-                'string' => 'default',
-                'bool' => false,
-            ],);
+            'string' => 'default',
+            'bool' => false,
+        ],);
 
         $this->assertSame('default', $value->string);
         $this->assertSame(false, $value->bool);

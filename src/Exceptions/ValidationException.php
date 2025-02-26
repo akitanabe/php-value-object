@@ -15,7 +15,7 @@ class ValidationException extends Exception
 
         parent::__construct(
             "Validataion Error {$className}::\${$propName} "
-                . $validator->errorMessage()
+                . $validator->errorMessage(),
         );
     }
 }

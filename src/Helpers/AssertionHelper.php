@@ -24,7 +24,7 @@ class AssertionHelper
         ) {
 
             throw new InheritableClassException(
-                "{$refClass->name} is not allowed to inherit. not allow inheritable class."
+                "{$refClass->name} is not allowed to inherit. not allow inheritable class.",
             );
         }
     }
@@ -49,7 +49,7 @@ class AssertionHelper
             }
 
             throw new UninitializedException(
-                "{$refClass->name}::\${$propertyOperator->name} is not initialized. not allow uninitialized property."
+                "{$refClass->name}::\${$propertyOperator->name} is not initialized. not allow uninitialized property.",
             );
         }
 

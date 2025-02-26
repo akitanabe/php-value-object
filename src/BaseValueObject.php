@@ -37,7 +37,7 @@ abstract class BaseValueObject
             $propertyOperator = new PropertyOperator(
                 vo: $this,
                 refProperty: $property,
-                inputArguments: $inputArguments
+                inputArguments: $inputArguments,
             );
 
             if (

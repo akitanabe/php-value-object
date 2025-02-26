@@ -56,7 +56,7 @@ final class Strict
 
             $this->{$propertyName} = AttributeHelper::getAttribute(
                 $refClass,
-                $attrClassName
+                $attrClassName,
             )?->newInstance() ?? new NotAllow();
         }
     }

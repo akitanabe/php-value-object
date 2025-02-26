@@ -22,7 +22,7 @@ final class AttributeHelper
      */
     public static function getAttribute(
         ReflectionClass|ReflectionClassConstant|ReflectionFunctionAbstract|ReflectionObject|ReflectionParameter $reflection,
-        string $attributeName
+        string $attributeName,
     ): ?ReflectionAttribute {
         return $reflection->getAttributes($attributeName)[0] ?? null;
     }
