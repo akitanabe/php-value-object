@@ -22,7 +22,7 @@ abstract class BaseValueObject
      *
      * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
-    final protected function __construct(...$args)
+    final protected function __construct(mixed ...$args)
     {
         $refClass = new ReflectionClass($this);
 
