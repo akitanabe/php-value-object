@@ -6,9 +6,7 @@ use PhpValueObject\BaseValueObject;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class Immutable
-{
-}
+class Immutable {}
 
 final class ImmutableTestValue extends BaseValueObject
 {
@@ -23,7 +21,7 @@ class BaseValueObjectImmutableTest extends TestCase
         $test = new Immutable();
         $immutable = ImmutableTestValue::fromArray([
             'test' => $test,
-        ], );
+        ],);
 
         $cloneImmutable = clone $immutable;
 

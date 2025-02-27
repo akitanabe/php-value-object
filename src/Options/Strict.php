@@ -44,7 +44,12 @@ final class Strict
      */
     public function __construct(ReflectionClass $refClass)
     {
-        foreach ([AllowUninitializedProperty::class, AllowNoneTypeProperty::class, AllowMixedTypeProperty::class, AllowInheritableClass::class,] as $attrClassName) {
+        foreach ([
+            AllowUninitializedProperty::class,
+            AllowNoneTypeProperty::class,
+            AllowMixedTypeProperty::class,
+            AllowInheritableClass::class,
+        ] as $attrClassName) {
             $refAttrClass = new ReflectionClass($attrClassName);
             // 先頭の5文字(Allow)を削除して、残った最初の文字を小文字に変換
             $propertyName = lcfirst(substr($refAttrClass->getShortName(), 5));

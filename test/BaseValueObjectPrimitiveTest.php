@@ -103,7 +103,7 @@ class BaseValueObjectPrimitiveTest extends TestCase
         $unionValue = UnionTestValue::fromArray([
             'stringOrInt' => 'string',
             'floatOrInt' => 0.01,
-        ], );
+        ],);
 
         $this->assertSame('string', $unionValue->stringOrInt);
         $this->assertSame(0.01, $unionValue->floatOrInt);
@@ -111,7 +111,7 @@ class BaseValueObjectPrimitiveTest extends TestCase
         $unionValue = UnionTestValue::fromArray([
             'stringOrInt' => 123,
             'floatOrInt' => 1,
-        ], );
+        ],);
 
         $this->assertSame(123, $unionValue->stringOrInt);
         $this->assertSame(1, $unionValue->floatOrInt);

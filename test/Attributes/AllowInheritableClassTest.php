@@ -10,13 +10,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[AllowInheritableClass]
-class AllowInheritableClassValue extends BaseValueObject
-{
-}
+class AllowInheritableClassValue extends BaseValueObject {}
 
-class NotAllowInheritableValue extends BaseValueObject
-{
-}
+class NotAllowInheritableValue extends BaseValueObject {}
 
 class AllowInheritableClassTest extends TestCase
 {

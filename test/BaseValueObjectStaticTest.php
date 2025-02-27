@@ -21,7 +21,7 @@ class BaseValueObjectStaticTest extends TestCase
         $staticTestObject = StaticTestObject::fromArray([
             'name' => 'John',
             'age' => 20,
-        ], );
+        ],);
 
         $this->assertSame('John', $staticTestObject->name);
         $this->assertSame(20, $staticTestObject->age);
