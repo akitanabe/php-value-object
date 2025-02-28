@@ -7,7 +7,7 @@ namespace PhpValueObject\Fields;
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 
-abstract class BaseField
+abstract class Field
 {
     protected Closure $factory;
 

@@ -6,7 +6,7 @@ namespace PhpValueObject\Test\Fields;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Fields\BaseField;
+use PhpValueObject\Fields\Field;
 use InvalidArgumentException;
 use DateTime;
 
@@ -29,7 +29,7 @@ class BaseFieldTest extends TestCase
     #[Test]
     public function factoryWithIdentityFunction(): void
     {
-        $field = new class extends BaseField {};
+        $field = new class extends Field {};
 
         $result = $field->factory('test');
 
@@ -40,7 +40,7 @@ class BaseFieldTest extends TestCase
     public function factoryWithCustomFunction(): void
     {
         $customFactory = fn($value): string => strtoupper($value);
-        $field = new class (factory: $customFactory) extends BaseField {};
+        $field = new class (factory: $customFactory) extends Field {};
 
         $result = $field->factory('test');
 
@@ -50,7 +50,7 @@ class BaseFieldTest extends TestCase
     #[Test]
     public function factoryWithCallableString(): void
     {
-        $field = new class (factory: 'strtolower') extends BaseField {};
+        $field = new class (factory: 'strtolower') extends Field {};
 
         $result = $field->factory('TEST');
 
@@ -63,14 +63,14 @@ class BaseFieldTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         // @phpstan-ignore argument.type
-        $result = new class (factory: 'notCallable') extends BaseField {};
+        $result = new class (factory: 'notCallable') extends Field {};
     }
 
     #[Test]
     public function factoryWithClass(): void
     {
 
-        $field = new class (factory: DateTimeFactory::class) extends BaseField {};
+        $field = new class (factory: DateTimeFactory::class) extends Field {};
 
         $result = $field->factory('2021-01-01');
 
@@ -82,7 +82,7 @@ class BaseFieldTest extends TestCase
     public function factoryWithCallableArray(): void
     {
 
-        $field = new class (factory: [DateTimeFactory::class, 'create']) extends BaseField {};
+        $field = new class (factory: [DateTimeFactory::class, 'create']) extends Field {};
 
         $result = $field->factory('2022-01-01');
 
