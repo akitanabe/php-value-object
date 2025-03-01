@@ -34,11 +34,7 @@ abstract class BaseValueObject
         AssertionHelper::assertInheritableClass(refClass: $refClass, strict: $strict);
 
         foreach ($refClass->getProperties() as $property) {
-            $propertyOperator = new PropertyOperator(
-                vo: $this,
-                refProperty: $property,
-                inputArguments: $inputArguments,
-            );
+            $propertyOperator = new PropertyOperator(refProperty: $property, inputArguments: $inputArguments,);
 
             if (
                 AssertionHelper::assertUninitializedPropertyOrSkip(
@@ -52,9 +48,9 @@ abstract class BaseValueObject
 
             $propertyOperator->checkPropertyType(refClass: $refClass, strict: $strict);
 
-            $propertyOperator->setPropertyValue();
-            $propertyOperator->validatePropertyValue();
+            $propertyOperator->setPropertyValue(vo: $this);
 
+            $propertyOperator->validatePropertyValue(vo: $this);
         }
     }
 

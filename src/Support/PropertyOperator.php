@@ -38,7 +38,6 @@ final class PropertyOperator
     public readonly PropertyValueType $valueType;
 
     public function __construct(
-        protected BaseValueObject $vo,
         protected ReflectionProperty $refProperty,
         InputArguments $inputArguments,
     ) {
@@ -122,9 +121,9 @@ final class PropertyOperator
     /**
      * プロパティに値を設定
      */
-    public function setPropertyValue(): void
+    public function setPropertyValue(BaseValueObject $vo): void
     {
-        $this->refProperty->setValue($this->vo, $this->value);
+        $this->refProperty->setValue($vo, $this->value);
     }
 
     /**
@@ -132,7 +131,7 @@ final class PropertyOperator
      *
      * @throws ValidationException
      */
-    public function validatePropertyValue(): void
+    public function validatePropertyValue(BaseValueObject $vo): void
     {
         $attributes = $this->refProperty->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
 
@@ -140,7 +139,7 @@ final class PropertyOperator
             return;
         }
 
-        $value = $this->refProperty->getValue($this->vo);
+        $value = $this->refProperty->getValue($vo);
 
         foreach ($attributes as $attribute) {
             $attributeInstance = $attribute->newInstance();
