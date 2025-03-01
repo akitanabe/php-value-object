@@ -131,7 +131,7 @@ final class PropertyOperator
      *
      * @throws ValidationException
      */
-    public function validatePropertyValue(BaseValueObject $vo): void
+    public function validatePropertyValue(): void
     {
         $attributes = $this->refProperty->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
 
@@ -139,12 +139,10 @@ final class PropertyOperator
             return;
         }
 
-        $value = $this->refProperty->getValue($vo);
-
         foreach ($attributes as $attribute) {
             $attributeInstance = $attribute->newInstance();
 
-            if ($attributeInstance->validate($value) === false) {
+            if ($attributeInstance->validate($this->value) === false) {
                 throw new ValidationException($attributeInstance, $this->refProperty);
             }
         }
