@@ -52,7 +52,7 @@ final class PropertyOperator
 
         // プロパティの初期化状態を判定
         $hasFactory = $field->hasFactory();
-        $hasInputValue = $inputArguments->hasValue($refProperty->name);
+        $hasInputValue = $inputArguments->hasValue($refProperty->name, $field->alias);
         $hasDefaultValue = $refProperty->hasDefaultValue();
 
         $this->initializedStatus = match (true) {
@@ -88,7 +88,7 @@ final class PropertyOperator
 
         $value = ($this->initializedStatus === PropertyInitializedStatus::BY_DEFAULT)
             ? $refProperty->getDefaultValue()
-            : $inputArguments->getValue($refProperty->name);
+            : $inputArguments->getValue($refProperty->name, $field->alias);
 
         $this->value =
             ($this->initializedStatus === PropertyInitializedStatus::BY_FACTORY)

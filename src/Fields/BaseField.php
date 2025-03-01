@@ -18,6 +18,7 @@ abstract class BaseField
      */
     public function __construct(
         string|array|Closure|null $factory = null,
+        public readonly ?string $alias = null,
     ) {
         $this->factoryFn = $factory ? FieldsHelper::createFactory($factory) : null;
     }

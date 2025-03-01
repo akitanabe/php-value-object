@@ -55,6 +55,9 @@ final class TestValue extends BaseValueObject
     #[Field(factory: 'strtoupper')]
     public string $default = 'default';
 
+    #[Field(alias: 'in_alias')]
+    public readonly string $inAlias;
+
 }
 
 #[AllowUninitializedProperty]
@@ -68,7 +71,7 @@ final class InvalidCallableValue extends BaseValueObject
 
 
 /**
- * @phpstan-type Defaults array{test:string, callableString:string, withClass:string, withCallableArray:string}
+ * @phpstan-type Defaults array{test:string, callableString:string, withClass:string, withCallableArray:string, inAlias:string}
  */
 class FieldTest extends TestCase
 {
@@ -84,6 +87,7 @@ class FieldTest extends TestCase
                     'callableString' => '',
                     'withClass' => '1970-01-01',
                     'withCallableArray' => '1970-01-01',
+                    'inAlias' => 'inAlias',
                 ],
             ],
         ];
@@ -188,6 +192,18 @@ class FieldTest extends TestCase
         $value = TestValue::fromArray($defaults);
 
         $this->assertEquals('default', $value->default);
+    }
+
+    /**
+     * @param Defaults $defaults
+     */
+    #[Test]
+    #[DataProvider('defaultsProvider')]
+    public function alias(array $defaults): void
+    {
+        $value = TestValue::fromArray(['in_alias' => 'in_alias', ...$defaults]);
+
+        $this->assertEquals('in_alias', $value->inAlias);
     }
 
 

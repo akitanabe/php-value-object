@@ -27,17 +27,19 @@ class InputArguments
     /**
      * コンストラクタへの入力値が存在しているか
      */
-    public function hasValue(string $name): bool
+    public function hasValue(string $name, ?string $alias = null): bool
     {
-        return array_key_exists($name, $this->inputs);
+        $key = $alias ?? $name;
+        return array_key_exists($key, $this->inputs);
     }
 
     /**
      * コンストラクタへの入力値を取得
      */
-    public function getValue(string $name): mixed
+    public function getValue(string $name, ?string $alias = null): mixed
     {
-        return $this->inputs[$name] ?? null;
+        $key = $alias ?? $name;
+        return $this->inputs[$key] ?? null;
     }
 
     /**
