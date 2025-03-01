@@ -8,6 +8,9 @@ use PhpValueObject\BaseValueObject;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Fields\BaseField;
+use PhpValueObject\Fields\Field;
+use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Helpers\TypeHelper;
 use PhpValueObject\Options\Strict;
 use PhpValueObject\Validation\Validatable;
@@ -41,12 +44,29 @@ final class PropertyOperator
     ) {
         $this->name = $refProperty->name;
 
-        // 初期化状態
+        /** @var BaseField $field */
+        $field = AttributeHelper::getAttribute(
+            $refProperty,
+            BaseField::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        )?->newInstance() ?? new Field();
+
+        // プロパティの初期化状態を判定
+        $hasFactory = $field->hasFactory();
+        $hasInputValue = $inputArguments->hasValue($refProperty->name);
+        $hasDefaultValue = $refProperty->hasDefaultValue();
+
         $this->initializedStatus = match (true) {
+            // factoryが存在する場合
+            // 入力値が存在する or デフォルト値が存在しない場合のみファクトリー関数を使用
+            ($hasFactory && ($hasInputValue || $hasDefaultValue === false)) => PropertyInitializedStatus::BY_FACTORY,
+
             // 外部入力が存在
-            $inputArguments->hasValue($refProperty->name) => PropertyInitializedStatus::INPUTED,
-            // デフォルト値により初期化済み
-            $refProperty->isInitialized($vo) => PropertyInitializedStatus::BY_DEFAULT,
+            $hasInputValue => PropertyInitializedStatus::BY_INPUT,
+
+            // デフォルト値が存在
+            $hasDefaultValue => PropertyInitializedStatus::BY_DEFAULT,
+
             // 未初期化
             default => PropertyInitializedStatus::UNINITIALIZED,
         };
@@ -66,9 +86,15 @@ final class PropertyOperator
             ? $propertyType->getTypes()
             : [$propertyType];
 
-        $this->value = ($this->initializedStatus === PropertyInitializedStatus::INPUTED)
-            ? $inputArguments->getValue($refProperty->name)
-            : $refProperty->getValue($vo);
+
+        $value = ($this->initializedStatus === PropertyInitializedStatus::BY_DEFAULT)
+            ? $refProperty->getDefaultValue()
+            : $inputArguments->getValue($refProperty->name);
+
+        $this->value =
+            ($this->initializedStatus === PropertyInitializedStatus::BY_FACTORY)
+            ? $field->factory($value)
+            : $value;
 
         $this->valueType = TypeHelper::getValueType($this->value);
     }

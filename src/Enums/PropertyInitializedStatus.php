@@ -8,5 +8,6 @@ enum PropertyInitializedStatus
 {
     case UNINITIALIZED;
     case BY_DEFAULT;
-    case INPUTED;
+    case BY_INPUT;
+    case BY_FACTORY;
 }
