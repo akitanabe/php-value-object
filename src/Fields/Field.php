@@ -8,6 +8,4 @@ use PhpValueObject\Fields\BaseField;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Field extends BaseField
-{
-}
+final class Field extends BaseField {}
