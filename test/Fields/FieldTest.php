@@ -12,17 +12,29 @@ use DateTime;
 use PhpValueObject\BaseModel;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Config\ConfigModel;
+use UnexpectedValueException;
 
+use function strtolower as _strtolower;
+
+/**
+ * @phpstan-import-type Defaults from \PhpValueObject\Test\Fields\FieldTest
+ */
 class DateTimeFactory
 {
-    public function __invoke(string $value): DateTime
+    /**
+     * @param Defaults $data
+     */
+    public function __invoke(array $data): DateTime
     {
-        return new DateTime($value);
+        return new DateTime($data['withClass']);
     }
 
-    public static function create(string $value): DateTime
+    /**
+     * @param Defaults $data
+     */
+    public static function create(array $data): DateTime
     {
-        return new DateTime($value);
+        return new DateTime($data['withCallableArray']);
     }
 
     public static function now(): DateTime
@@ -32,27 +44,41 @@ class DateTimeFactory
 
 }
 
+/**
+ * @param array{test:string, callableString:string, withClass:string, withCallableArray:string, inAlias:string} $data
+ * @return string
+ */
+function strtolower(array $data): string
+{
+    return _strtolower($data['callableString']);
+}
+
+function defaults(): string
+{
+    return 'default';
+}
+
 
 #[ConfigModel(allowUninitializedProperty: true)]
-final class TestValue extends BaseModel
+final class TestModel extends BaseModel
 {
     #[Field]
     public readonly string $test;
 
-    #[Field(factory: 'strtolower')]
+    #[Field]
+    public string $default = 'DEFAULT';
+
+    #[Field(defaultFactory: __NAMESPACE__ . '\\strtolower')]
     public readonly string $callableString;
 
-    #[Field(factory: DateTimeFactory::class)]
+    #[Field(defaultFactory: DateTimeFactory::class)]
     public readonly DateTime $withClass;
 
-    #[Field(factory: [DateTimeFactory::class, 'create'])]
+    #[Field(defaultFactory: [DateTimeFactory::class, 'create'])]
     public readonly DateTime $withCallableArray;
 
-    #[Field(factory: [DateTimeFactory::class, 'now'])]
+    #[Field(defaultFactory: [DateTimeFactory::class, 'now'])]
     public readonly DateTime $byFacotry;
-
-    #[Field(factory: 'strtoupper')]
-    public string $default = 'default';
 
     #[Field(alias: 'in_alias')]
     public readonly string $inAlias;
@@ -60,12 +86,17 @@ final class TestValue extends BaseModel
 }
 
 #[ConfigModel(allowUninitializedProperty: true)]
-final class InvalidCallableValue extends BaseModel
+final class InvalidCallableModel extends BaseModel
 {
     // @phpstan-ignore argument.type
-    #[Field(factory: 'notCallable')]
+    #[Field(defaultFactory: 'notCallable')]
     public readonly string $callable;
 
+}
+final class DefaultBothModel extends BaseModel
+{
+    #[Field(defaultFactory: __NAMESPACE__ . '\\defaults')]
+    public string $bothDefault = 'DEFAULT';
 }
 
 
@@ -99,12 +130,12 @@ class FieldTest extends TestCase
     #[DataProvider('defaultsProvider')]
     public function factoryWithIdentityFunction(array $defaults): void
     {
-        $value = TestValue::fromArray([
+        $model = TestModel::fromArray([
             ...$defaults,
             'test' => 'test',
         ]);
 
-        $this->assertSame('test', $value->test);
+        $this->assertSame('test', $model->test);
     }
 
     /**
@@ -115,21 +146,21 @@ class FieldTest extends TestCase
     public function factoryWithCallableString(array $defaults): void
     {
 
-        $value = TestValue::fromArray([
+        $model = TestModel::fromArray([
             ...$defaults,
             'callableString' => 'CALLABLE',
         ]);
 
-        $this->assertSame('callable', $value->callableString);
+        $this->assertSame('callable', $model->callableString);
 
     }
 
     #[Test]
-    public function factoryWithInvalidCallable(): void
+    public function assertFactoryWithInvalidCallable(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $value = InvalidCallableValue::fromArray(['callable' => 'invalid']);
+        $model = InvalidCallableModel::fromArray(['callable' => 'invalid']);
     }
 
 
@@ -140,13 +171,13 @@ class FieldTest extends TestCase
     #[DataProvider('defaultsProvider')]
     public function factoryWithClass(array $defaults): void
     {
-        $value = TestValue::fromArray([
+        $model = TestModel::fromArray([
             ...$defaults,
             'withClass' => '2021-01-01',
         ]);
 
-        $this->assertInstanceOf(DateTime::class, $value->withClass);
-        $this->assertEquals('2021-01-01', $value->withClass->format('Y-m-d'));
+        $this->assertInstanceOf(DateTime::class, $model->withClass);
+        $this->assertEquals('2021-01-01', $model->withClass->format('Y-m-d'));
     }
 
     /**
@@ -157,13 +188,13 @@ class FieldTest extends TestCase
     public function factoryWithCallableArray(array $defaults): void
     {
 
-        $value = TestValue::fromArray([
+        $model = TestModel::fromArray([
             ...$defaults,
             'withCallableArray' => '2021-01-01',
         ]);
 
-        $this->assertInstanceOf(DateTime::class, $value->withCallableArray);
-        $this->assertEquals('2021-01-01', $value->withCallableArray->format('Y-m-d'));
+        $this->assertInstanceOf(DateTime::class, $model->withCallableArray);
+        $this->assertEquals('2021-01-01', $model->withCallableArray->format('Y-m-d'));
     }
 
     /**
@@ -173,24 +204,19 @@ class FieldTest extends TestCase
     #[DataProvider('defaultsProvider')]
     public function factoryByFactoryFn(array $defaults): void
     {
-        $value = TestValue::fromArray($defaults);
+        $model = TestModel::fromArray($defaults);
 
         $now = new DateTime();
 
-        $this->assertInstanceOf(DateTime::class, $value->byFacotry);
-        $this->assertEquals($now->format('Y-m-d'), $value->byFacotry->format('Y-m-d'));
+        $this->assertInstanceOf(DateTime::class, $model->byFacotry);
+        $this->assertEquals($now->format('Y-m-d'), $model->byFacotry->format('Y-m-d'));
     }
 
-    /**
-     * @param Defaults $defaults
-     */
     #[Test]
-    #[DataProvider('defaultsProvider')]
-    public function factoryByPropertyDefault(array $defaults): void
+    public function assertDefaultBoth(): void
     {
-        $value = TestValue::fromArray($defaults);
-
-        $this->assertEquals('default', $value->default);
+        $this->expectException(UnexpectedValueException::class);
+        $model = DefaultBothModel::fromArray();
     }
 
     /**
@@ -200,9 +226,9 @@ class FieldTest extends TestCase
     #[DataProvider('defaultsProvider')]
     public function alias(array $defaults): void
     {
-        $value = TestValue::fromArray(['in_alias' => 'in_alias', ...$defaults]);
+        $model = TestModel::fromArray(['in_alias' => 'in_alias', ...$defaults]);
 
-        $this->assertEquals('in_alias', $value->inAlias);
+        $this->assertEquals('in_alias', $model->inAlias);
     }
 
 

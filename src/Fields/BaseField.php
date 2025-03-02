@@ -7,37 +7,40 @@ namespace PhpValueObject\Fields;
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 
+/**
+ * @template T of object
+ * @phpstan-type Callable callable-string|class-string<T>|array{string|object, string}|Closure|null
+ */
 abstract class BaseField
 {
     protected readonly ?Closure $factoryFn;
 
     /**
-     * @template T of object
-     * @param callable-string|class-string<T>|array{string|object, string}|Closure|null $factory
-     *
+     * @param Callable $defaultFactory　default値が存在していたらUnexpectedValueExceptionが投げられます
+     * @param string|null $alias フィールド名のエイリアス。指定された場合、エイリアス名で入力値を取得します
      */
     public function __construct(
-        string|array|Closure|null $factory = null,
+        string|array|Closure|null $defaultFactory = null,
         public readonly ?string $alias = null,
     ) {
-        $this->factoryFn = $factory ? FieldsHelper::createFactory($factory) : null;
+        $this->factoryFn = $defaultFactory ? FieldsHelper::createFactory($defaultFactory) : null;
     }
 
     /**
-     * @param mixed $value
+     * @param array<string|int, mixed> $data
      *
      * @return mixed
      */
-    public function factory(mixed $value): mixed
+    public function defaultFactory(array $data): mixed
     {
         if ($this->factoryFn === null) {
-            return FieldsHelper::identity($value);
+            return null;
         }
 
-        return ($this->factoryFn)($value);
+        return ($this->factoryFn)($data);
     }
 
-    public function hasFactory(): bool
+    public function hasDefaultFactory(): bool
     {
         return $this->factoryFn !== null;
     }

@@ -21,6 +21,7 @@ use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 use TypeError;
+use UnexpectedValueException;
 
 final class PropertyOperator
 {
@@ -51,14 +52,18 @@ final class PropertyOperator
         )?->newInstance() ?? new Field();
 
         // プロパティの初期化状態を判定
-        $hasFactory = $field->hasFactory();
         $hasInputValue = $inputArguments->hasValue($refProperty->name, $field->alias);
+        $hasDefaultFactory = $field->hasDefaultFactory();
         $hasDefaultValue = $refProperty->hasDefaultValue();
 
+        // デフォルトファクトリーとデフォルト値が両方存在する場合は例外を投げる
+        if ($hasDefaultFactory && $hasDefaultValue) {
+            throw new UnexpectedValueException("{$refProperty->name} has both default factory and default value.");
+        }
+
         $this->initializedStatus = match (true) {
-            // factoryが存在する場合
-            // 入力値が存在する or デフォルト値が存在しない場合のみファクトリー関数を使用
-            ($hasFactory && ($hasInputValue || $hasDefaultValue === false)) => PropertyInitializedStatus::BY_FACTORY,
+            // デフォルトファクトリが存在する場合
+            $hasDefaultFactory => PropertyInitializedStatus::BY_FACTORY,
 
             // 外部入力が存在
             $hasInputValue => PropertyInitializedStatus::BY_INPUT,
@@ -85,15 +90,17 @@ final class PropertyOperator
             ? $propertyType->getTypes()
             : [$propertyType];
 
-
-        $value = ($this->initializedStatus === PropertyInitializedStatus::BY_DEFAULT)
-            ? $refProperty->getDefaultValue()
-            : $inputArguments->getValue($refProperty->name, $field->alias);
-
-        $this->value =
-            ($this->initializedStatus === PropertyInitializedStatus::BY_FACTORY)
-            ? $field->factory($value)
-            : $value;
+        // プロパティの初期化状態に応じて値を取得
+        $this->value = match (true) {
+            $this->initializedStatus === PropertyInitializedStatus::BY_FACTORY => $field->defaultFactory(
+                $inputArguments->inputs,
+            ),
+            $this->initializedStatus === PropertyInitializedStatus::BY_INPUT => $inputArguments->getValue(
+                $refProperty->name,
+                $field->alias,
+            ),
+            default => $refProperty->getDefaultValue(),
+        };
 
         $this->valueType = TypeHelper::getValueType($this->value);
     }

@@ -18,7 +18,7 @@ use TypeError;
 abstract class BaseModel
 {
     /**
-     * @param array<string, mixed> $args
+     * @param array<string|int, mixed> $args
      *
      * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
@@ -29,7 +29,7 @@ abstract class BaseModel
         $configModel = ConfigModel::factory($refClass);
 
         // 入力値を取得
-        $inputArguments = new InputArguments($refClass, $args);
+        $inputArguments = new InputArguments($args);
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, configModel: $configModel);
 
