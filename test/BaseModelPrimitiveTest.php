@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class PrimitiveTestValue extends BaseModel
+final class PrimitiveTestModel extends BaseModel
 {
     public readonly string $stringVal;
 
@@ -18,19 +18,19 @@ final class PrimitiveTestValue extends BaseModel
     public readonly bool $boolVal;
 }
 
-final class UnionTestValue extends BaseModel
+final class UnionTestModel extends BaseModel
 {
     public readonly string|int $stringOrInt;
 
     public readonly float|int $floatOrInt;
 }
 
-class BaseValueObjectPrimitiveTest extends TestCase
+class BaseModelPrimitiveTest extends TestCase
 {
     #[Test]
     public function primitivePropetry(): void
     {
-        $scalarValue = PrimitiveTestValue::fromArray(
+        $scalarModel = PrimitiveTestModel::fromArray(
             [
                 'stringVal' => 'string',
                 'intVal' => 123,
@@ -39,10 +39,10 @@ class BaseValueObjectPrimitiveTest extends TestCase
             ],
         );
 
-        $this->assertSame('string', $scalarValue->stringVal);
-        $this->assertSame(123, $scalarValue->intVal);
-        $this->assertSame(0.01, $scalarValue->floatVal);
-        $this->assertSame(true, $scalarValue->boolVal);
+        $this->assertSame('string', $scalarModel->stringVal);
+        $this->assertSame(123, $scalarModel->intVal);
+        $this->assertSame(0.01, $scalarModel->floatVal);
+        $this->assertSame(true, $scalarModel->boolVal);
     }
 
     /**
@@ -94,26 +94,26 @@ class BaseValueObjectPrimitiveTest extends TestCase
     public function primitiveProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);
-        PrimitiveTestValue::fromArray($args);
+        PrimitiveTestModel::fromArray($args);
     }
 
     #[Test]
     public function unionPropery(): void
     {
-        $unionValue = UnionTestValue::fromArray([
+        $unionModel = UnionTestModel::fromArray([
             'stringOrInt' => 'string',
             'floatOrInt' => 0.01,
         ],);
 
-        $this->assertSame('string', $unionValue->stringOrInt);
-        $this->assertSame(0.01, $unionValue->floatOrInt);
+        $this->assertSame('string', $unionModel->stringOrInt);
+        $this->assertSame(0.01, $unionModel->floatOrInt);
 
-        $unionValue = UnionTestValue::fromArray([
+        $unionModel = UnionTestModel::fromArray([
             'stringOrInt' => 123,
             'floatOrInt' => 1,
         ],);
 
-        $this->assertSame(123, $unionValue->stringOrInt);
-        $this->assertSame(1, $unionValue->floatOrInt);
+        $this->assertSame(123, $unionModel->stringOrInt);
+        $this->assertSame(1, $unionModel->floatOrInt);
     }
 }

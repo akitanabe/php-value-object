@@ -8,18 +8,18 @@ use PHPUnit\Framework\TestCase;
 
 class Immutable {}
 
-final class ImmutableTestValue extends BaseModel
+final class ImmutableTestModel extends BaseModel
 {
     public readonly Immutable $test;
 }
 
-class BaseValueObjectImmutableTest extends TestCase
+class BaseModelImmutableTest extends TestCase
 {
     #[Test]
     public function immutableClone(): void
     {
         $test = new Immutable();
-        $immutable = ImmutableTestValue::fromArray([
+        $immutable = ImmutableTestModel::fromArray([
             'test' => $test,
         ],);
 

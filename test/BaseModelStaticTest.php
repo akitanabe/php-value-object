@@ -6,25 +6,25 @@ use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class StaticTestObject extends BaseModel
+final class StaticTestModel extends BaseModel
 {
     public string $name;
 
     public int $age;
 }
 
-class BaseValueObjectStaticTest extends TestCase
+class BaseModelStaticTest extends TestCase
 {
     #[Test]
     public function arrayTest(): void
     {
-        $staticTestObject = StaticTestObject::fromArray([
+        $staticTestModel = StaticTestModel::fromArray([
             'name' => 'John',
             'age' => 20,
         ],);
 
-        $this->assertSame('John', $staticTestObject->name);
-        $this->assertSame(20, $staticTestObject->age);
+        $this->assertSame('John', $staticTestModel->name);
+        $this->assertSame(20, $staticTestModel->age);
     }
 
     #[Test]
@@ -34,7 +34,7 @@ class BaseValueObjectStaticTest extends TestCase
 
         $obj->name = 'Bob';
         $obj->age = 30;
-        $staticTestObject = StaticTestObject::fromObject($obj);
+        $staticTestObject = StaticTestModel::fromObject($obj);
 
         $this->assertSame('Bob', $staticTestObject->name);
         $this->assertSame(30, $staticTestObject->age);

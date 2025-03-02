@@ -6,7 +6,7 @@ use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class BasicInputTestValue extends BaseModel
+final class BasicInputTestModel extends BaseModel
 {
     public string $string;
 
@@ -17,7 +17,7 @@ final class BasicInputTestValue extends BaseModel
     public float $float;
 }
 
-final class DefaultOverrideContructorValue extends BaseModel
+final class DefaultOverrideContructorModel extends BaseModel
 {
     public string $string = 'string';
 
@@ -28,13 +28,13 @@ final class DefaultOverrideContructorValue extends BaseModel
     public float $float = 0.1;
 }
 
-class BaseValueObjectInputTest extends TestCase
+class BaseModelInputTest extends TestCase
 {
     // 基本入力テスト
     #[Test]
     public function basicInput(): void
     {
-        $value = BasicInputTestValue::fromArray(
+        $model = BasicInputTestModel::fromArray(
             [
                 'string' => 'string',
                 'bool' => true,
@@ -43,24 +43,24 @@ class BaseValueObjectInputTest extends TestCase
             ],
         );
 
-        $this->assertSame('string', $value->string);
-        $this->assertSame(true, $value->bool);
-        $this->assertSame(1, $value->int);
-        $this->assertSame(0.1, $value->float);
+        $this->assertSame('string', $model->string);
+        $this->assertSame(true, $model->bool);
+        $this->assertSame(1, $model->int);
+        $this->assertSame(0.1, $model->float);
     }
 
     // デフォルト値をオーバーライドされた場合、されていない場合のテスト
     #[Test]
     public function defaultOverrideConstructor(): void
     {
-        $value = DefaultOverrideContructorValue::fromArray([
+        $model = DefaultOverrideContructorModel::fromArray([
             'string' => 'default',
             'bool' => false,
         ],);
 
-        $this->assertSame('default', $value->string);
-        $this->assertSame(false, $value->bool);
-        $this->assertSame(1, $value->int);
-        $this->assertSame(0.1, $value->float);
+        $this->assertSame('default', $model->string);
+        $this->assertSame(false, $model->bool);
+        $this->assertSame(1, $model->int);
+        $this->assertSame(0.1, $model->float);
     }
 }

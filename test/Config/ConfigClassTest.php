@@ -11,39 +11,39 @@ use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\UninitializedException;
 
 #[ConfigClass(allowUninitializedProperty: false)]
-class NotAllowUninitializedPropertyClassValue extends BaseModel
+class NotAllowUninitializedPropertyClassModel extends BaseModel
 {
     public string $uninitialized;
 }
 
 #[ConfigClass(allowUninitializedProperty: true)]
-class AllowInitializedPropertyValue extends BaseModel
+class AllowInitializedPropertyModel extends BaseModel
 {
     public string $uninitialized;
 }
 
 
 #[ConfigClass(allowMixedTypeProperty: true)]
-class AllowMixedTypeClassValue extends BaseModel
+class AllowMixedTypeClassModel extends BaseModel
 {
     public mixed $mixed = 'mixed';
 }
 
 #[ConfigClass(allowMixedTypeProperty: false)]
-class NotAllowMixedTypeClassValue extends BaseModel
+class NotAllowMixedTypeClassModel extends BaseModel
 {
     public mixed $mixed = 'mixed';
 }
 
 #[ConfigClass(allowNoneTypeProperty: true)]
-class AllowNoneTypePropertyClassValue extends BaseModel
+class AllowNoneTypePropertyClassModel extends BaseModel
 {
     // @phpstan-ignore missingType.property
     public $none = 'none';
 }
 
 #[ConfigClass(allowNoneTypeProperty: false)]
-class NotAllowNoneTypePropertyClassValue extends BaseModel
+class NotAllowNoneTypePropertyClassModel extends BaseModel
 {
     // @phpstan-ignore missingType.property
     public $none = 'none';
@@ -62,7 +62,7 @@ class ConfigClassTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowUnitinializedProperty(): void
     {
-        AllowInitializedPropertyValue::fromArray();
+        AllowInitializedPropertyModel::fromArray();
 
     }
 
@@ -70,14 +70,14 @@ class ConfigClassTest extends TestCase
     public function notAllowUninitializedProperty(): void
     {
         $this->expectException(UninitializedException::class);
-        NotAllowUninitializedPropertyClassValue::fromArray();
+        NotAllowUninitializedPropertyClassModel::fromArray();
     }
 
     #[Test]
     #[DoesNotPerformAssertions]
     public function allowMixedTypeProperty(): void
     {
-        AllowMixedTypeClassValue::fromArray();
+        AllowMixedTypeClassModel::fromArray();
 
     }
 
@@ -85,14 +85,14 @@ class ConfigClassTest extends TestCase
     public function notAllowMixedTypeProperty(): void
     {
         $this->expectException(TypeError::class);
-        NotAllowMixedTypeClassValue::fromArray();
+        NotAllowMixedTypeClassModel::fromArray();
     }
 
     #[Test]
     #[DoesNotPerformAssertions]
     public function allowNoneTypeProperty(): void
     {
-        AllowNoneTypePropertyClassValue::fromArray();
+        AllowNoneTypePropertyClassModel::fromArray();
 
     }
 
@@ -100,7 +100,7 @@ class ConfigClassTest extends TestCase
     public function notAllowNoneTypeProperty(): void
     {
         $this->expectException(TypeError::class);
-        NotAllowNoneTypePropertyClassValue::fromArray();
+        NotAllowNoneTypePropertyClassModel::fromArray();
     }
 
     #[Test]

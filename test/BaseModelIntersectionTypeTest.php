@@ -19,37 +19,37 @@ class TypeC
     public const TYPE = 'C';
 }
 
-final class IntersectionTypeValue extends BaseModel
+final class IntersectionTypeModel extends BaseModel
 {
     public (ITypeA&TypeB)|string $AandBorString;
 
     public bool|float $floatOrBool;
 }
 
-class BaseValueObjectIntersectionTypeTest extends TestCase
+class BaseModelIntersectionTypeTest extends TestCase
 {
     #[Test]
     public function intersectionTypeObject(): void
     {
-        $intersectionTypeValue = IntersectionTypeValue::fromArray(
+        $intersectionTypeModel = IntersectionTypeModel::fromArray(
             [
                 'AandBorString' => new TypeB(),
                 'floatOrBool' => false,
             ],
         );
 
-        $this->assertSame(TypeB::class, $intersectionTypeValue->AandBorString::class);
-        $this->assertSame(false, $intersectionTypeValue->floatOrBool);
+        $this->assertSame(TypeB::class, $intersectionTypeModel->AandBorString::class);
+        $this->assertSame(false, $intersectionTypeModel->floatOrBool);
 
-        $intersectionTypeValue = IntersectionTypeValue::fromArray(
+        $intersectionTypeModel = IntersectionTypeModel::fromArray(
             [
                 'AandBorString' => 'string',
                 'floatOrBool' => 0.01,
             ],
         );
 
-        $this->assertSame('string', $intersectionTypeValue->AandBorString);
-        $this->assertSame(0.01, $intersectionTypeValue->floatOrBool);
+        $this->assertSame('string', $intersectionTypeModel->AandBorString);
+        $this->assertSame(0.01, $intersectionTypeModel->floatOrBool);
     }
 
     /**
@@ -93,6 +93,6 @@ class BaseValueObjectIntersectionTypeTest extends TestCase
     public function interserctionProperyWithInvalidType(array $args): void
     {
         $this->expectException(TypeError::class);
-        IntersectionTypeValue::fromArray($args);
+        IntersectionTypeModel::fromArray($args);
     }
 }
