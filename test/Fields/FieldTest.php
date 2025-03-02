@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Fields;
 
-;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
-use PhpValueObject\Fields\Field;
 use PhpValueObject\BaseValueObject;
-use PhpValueObject\Attributes\AllowUninitializedProperty;
+use PhpValueObject\Fields\Field;
+use PhpValueObject\Config\ConfigClass;
 
 class DateTimeFactory
 {
@@ -34,7 +33,7 @@ class DateTimeFactory
 }
 
 
-#[AllowUninitializedProperty]
+#[ConfigClass(allowUninitializedProperty: true)]
 final class TestValue extends BaseValueObject
 {
     #[Field]
@@ -60,7 +59,7 @@ final class TestValue extends BaseValueObject
 
 }
 
-#[AllowUninitializedProperty]
+#[ConfigClass(allowUninitializedProperty: true)]
 final class InvalidCallableValue extends BaseValueObject
 {
     // @phpstan-ignore argument.type
