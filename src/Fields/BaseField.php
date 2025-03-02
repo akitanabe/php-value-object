@@ -19,9 +19,7 @@ abstract class BaseField
     public function __construct(
         protected string|array|Closure|null $defaultFactory = null,
         public readonly ?string $alias = null,
-    ) {
-
-    }
+    ) {}
 
     /**
      * @param array<string|int, mixed> $data
