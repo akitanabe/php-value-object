@@ -10,7 +10,7 @@ use ReflectionClass;
 use PhpValueObject\BaseModel;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-final class ModelConfig
+final class ModelConfig extends BaseConfig
 {
     /**
      * 初期化していないプロパティを許可する
@@ -46,9 +46,14 @@ final class ModelConfig
         bool $allowMixedTypeProperty = false,
         bool $allowInheritableClass = true,
     ) {
-        foreach (["uninitializedProperty" => $allowUninitializedProperty, "noneTypeProperty" => $allowNoneTypeProperty, "mixedTypeProperty" => $allowMixedTypeProperty, "inheritableClass" => $allowInheritableClass] as $propertyName => $allow) {
-            $this->{$propertyName} = $allow ? new Allow() : new NotAllow();
-        }
+        parent::initialize(
+            [
+                "uninitializedProperty" => $allowUninitializedProperty,
+                "noneTypeProperty" => $allowNoneTypeProperty,
+                "mixedTypeProperty" => $allowMixedTypeProperty,
+                "inheritableClass" => $allowInheritableClass,
+            ],
+        );
     }
 
     /**
