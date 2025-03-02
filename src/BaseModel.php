@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject;
 
-use PhpValueObject\Config\ConfigModel;
+use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Exceptions\ValidationException;
@@ -26,7 +26,7 @@ abstract class BaseModel
     {
         $refClass = new ReflectionClass($this);
 
-        $configModel = ConfigModel::factory($refClass);
+        $configModel = ModelConfig::factory($refClass);
 
         // 入力値を取得
         $inputArguments = new InputArguments($args);

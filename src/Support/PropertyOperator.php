@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Support;
 
 use PhpValueObject\BaseModel;
-use PhpValueObject\Config\ConfigModel;
+use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
@@ -120,7 +120,7 @@ final class PropertyOperator
      *
      * @throws TypeError
      */
-    public function checkPropertyType(ReflectionClass $refClass, ConfigModel $configModel): void
+    public function checkPropertyType(ReflectionClass $refClass, ModelConfig $configModel): void
     {
         TypeHelper::checkType($refClass, $configModel, $this);
     }

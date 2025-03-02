@@ -3,60 +3,60 @@
 declare(strict_types=1);
 
 use PhpValueObject\BaseModel;
-use PhpValueObject\Config\ConfigModel;
+use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\UninitializedException;
 
-#[ConfigModel(allowUninitializedProperty: false)]
+#[ModelConfig(allowUninitializedProperty: false)]
 class NotAllowUninitializedPropertyClassModel extends BaseModel
 {
     public string $uninitialized;
 }
 
-#[ConfigModel(allowUninitializedProperty: true)]
+#[ModelConfig(allowUninitializedProperty: true)]
 class AllowInitializedPropertyModel extends BaseModel
 {
     public string $uninitialized;
 }
 
 
-#[ConfigModel(allowMixedTypeProperty: true)]
+#[ModelConfig(allowMixedTypeProperty: true)]
 class AllowMixedTypeClassModel extends BaseModel
 {
     public mixed $mixed = 'mixed';
 }
 
-#[ConfigModel(allowMixedTypeProperty: false)]
+#[ModelConfig(allowMixedTypeProperty: false)]
 class NotAllowMixedTypeClassModel extends BaseModel
 {
     public mixed $mixed = 'mixed';
 }
 
-#[ConfigModel(allowNoneTypeProperty: true)]
+#[ModelConfig(allowNoneTypeProperty: true)]
 class AllowNoneTypePropertyClassModel extends BaseModel
 {
     // @phpstan-ignore missingType.property
     public $none = 'none';
 }
 
-#[ConfigModel(allowNoneTypeProperty: false)]
+#[ModelConfig(allowNoneTypeProperty: false)]
 class NotAllowNoneTypePropertyClassModel extends BaseModel
 {
     // @phpstan-ignore missingType.property
     public $none = 'none';
 }
 
-#[ConfigModel(allowInheritableClass: false)]
+#[ModelConfig(allowInheritableClass: false)]
 class NotAllowInheritableClassValue extends BaseModel {}
 
-#[ConfigModel(allowInheritableClass: true)]
+#[ModelConfig(allowInheritableClass: true)]
 class AllowInheritableClassValue extends BaseModel {}
 
 
-class ConfigModelTest extends TestCase
+class ModelConfigTest extends TestCase
 {
     #[Test]
     #[DoesNotPerformAssertions]

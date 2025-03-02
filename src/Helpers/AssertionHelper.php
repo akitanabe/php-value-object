@@ -2,7 +2,7 @@
 
 namespace PhpValueObject\Helpers;
 
-use PhpValueObject\Config\ConfigModel;
+use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Support\PropertyOperator;
@@ -16,7 +16,7 @@ class AssertionHelper
      *
      * @throws InheritableClassException
      */
-    public static function assertInheritableClass(ReflectionClass $refClass, ConfigModel $configModel): void
+    public static function assertInheritableClass(ReflectionClass $refClass, ModelConfig $configModel): void
     {
         if (
             $refClass->isFinal() === false
@@ -37,7 +37,7 @@ class AssertionHelper
      */
     public static function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
-        ConfigModel $configModel,
+        ModelConfig $configModel,
         PropertyOperator $propertyOperator,
     ): bool {
 

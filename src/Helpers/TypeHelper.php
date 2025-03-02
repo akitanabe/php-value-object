@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Helpers;
 
-use PhpValueObject\Config\ConfigModel;
+use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Dto\TypeHintsDto;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintsDtoType;
@@ -38,7 +38,7 @@ final class TypeHelper
      */
     public static function checkType(
         ReflectionClass $refClass,
-        ConfigModel $configModel,
+        ModelConfig $configModel,
         PropertyOperator $propertyOperator,
     ): void {
         $typeHints = array_map(

@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\BaseModel;
 use PhpValueObject\Fields\Field;
-use PhpValueObject\Config\ConfigModel;
+use PhpValueObject\Config\ModelConfig;
 use UnexpectedValueException;
 
 use function strtolower as _strtolower;
@@ -59,7 +59,7 @@ function defaults(): string
 }
 
 
-#[ConfigModel(allowUninitializedProperty: true)]
+#[ModelConfig(allowUninitializedProperty: true)]
 final class TestModel extends BaseModel
 {
     #[Field]
@@ -85,7 +85,7 @@ final class TestModel extends BaseModel
 
 }
 
-#[ConfigModel(allowUninitializedProperty: true)]
+#[ModelConfig(allowUninitializedProperty: true)]
 final class InvalidCallableModel extends BaseModel
 {
     // @phpstan-ignore argument.type
