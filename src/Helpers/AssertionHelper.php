@@ -16,11 +16,11 @@ class AssertionHelper
      *
      * @throws InheritableClassException
      */
-    public static function assertInheritableClass(ReflectionClass $refClass, ModelConfig $configModel): void
+    public static function assertInheritableClass(ReflectionClass $refClass, ModelConfig $modelConfig): void
     {
         if (
             $refClass->isFinal() === false
-            && $configModel->inheritableClass->disallow()
+            && $modelConfig->inheritableClass->disallow()
         ) {
 
             throw new InheritableClassException(
@@ -37,14 +37,14 @@ class AssertionHelper
      */
     public static function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
-        ModelConfig $configModel,
+        ModelConfig $modelConfig,
         PropertyOperator $propertyOperator,
     ): bool {
 
         // プロパティが未初期化の場合
         if ($propertyOperator->isUninitializedProperty()) {
             // 未初期化プロパティが許可されている場合はスキップ
-            if ($configModel->uninitializedProperty->allow()) {
+            if ($modelConfig->uninitializedProperty->allow()) {
                 return true;
             }
 

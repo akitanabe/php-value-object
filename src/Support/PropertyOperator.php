@@ -120,9 +120,9 @@ final class PropertyOperator
      *
      * @throws TypeError
      */
-    public function checkPropertyType(ReflectionClass $refClass, ModelConfig $configModel): void
+    public function checkPropertyType(ReflectionClass $refClass, ModelConfig $modelConfig): void
     {
-        TypeHelper::checkType($refClass, $configModel, $this);
+        TypeHelper::checkType($refClass, $modelConfig, $this);
     }
 
     /**

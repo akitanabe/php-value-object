@@ -26,12 +26,12 @@ abstract class BaseModel
     {
         $refClass = new ReflectionClass($this);
 
-        $configModel = ModelConfig::factory($refClass);
+        $modelConfig = ModelConfig::factory($refClass);
 
         // 入力値を取得
         $inputArguments = new InputArguments($args);
 
-        AssertionHelper::assertInheritableClass(refClass: $refClass, configModel: $configModel);
+        AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
         foreach ($refClass->getProperties() as $property) {
             $propertyOperator = new PropertyOperator(refProperty: $property, inputArguments: $inputArguments);
@@ -39,14 +39,14 @@ abstract class BaseModel
             if (
                 AssertionHelper::assertUninitializedPropertyOrSkip(
                     refClass: $refClass,
-                    configModel: $configModel,
+                    modelConfig: $modelConfig,
                     propertyOperator: $propertyOperator,
                 )
             ) {
                 continue;
             }
 
-            $propertyOperator->checkPropertyType(refClass: $refClass, configModel: $configModel);
+            $propertyOperator->checkPropertyType(refClass: $refClass, modelConfig: $modelConfig);
 
             $propertyOperator->validatePropertyValue();
 

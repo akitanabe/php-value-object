@@ -38,7 +38,7 @@ final class TypeHelper
      */
     public static function checkType(
         ReflectionClass $refClass,
-        ModelConfig $configModel,
+        ModelConfig $modelConfig,
         PropertyOperator $propertyOperator,
     ): void {
         $typeHints = array_map(
@@ -49,8 +49,8 @@ final class TypeHelper
         foreach ($typeHints as $typeHintsDto) {
 
             if (
-                ($typeHintsDto->type === TypeHintsDtoType::NONE && $configModel->noneTypeProperty->disallow()) // 型が指定されていない場合
-                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $configModel->mixedTypeProperty->disallow()) // mixed型の場合
+                ($typeHintsDto->type === TypeHintsDtoType::NONE && $modelConfig->noneTypeProperty->disallow()) // 型が指定されていない場合
+                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $modelConfig->mixedTypeProperty->disallow()) // mixed型の場合
             ) {
                 throw new TypeError(
                     "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type.",
