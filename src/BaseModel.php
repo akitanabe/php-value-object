@@ -50,7 +50,7 @@ abstract class BaseModel
 
             $propertyOperator->validatePropertyValue();
 
-            $propertyOperator->setPropertyValue(vo: $this);
+            $propertyOperator->setPropertyValue(model: $this);
         }
     }
 

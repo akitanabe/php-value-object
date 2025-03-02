@@ -121,9 +121,9 @@ final class PropertyOperator
     /**
      * プロパティに値を設定
      */
-    public function setPropertyValue(BaseModel $vo): void
+    public function setPropertyValue(BaseModel $model): void
     {
-        $this->refProperty->setValue($vo, $this->value);
+        $this->refProperty->setValue($model, $this->value);
     }
 
     /**
