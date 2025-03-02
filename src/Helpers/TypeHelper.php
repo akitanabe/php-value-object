@@ -13,6 +13,7 @@ use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use TypeError;
+use PhpValueObject\BaseValueObject;
 
 final class TypeHelper
 {
@@ -31,8 +32,7 @@ final class TypeHelper
      * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるため
      * プリミティブ型のみ型をチェックする
      *
-     * @template T of object
-     * @param ReflectionClass<T> $refClass
+     * @param ReflectionClass<BaseValueObject> $refClass
      *
      * @throws TypeError
      */

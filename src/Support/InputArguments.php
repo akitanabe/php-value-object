@@ -15,8 +15,7 @@ class InputArguments
     private array $inputs;
 
     /**
-     * @template T of object
-     * @param ReflectionClass<T> $refClass
+     * @param ReflectionClass<BaseValueObject> $refClass
      * @param array<string|int,mixed> $args
      */
     public function __construct(ReflectionClass $refClass, array $args)
@@ -46,8 +45,7 @@ class InputArguments
      * コンストラクタへの入力値を取得
      * オーバーライドされていない場合は、そのまま引数を返す
      *
-     * @template T of object
-     * @param ReflectionClass<T> $refClass
+     * @param ReflectionClass<BaseValueObject> $refClass
      * @param array<string|int,mixed> $args
      *
      * @return array<string|int,mixed>

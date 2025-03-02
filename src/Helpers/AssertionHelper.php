@@ -7,12 +7,12 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
+use PhpValueObject\BaseValueObject;
 
 class AssertionHelper
 {
     /**
-     * @template T of object
-     * @param ReflectionClass<T> $refClass
+     * @param ReflectionClass<BaseValueObject> $refClass
      *
      * @throws InheritableClassException
      */
@@ -30,8 +30,8 @@ class AssertionHelper
     }
 
     /**
-     * @template T of object
-     * @param ReflectionClass<T> $refClass
+     *
+     * @param ReflectionClass<BaseValueObject> $refClass
      *
      * @throws UninitializedException
      */

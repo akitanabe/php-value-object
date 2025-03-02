@@ -108,8 +108,8 @@ final class PropertyOperator
 
     /**
      * プロパティの型をチェック
-     * @template T of object
-     * @param ReflectionClass<T> $refClass
+     *
+     * @param ReflectionClass<BaseValueObject> $refClass
      *
      * @throws TypeError
      */
