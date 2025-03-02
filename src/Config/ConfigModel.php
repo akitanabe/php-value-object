@@ -10,7 +10,7 @@ use ReflectionClass;
 use PhpValueObject\BaseModel;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-final class ConfigClass
+final class ConfigModel
 {
     /**
      * 初期化していないプロパティを許可する
@@ -54,7 +54,7 @@ final class ConfigClass
     /**
      *
      * @param ReflectionClass<BaseModel> $refClass
-     * @return ConfigClass
+     * @return ConfigModel
      */
     public static function factory(ReflectionClass $refClass): self
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject;
 
-use PhpValueObject\Config\ConfigClass;
+use PhpValueObject\Config\ConfigModel;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Exceptions\ValidationException;
@@ -26,12 +26,12 @@ abstract class BaseModel
     {
         $refClass = new ReflectionClass($this);
 
-        $configClass = ConfigClass::factory($refClass);
+        $configModel = ConfigModel::factory($refClass);
 
         // 入力値を取得
         $inputArguments = new InputArguments($refClass, $args);
 
-        AssertionHelper::assertInheritableClass(refClass: $refClass, configClass: $configClass);
+        AssertionHelper::assertInheritableClass(refClass: $refClass, configModel: $configModel);
 
         foreach ($refClass->getProperties() as $property) {
             $propertyOperator = new PropertyOperator(refProperty: $property, inputArguments: $inputArguments);
@@ -39,14 +39,14 @@ abstract class BaseModel
             if (
                 AssertionHelper::assertUninitializedPropertyOrSkip(
                     refClass: $refClass,
-                    configClass: $configClass,
+                    configModel: $configModel,
                     propertyOperator: $propertyOperator,
                 )
             ) {
                 continue;
             }
 
-            $propertyOperator->checkPropertyType(refClass: $refClass, configClass: $configClass);
+            $propertyOperator->checkPropertyType(refClass: $refClass, configModel: $configModel);
 
             $propertyOperator->validatePropertyValue();
 

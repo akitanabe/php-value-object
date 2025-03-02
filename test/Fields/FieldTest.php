@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\BaseModel;
 use PhpValueObject\Fields\Field;
-use PhpValueObject\Config\ConfigClass;
+use PhpValueObject\Config\ConfigModel;
 
 class DateTimeFactory
 {
@@ -33,7 +33,7 @@ class DateTimeFactory
 }
 
 
-#[ConfigClass(allowUninitializedProperty: true)]
+#[ConfigModel(allowUninitializedProperty: true)]
 final class TestValue extends BaseModel
 {
     #[Field]
@@ -59,7 +59,7 @@ final class TestValue extends BaseModel
 
 }
 
-#[ConfigClass(allowUninitializedProperty: true)]
+#[ConfigModel(allowUninitializedProperty: true)]
 final class InvalidCallableValue extends BaseModel
 {
     // @phpstan-ignore argument.type

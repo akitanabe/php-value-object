@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Helpers;
 
-use PhpValueObject\Config\ConfigClass;
+use PhpValueObject\Config\ConfigModel;
 use PhpValueObject\Dto\TypeHintsDto;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintsDtoType;
@@ -38,7 +38,7 @@ final class TypeHelper
      */
     public static function checkType(
         ReflectionClass $refClass,
-        ConfigClass $configClass,
+        ConfigModel $configModel,
         PropertyOperator $propertyOperator,
     ): void {
         $typeHints = array_map(
@@ -49,8 +49,8 @@ final class TypeHelper
         foreach ($typeHints as $typeHintsDto) {
 
             if (
-                ($typeHintsDto->type === TypeHintsDtoType::NONE && $configClass->noneTypeProperty->disallow()) // 型が指定されていない場合
-                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $configClass->mixedTypeProperty->disallow()) // mixed型の場合
+                ($typeHintsDto->type === TypeHintsDtoType::NONE && $configModel->noneTypeProperty->disallow()) // 型が指定されていない場合
+                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $configModel->mixedTypeProperty->disallow()) // mixed型の場合
             ) {
                 throw new TypeError(
                     "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type.",
