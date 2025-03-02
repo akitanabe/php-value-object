@@ -2,6 +2,7 @@
 
 namespace PhpValueObject\Helpers;
 
+use PhpValueObject\Config\ConfigClass;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Options\Strict;
@@ -16,11 +17,11 @@ class AssertionHelper
      *
      * @throws InheritableClassException
      */
-    public static function assertInheritableClass(ReflectionClass $refClass, Strict $strict): void
+    public static function assertInheritableClass(ReflectionClass $refClass, ConfigClass $configClass): void
     {
         if (
             $refClass->isFinal() === false
-            && $strict->inheritableClass->disallow()
+            && $configClass->inheritableClass->disallow()
         ) {
 
             throw new InheritableClassException(
@@ -37,14 +38,14 @@ class AssertionHelper
      */
     public static function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
-        Strict $strict,
+        ConfigClass $configClass,
         PropertyOperator $propertyOperator,
     ): bool {
 
         // プロパティが未初期化の場合
         if ($propertyOperator->isUninitializedProperty()) {
             // 未初期化プロパティが許可されている場合はスキップ
-            if ($strict->uninitializedProperty->allow()) {
+            if ($configClass->uninitializedProperty->allow()) {
                 return true;
             }
 
