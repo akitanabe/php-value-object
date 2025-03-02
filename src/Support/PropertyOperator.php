@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PhpValueObject\Config\ConfigClass;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
@@ -109,7 +109,7 @@ final class PropertyOperator
     /**
      * プロパティの型をチェック
      *
-     * @param ReflectionClass<BaseValueObject> $refClass
+     * @param ReflectionClass<BaseModel> $refClass
      *
      * @throws TypeError
      */
@@ -121,7 +121,7 @@ final class PropertyOperator
     /**
      * プロパティに値を設定
      */
-    public function setPropertyValue(BaseValueObject $vo): void
+    public function setPropertyValue(BaseModel $vo): void
     {
         $this->refProperty->setValue($vo, $this->value);
     }

@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Config\ConfigClass;
 
@@ -34,7 +34,7 @@ class DateTimeFactory
 
 
 #[ConfigClass(allowUninitializedProperty: true)]
-final class TestValue extends BaseValueObject
+final class TestValue extends BaseModel
 {
     #[Field]
     public readonly string $test;
@@ -60,7 +60,7 @@ final class TestValue extends BaseValueObject
 }
 
 #[ConfigClass(allowUninitializedProperty: true)]
-final class InvalidCallableValue extends BaseValueObject
+final class InvalidCallableValue extends BaseModel
 {
     // @phpstan-ignore argument.type
     #[Field(factory: 'notCallable')]

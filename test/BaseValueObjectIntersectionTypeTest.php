@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class TypeC
     public const TYPE = 'C';
 }
 
-final class IntersectionTypeValue extends BaseValueObject
+final class IntersectionTypeValue extends BaseModel
 {
     public (ITypeA&TypeB)|string $AandBorString;
 

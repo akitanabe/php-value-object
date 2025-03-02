@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class Immutable {}
 
-final class ImmutableTestValue extends BaseValueObject
+final class ImmutableTestValue extends BaseModel
 {
     public readonly Immutable $test;
 }

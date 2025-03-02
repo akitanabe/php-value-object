@@ -15,7 +15,7 @@ use ReflectionClass;
 use stdClass;
 use TypeError;
 
-abstract class BaseValueObject
+abstract class BaseModel
 {
     /**
      * @param array<string, mixed> $args

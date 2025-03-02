@@ -2,7 +2,7 @@
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -15,7 +15,7 @@ class InputArguments
     private array $inputs;
 
     /**
-     * @param ReflectionClass<BaseValueObject> $refClass
+     * @param ReflectionClass<BaseModel> $refClass
      * @param array<string|int,mixed> $args
      */
     public function __construct(ReflectionClass $refClass, array $args)
@@ -45,7 +45,7 @@ class InputArguments
      * コンストラクタへの入力値を取得
      * オーバーライドされていない場合は、そのまま引数を返す
      *
-     * @param ReflectionClass<BaseValueObject> $refClass
+     * @param ReflectionClass<BaseModel> $refClass
      * @param array<string|int,mixed> $args
      *
      * @return array<string|int,mixed>
@@ -57,7 +57,7 @@ class InputArguments
         // コンストラクタがオーバーライドされている場合、子クラスのコンストラクタパラメータから引数を設定する
         return (
             isset($refConstructor)
-            && $refConstructor->getDeclaringClass()->name !== BaseValueObject::class
+            && $refConstructor->getDeclaringClass()->name !== BaseModel::class
         )
             ? self::toNamedArgs($refConstructor, $args)
             : $args;

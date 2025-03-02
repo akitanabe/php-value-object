@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PhpValueObject\Config\ConfigClass;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
@@ -11,49 +11,49 @@ use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\UninitializedException;
 
 #[ConfigClass(allowUninitializedProperty: false)]
-class NotAllowUninitializedPropertyClassValue extends BaseValueObject
+class NotAllowUninitializedPropertyClassValue extends BaseModel
 {
     public string $uninitialized;
 }
 
 #[ConfigClass(allowUninitializedProperty: true)]
-class AllowInitializedPropertyValue extends BaseValueObject
+class AllowInitializedPropertyValue extends BaseModel
 {
     public string $uninitialized;
 }
 
 
 #[ConfigClass(allowMixedTypeProperty: true)]
-class AllowMixedTypeClassValue extends BaseValueObject
+class AllowMixedTypeClassValue extends BaseModel
 {
     public mixed $mixed = 'mixed';
 }
 
 #[ConfigClass(allowMixedTypeProperty: false)]
-class NotAllowMixedTypeClassValue extends BaseValueObject
+class NotAllowMixedTypeClassValue extends BaseModel
 {
     public mixed $mixed = 'mixed';
 }
 
 #[ConfigClass(allowNoneTypeProperty: true)]
-class AllowNoneTypePropertyClassValue extends BaseValueObject
+class AllowNoneTypePropertyClassValue extends BaseModel
 {
     // @phpstan-ignore missingType.property
     public $none = 'none';
 }
 
 #[ConfigClass(allowNoneTypeProperty: false)]
-class NotAllowNoneTypePropertyClassValue extends BaseValueObject
+class NotAllowNoneTypePropertyClassValue extends BaseModel
 {
     // @phpstan-ignore missingType.property
     public $none = 'none';
 }
 
 #[ConfigClass(allowInheritableClass: false)]
-class NotAllowInheritableClassValue extends BaseValueObject {}
+class NotAllowInheritableClassValue extends BaseModel {}
 
 #[ConfigClass(allowInheritableClass: true)]
-class AllowInheritableClassValue extends BaseValueObject {}
+class AllowInheritableClassValue extends BaseModel {}
 
 
 class ConfigClassTest extends TestCase

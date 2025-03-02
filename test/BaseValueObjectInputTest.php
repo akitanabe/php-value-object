@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class BasicInputTestValue extends BaseValueObject
+final class BasicInputTestValue extends BaseModel
 {
     public string $string;
 
@@ -17,7 +17,7 @@ final class BasicInputTestValue extends BaseValueObject
     public float $float;
 }
 
-final class DefaultOverrideContructorValue extends BaseValueObject
+final class DefaultOverrideContructorValue extends BaseModel
 {
     public string $string = 'string';
 

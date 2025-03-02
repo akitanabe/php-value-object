@@ -7,7 +7,7 @@ namespace PhpValueObject\Config;
 use Attribute;
 use PhpValueObject\Helpers\AttributeHelper;
 use ReflectionClass;
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 final class ConfigClass
@@ -53,7 +53,7 @@ final class ConfigClass
 
     /**
      *
-     * @param ReflectionClass<BaseValueObject> $refClass
+     * @param ReflectionClass<BaseModel> $refClass
      * @return ConfigClass
      */
     public static function factory(ReflectionClass $refClass): self

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class StaticTestObject extends BaseValueObject
+final class StaticTestObject extends BaseModel
 {
     public string $name;
 

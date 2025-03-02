@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use PhpValueObject\BaseValueObject;
+use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class PrimitiveTestValue extends BaseValueObject
+final class PrimitiveTestValue extends BaseModel
 {
     public readonly string $stringVal;
 
@@ -18,7 +18,7 @@ final class PrimitiveTestValue extends BaseValueObject
     public readonly bool $boolVal;
 }
 
-final class UnionTestValue extends BaseValueObject
+final class UnionTestValue extends BaseModel
 {
     public readonly string|int $stringOrInt;
 
