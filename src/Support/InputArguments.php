@@ -4,17 +4,13 @@ namespace PhpValueObject\Support;
 
 class InputArguments
 {
-    /**
-     * @var array<string|int, mixed>
-     */
-    public readonly array $inputs;
 
     /**
-     * @param array<string|int, mixed> $args
+     * @param array<string|int, mixed> $inputs
      */
-    public function __construct(array $args)
-    {
-        $this->inputs = $args;
+    public function __construct(
+        public readonly array $inputs,
+    ) {
     }
 
     /**
