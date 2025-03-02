@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer;
 use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
+use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
@@ -19,5 +20,5 @@ return ECSConfig::configure()
         'import_constants' => true,
         'import_functions' => true,
     ])
-    ->withRules([LineLengthFixer::class])
+    ->withRules([LineLengthFixer::class, NoUnusedImportsFixer::class])
     ->withPhpCsFixerSets(perCS20: true);
