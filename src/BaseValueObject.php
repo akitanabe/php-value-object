@@ -9,7 +9,6 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
-use PhpValueObject\Options\Strict;
 use PhpValueObject\Support\InputArguments;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;

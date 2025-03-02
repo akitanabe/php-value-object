@@ -8,7 +8,6 @@ use PhpValueObject\Config\ConfigClass;
 use PhpValueObject\Dto\TypeHintsDto;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintsDtoType;
-use PhpValueObject\Options\Strict;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use ReflectionIntersectionType;

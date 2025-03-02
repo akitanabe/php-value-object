@@ -5,7 +5,6 @@ namespace PhpValueObject\Helpers;
 use PhpValueObject\Config\ConfigClass;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
-use PhpValueObject\Options\Strict;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 

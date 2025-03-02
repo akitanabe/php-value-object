@@ -13,7 +13,6 @@ use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Helpers\TypeHelper;
-use PhpValueObject\Options\Strict;
 use PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
 use ReflectionClass;
