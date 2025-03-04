@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
+namespace PhpValueObject\Test;
+
 use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 final class StaticTestModel extends BaseModel
 {

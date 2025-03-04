@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
+namespace PhpValueObject\Test;
+
 use PhpValueObject\BaseModel;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 interface ITypeA {}
 
