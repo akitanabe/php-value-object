@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace PhpValueObject\Test\Config;
+
 use PhpValueObject\BaseModel;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
@@ -9,6 +11,7 @@ use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\UninitializedException;
+use TypeError;
 
 #[ModelConfig(allowUninitializedProperty: false)]
 class NotAllowUninitializedPropertyClassModel extends BaseModel
@@ -17,7 +20,7 @@ class NotAllowUninitializedPropertyClassModel extends BaseModel
 }
 
 #[ModelConfig(allowUninitializedProperty: true)]
-class AllowInitializedPropertyModel extends BaseModel
+class AllowUnInitializedPropertyClassModel extends BaseModel
 {
     public string $uninitialized;
 }
@@ -62,7 +65,7 @@ class ModelConfigTest extends TestCase
     #[DoesNotPerformAssertions]
     public function allowUnitinializedProperty(): void
     {
-        AllowInitializedPropertyModel::fromArray();
+        AllowUnInitializedPropertyClassModel::fromArray();
 
     }
 
