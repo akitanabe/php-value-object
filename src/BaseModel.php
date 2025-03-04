@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PhpValueObject;
 
+use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
+use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Support\InputArguments;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
@@ -34,19 +36,32 @@ abstract class BaseModel
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
         foreach ($refClass->getProperties() as $property) {
-            $propertyOperator = new PropertyOperator(refProperty: $property, inputArguments: $inputArguments);
+
+            $field = FieldsHelper::createField($property);
+            $fieldConfig = FieldConfig::factory($property);
+
+            $propertyOperator = new PropertyOperator(
+                refProperty: $property,
+                inputArguments: $inputArguments,
+                field: $field,
+            );
 
             if (
                 AssertionHelper::assertUninitializedPropertyOrSkip(
                     refClass: $refClass,
                     modelConfig: $modelConfig,
+                    fieldConfig: $fieldConfig,
                     propertyOperator: $propertyOperator,
                 )
             ) {
                 continue;
             }
 
-            $propertyOperator->checkPropertyType(refClass: $refClass, modelConfig: $modelConfig);
+            $propertyOperator->checkPropertyType(
+                refClass: $refClass,
+                modelConfig: $modelConfig,
+                fieldConfig: $fieldConfig,
+            );
 
             $propertyOperator->validatePropertyValue();
 

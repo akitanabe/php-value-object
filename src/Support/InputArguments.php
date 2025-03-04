@@ -4,14 +4,12 @@ namespace PhpValueObject\Support;
 
 class InputArguments
 {
-
     /**
      * @param array<string|int, mixed> $inputs
      */
     public function __construct(
         public readonly array $inputs,
-    ) {
-    }
+    ) {}
 
     /**
      * コンストラクタへの入力値が存在しているか

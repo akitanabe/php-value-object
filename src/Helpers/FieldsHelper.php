@@ -6,6 +6,10 @@ namespace PhpValueObject\Helpers;
 
 use Closure;
 use InvalidArgumentException;
+use PhpValueObject\Fields\BaseField;
+use PhpValueObject\Fields\Field;
+use ReflectionAttribute;
+use ReflectionProperty;
 
 class FieldsHelper
 {
@@ -41,5 +45,21 @@ class FieldsHelper
         }
 
         return $fn(...);
+    }
+
+    /**
+     * プロパティに設定されているBaseField継承クラスを生成する
+     * 設定がない場合はFieldクラスを生成する
+     * @param ReflectionProperty $refProperty
+     * @return BaseField
+     *
+     */
+    public static function createField(ReflectionProperty $refProperty): BaseField
+    {
+        return AttributeHelper::getAttribute(
+            $refProperty,
+            BaseField::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        )?->newInstance() ?? new Field();
     }
 }

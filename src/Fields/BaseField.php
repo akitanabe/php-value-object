@@ -8,10 +8,13 @@ use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 
 /**
+ * フィールドの基底クラス
+ *
  */
 abstract class BaseField
 {
     /**
+     *
      * @template T of object
      * @param  callable-string|class-string<T>|array{string|object, string}|Closure|null $defaultFactory default値の生成関数。default値が存在していたらUnexpectedValueExceptionが投げられます
      * @param string|null $alias フィールド名のエイリアス。指定された場合、エイリアス名で入力値を取得します

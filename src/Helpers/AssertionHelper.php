@@ -2,6 +2,7 @@
 
 namespace PhpValueObject\Helpers;
 
+use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
@@ -38,13 +39,14 @@ class AssertionHelper
     public static function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
         ModelConfig $modelConfig,
+        FieldConfig $fieldConfig,
         PropertyOperator $propertyOperator,
     ): bool {
 
         // プロパティが未初期化の場合
         if ($propertyOperator->isUninitializedProperty()) {
             // 未初期化プロパティが許可されている場合はスキップ
-            if ($modelConfig->uninitializedProperty->allow()) {
+            if ($modelConfig->uninitializedProperty->allow() || $fieldConfig->uninitializedProperty->allow()) {
                 return true;
             }
 

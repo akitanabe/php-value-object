@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Helpers;
 
+use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Dto\TypeHintsDto;
 use PhpValueObject\Enums\PropertyValueType;
@@ -39,6 +40,7 @@ final class TypeHelper
     public static function checkType(
         ReflectionClass $refClass,
         ModelConfig $modelConfig,
+        FieldConfig $fieldConfig,
         PropertyOperator $propertyOperator,
     ): void {
         $typeHints = array_map(
@@ -49,8 +51,16 @@ final class TypeHelper
         foreach ($typeHints as $typeHintsDto) {
 
             if (
-                ($typeHintsDto->type === TypeHintsDtoType::NONE && $modelConfig->noneTypeProperty->disallow()) // 型が指定されていない場合
-                || ($typeHintsDto->type === TypeHintsDtoType::MIXED && $modelConfig->mixedTypeProperty->disallow()) // mixed型の場合
+                // 型が指定されていない場合
+                (
+                    $typeHintsDto->type === TypeHintsDtoType::NONE
+                    && ($modelConfig->noneTypeProperty->disallow() && $fieldConfig->noneTypeProperty->disallow())
+                )
+                // mixed型の場合
+                || (
+                    $typeHintsDto->type === TypeHintsDtoType::MIXED
+                    && ($modelConfig->mixedTypeProperty->disallow() && $fieldConfig->mixedTypeProperty->disallow())
+                )
             ) {
                 throw new TypeError(
                     "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type.",

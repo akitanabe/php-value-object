@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace PhpValueObject\Support;
 
 use PhpValueObject\BaseModel;
+use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Fields\Field;
-use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Helpers\TypeHelper;
 use PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
@@ -41,15 +40,9 @@ final class PropertyOperator
     public function __construct(
         protected ReflectionProperty $refProperty,
         InputArguments $inputArguments,
+        BaseField $field,
     ) {
         $this->name = $refProperty->name;
-
-        /** @var BaseField $field */
-        $field = AttributeHelper::getAttribute(
-            $refProperty,
-            BaseField::class,
-            ReflectionAttribute::IS_INSTANCEOF,
-        )?->newInstance() ?? new Field();
 
         // プロパティの初期化状態を判定
         $hasInputValue = $inputArguments->hasValue($refProperty->name, $field->alias);
@@ -120,9 +113,12 @@ final class PropertyOperator
      *
      * @throws TypeError
      */
-    public function checkPropertyType(ReflectionClass $refClass, ModelConfig $modelConfig): void
-    {
-        TypeHelper::checkType($refClass, $modelConfig, $this);
+    public function checkPropertyType(
+        ReflectionClass $refClass,
+        ModelConfig $modelConfig,
+        FieldConfig $fieldConfig,
+    ): void {
+        TypeHelper::checkType($refClass, $modelConfig, $fieldConfig, $this);
     }
 
     /**
