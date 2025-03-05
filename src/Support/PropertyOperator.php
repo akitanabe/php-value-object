@@ -11,7 +11,7 @@ use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Helpers\TypeHelper;
+use PhpValueObject\Helpers\PropertyHelper;
 use PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -20,7 +20,6 @@ use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 use TypeError;
-use UnexpectedValueException;
 
 final class PropertyOperator
 {
@@ -44,29 +43,7 @@ final class PropertyOperator
     ) {
         $this->name = $refProperty->name;
 
-        // プロパティの初期化状態を判定
-        $hasInputValue = $inputArguments->hasValue($refProperty->name, $field->alias);
-        $hasDefaultFactory = $field->hasDefaultFactory();
-        $hasDefaultValue = $refProperty->hasDefaultValue();
-
-        // デフォルトファクトリーとデフォルト値が両方存在する場合は例外を投げる
-        if ($hasDefaultFactory && $hasDefaultValue) {
-            throw new UnexpectedValueException("{$refProperty->name} has both default factory and default value.");
-        }
-
-        $this->initializedStatus = match (true) {
-            // デフォルトファクトリが存在する場合
-            $hasDefaultFactory => PropertyInitializedStatus::BY_FACTORY,
-
-            // 外部入力が存在
-            $hasInputValue => PropertyInitializedStatus::BY_INPUT,
-
-            // デフォルト値が存在
-            $hasDefaultValue => PropertyInitializedStatus::BY_DEFAULT,
-
-            // 未初期化
-            default => PropertyInitializedStatus::UNINITIALIZED,
-        };
+        $this->initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputArguments, $field);
 
         // 入力値と初期化済みプロパティの両方が存在しない場合
         if ($this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
@@ -83,20 +60,11 @@ final class PropertyOperator
             ? $propertyType->getTypes()
             : [$propertyType];
 
-        // プロパティの初期化状態に応じて値を取得
-        $this->value = match (true) {
-            $this->initializedStatus === PropertyInitializedStatus::BY_FACTORY => $field->defaultFactory(
-                $inputArguments->inputs,
-            ),
-            $this->initializedStatus === PropertyInitializedStatus::BY_INPUT => $inputArguments->getValue(
-                $refProperty->name,
-                $field->alias,
-            ),
-            default => $refProperty->getDefaultValue(),
-        };
+        $this->value = PropertyHelper::getValue($this->initializedStatus, $refProperty, $inputArguments, $field);
 
-        $this->valueType = TypeHelper::getValueType($this->value);
+        $this->valueType = PropertyHelper::getValueType($this->value);
     }
+
 
     /**
      * プロパティが未初期化状態か
@@ -118,7 +86,7 @@ final class PropertyOperator
         ModelConfig $modelConfig,
         FieldConfig $fieldConfig,
     ): void {
-        TypeHelper::checkType($refClass, $modelConfig, $fieldConfig, $this);
+        PropertyHelper::checkType($refClass, $modelConfig, $fieldConfig, $this);
     }
 
     /**

@@ -7,17 +7,43 @@ namespace PhpValueObject\Helpers;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Dto\TypeHintsDto;
+use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintsDtoType;
+use PhpValueObject\Fields\BaseField;
+use PhpValueObject\Support\InputArguments;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
+use ReflectionProperty;
 use TypeError;
 use PhpValueObject\BaseModel;
+use UnexpectedValueException;
 
-final class TypeHelper
+final class PropertyHelper
 {
+    /**
+     * プロパティの初期化状態に応じて値を取得
+     */
+    public static function getValue(
+        PropertyInitializedStatus $initializedStatus,
+        ReflectionProperty $refProperty,
+        InputArguments $inputArguments,
+        BaseField $field,
+    ): mixed {
+        return match (true) {
+            $initializedStatus === PropertyInitializedStatus::BY_FACTORY => $field->defaultFactory(
+                $inputArguments->inputs,
+            ),
+            $initializedStatus === PropertyInitializedStatus::BY_INPUT => $inputArguments->getValue(
+                $refProperty->name,
+                $field->alias,
+            ),
+            default => $refProperty->getDefaultValue(),
+        };
+    }
+
     /**
      * gettypeの結果をPHPの型名に変換
      */
@@ -101,4 +127,40 @@ final class TypeHelper
             "Cannot assign {$propertyOperator->valueType->value} to property {$refClass->name}::\${$propertyOperator->name} of type {$errorTypeName}",
         );
     }
+
+    /**
+     * プロパティの初期化状態を取得
+     *
+     * @throws UnexpectedValueException
+     */
+    public static function getInitializedStatus(
+        ReflectionProperty $refProperty,
+        InputArguments $inputArguments,
+        BaseField $field,
+    ): PropertyInitializedStatus {
+        // プロパティの初期化状態を判定
+        $hasInputValue = $inputArguments->hasValue($refProperty->name, $field->alias);
+        $hasDefaultFactory = $field->hasDefaultFactory();
+        $hasDefaultValue = $refProperty->hasDefaultValue();
+
+        // デフォルトファクトリーとデフォルト値が両方存在する場合は例外を投げる
+        if ($hasDefaultFactory && $hasDefaultValue) {
+            throw new UnexpectedValueException("{$refProperty->name} has both default factory and default value.");
+        }
+
+        return match (true) {
+            // デフォルトファクトリが存在する場合
+            $hasDefaultFactory => PropertyInitializedStatus::BY_FACTORY,
+
+            // 外部入力が存在
+            $hasInputValue => PropertyInitializedStatus::BY_INPUT,
+
+            // デフォルト値が存在
+            $hasDefaultValue => PropertyInitializedStatus::BY_DEFAULT,
+
+            // 未初期化
+            default => PropertyInitializedStatus::UNINITIALIZED,
+        };
+    }
+
 }
