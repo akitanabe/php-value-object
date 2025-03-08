@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\Support\TypeHints;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
