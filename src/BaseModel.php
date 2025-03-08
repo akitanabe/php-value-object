@@ -46,6 +46,7 @@ abstract class BaseModel
                 field: $field,
             );
 
+            // 未初期化プロパティの場合はスキップ
             if (
                 AssertionHelper::assertUninitializedPropertyOrSkip(
                     refClass: $refClass,
@@ -57,13 +58,18 @@ abstract class BaseModel
                 continue;
             }
 
-            $propertyOperator->checkPropertyType(
+            // 許可されていない型を検証
+            AssertionHelper::assertDisallowPropertyType(
                 refClass: $refClass,
                 modelConfig: $modelConfig,
                 fieldConfig: $fieldConfig,
+                propertyOperator: $propertyOperator,
             );
 
             $propertyOperator->validatePropertyValue();
+
+            // 入力前にプリミティブ型のチェック
+            AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator,);
 
             $propertyOperator->setPropertyValue(model: $this);
         }

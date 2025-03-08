@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Support;
 
 use PhpValueObject\BaseModel;
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Dto\TypeHintsDto;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
@@ -14,11 +13,7 @@ use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Helpers\PropertyHelper;
 use PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
-use ReflectionClass;
-use ReflectionIntersectionType;
-use ReflectionNamedType;
 use ReflectionProperty;
-use ReflectionUnionType;
 use TypeError;
 
 final class PropertyOperator
@@ -27,14 +22,12 @@ final class PropertyOperator
 
     public readonly PropertyInitializedStatus $initializedStatus;
 
-    /**
-     * @var (ReflectionNamedType|ReflectionIntersectionType|null)[]
-     */
-    public readonly array $types;
-
     public readonly mixed $value;
 
     public readonly PropertyValueType $valueType;
+
+    /** @var TypeHintsDto[] */
+    public readonly array $typeHints;
 
     public function __construct(
         protected ReflectionProperty $refProperty,
@@ -42,6 +35,8 @@ final class PropertyOperator
         BaseField $field,
     ) {
         $this->name = $refProperty->name;
+
+        $this->typeHints = PropertyHelper::getTypeHints($refProperty);
 
         $this->initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputArguments, $field);
 
@@ -51,14 +46,6 @@ final class PropertyOperator
             $this->valueType = PropertyValueType::NULL;
             return;
         }
-
-        $propertyType = $refProperty->getType();
-
-        // PHPStanのチェックで継承元のReflectionType|nullが入ってくるので無視する(設定にある？)
-        // @phpstan-ignore assign.propertyType
-        $this->types = ($propertyType instanceof ReflectionUnionType)
-            ? $propertyType->getTypes()
-            : [$propertyType];
 
         $this->value = PropertyHelper::getValue($this->initializedStatus, $refProperty, $inputArguments, $field);
 
@@ -75,22 +62,9 @@ final class PropertyOperator
     }
 
     /**
-     * プロパティの型をチェック
-     *
-     * @param ReflectionClass<BaseModel> $refClass
+     * プロパティに値を設定
      *
      * @throws TypeError
-     */
-    public function checkPropertyType(
-        ReflectionClass $refClass,
-        ModelConfig $modelConfig,
-        FieldConfig $fieldConfig,
-    ): void {
-        PropertyHelper::checkType($refClass, $modelConfig, $fieldConfig, $this);
-    }
-
-    /**
-     * プロパティに値を設定
      */
     public function setPropertyValue(BaseModel $model): void
     {
