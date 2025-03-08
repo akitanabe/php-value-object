@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Enums;
 
-enum TypeHintsDtoType: string
+enum TypeHintsType: string
 {
     case NONE = 'none';
     case MIXED = 'mixed';

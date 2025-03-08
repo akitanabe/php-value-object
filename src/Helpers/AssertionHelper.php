@@ -4,10 +4,10 @@ namespace PhpValueObject\Helpers;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Dto\TypeHintsDto;
+use PhpValueObject\Support\TypeHints;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Enums\TypeHintsDtoType;
+use PhpValueObject\Enums\TypeHintsType;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Support\PropertyOperator;
@@ -80,12 +80,12 @@ class AssertionHelper
             if (
                 (
                     // 型が指定されていない場合
-                    $typeHintsDto->type === TypeHintsDtoType::NONE
+                    $typeHintsDto->type === TypeHintsType::NONE
                     && ($modelConfig->noneTypeProperty->disallow() && $fieldConfig->noneTypeProperty->disallow())
                 )
                 || (
                     // mixed型の場合
-                    $typeHintsDto->type === TypeHintsDtoType::MIXED
+                    $typeHintsDto->type === TypeHintsType::MIXED
                     && ($modelConfig->mixedTypeProperty->disallow() && $fieldConfig->mixedTypeProperty->disallow())
                 )
             ) {
@@ -122,7 +122,7 @@ class AssertionHelper
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $typeHints,
-            fn(TypeHintsDto $typeHintsDto): bool => $typeHintsDto->isPrimitive,
+            fn(TypeHints $typeHintsDto): bool => $typeHintsDto->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -139,7 +139,7 @@ class AssertionHelper
 
         $errorTypeName = join(
             '|',
-            array_map(fn(TypeHintsDto $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
+            array_map(fn(TypeHints $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
         );
 
         throw new TypeError(

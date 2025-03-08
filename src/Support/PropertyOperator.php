@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\Dto\TypeHintsDto;
+use PhpValueObject\Support\TypeHints;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
@@ -24,7 +24,7 @@ final class PropertyOperator
 
     public readonly PropertyValueType $valueType;
 
-    /** @var TypeHintsDto[] */
+    /** @var TypeHints[] */
     public readonly array $typeHints;
 
     public function __construct(
