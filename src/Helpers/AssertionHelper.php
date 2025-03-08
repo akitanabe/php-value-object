@@ -5,6 +5,7 @@ namespace PhpValueObject\Helpers;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Dto\TypeHintsDto;
+use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintsDtoType;
 use PhpValueObject\Exceptions\InheritableClassException;
@@ -48,7 +49,7 @@ class AssertionHelper
     ): bool {
 
         // プロパティが未初期化の場合
-        if ($propertyOperator->isUninitializedProperty()) {
+        if ($propertyOperator->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($modelConfig->uninitializedProperty->allow() || $fieldConfig->uninitializedProperty->allow()) {
                 return true;

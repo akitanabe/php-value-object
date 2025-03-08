@@ -71,7 +71,7 @@ abstract class BaseModel
             // 入力前にプリミティブ型のチェック
             AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator,);
 
-            $propertyOperator->setPropertyValue(model: $this);
+            $property->setValue($this, $propertyOperator->value);
         }
     }
 

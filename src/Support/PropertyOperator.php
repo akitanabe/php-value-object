@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\BaseModel;
 use PhpValueObject\Dto\TypeHintsDto;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
@@ -14,7 +13,6 @@ use PhpValueObject\Helpers\PropertyHelper;
 use PhpValueObject\Validation\Validatable;
 use ReflectionAttribute;
 use ReflectionProperty;
-use TypeError;
 
 final class PropertyOperator
 {
@@ -52,24 +50,6 @@ final class PropertyOperator
         $this->valueType = PropertyHelper::getValueType($this->value);
     }
 
-
-    /**
-     * プロパティが未初期化状態か
-     */
-    public function isUninitializedProperty(): bool
-    {
-        return $this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED;
-    }
-
-    /**
-     * プロパティに値を設定
-     *
-     * @throws TypeError
-     */
-    public function setPropertyValue(BaseModel $model): void
-    {
-        $this->refProperty->setValue($model, $this->value);
-    }
 
     /**
      * プロパティに設定されているAttributeからバリデーションを実行
