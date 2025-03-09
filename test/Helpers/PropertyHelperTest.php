@@ -36,6 +36,23 @@ class GetInitializedStatusTestObject
     public string $uninitializedProperty;
 }
 
+interface typeA
+{
+    public function isA(): bool;
+}
+
+interface typeB
+{
+    public function isB(): bool;
+}
+
+class GetTypeHintsTestObject
+{
+    public mixed $oneType;
+    public string|int $unionType;
+    public typeA&typeB $interserctionType;
+}
+
 class PropertyHelperTest extends TestCase
 {
     #[Test]
@@ -142,6 +159,32 @@ class PropertyHelperTest extends TestCase
         }
 
 
+    }
+
+    #[Test]
+    public function getTypeHints(): void
+    {
+        $testSet = [
+            [
+                'property' => 'oneType',
+                'expected' => 1,
+            ],
+            [
+                'property' => 'unionType',
+                'expected' => 2,
+            ],
+            [
+                'property' => 'interserctionType',
+                'expected' => 1,
+            ],
+        ];
+
+        foreach ($testSet as $test) {
+            $refProperty = new ReflectionProperty(GetTypeHintsTestObject::class, $test['property']);
+            $result = PropertyHelper::getTypeHints($refProperty);
+
+            $this->assertCount($test['expected'], $result);
+        }
     }
 
 
