@@ -24,7 +24,7 @@ abstract class BaseModel
      *
      * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
-    final protected function __construct(mixed ...$data)
+    final protected function __construct(array $data = [])
     {
         $refClass = new ReflectionClass($this);
 
@@ -69,7 +69,7 @@ abstract class BaseModel
             $propertyOperator->validatePropertyValue();
 
             // 入力前にプリミティブ型のチェック
-            AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator, );
+            AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator);
 
             $property->setValue($this, $propertyOperator->value);
         }
@@ -88,20 +88,20 @@ abstract class BaseModel
     }
 
     /**
-     * 連想配列からValueObjectを作成する
+     * 連想配列からModelを作成する
      *
-     * @param array<string, mixed> $array
+     * @param array<string|int, mixed> $data
      */
-    final public static function fromArray(array $array = []): static
+    final public static function fromArray(array $data = []): static
     {
-        return new static(...$array);
+        return new static($data);
     }
 
     /**
-     * オブジェクトからValueObjectを作成する
+     * オブジェクトからModelを作成する
      */
     final public static function fromObject(object $object = new stdClass()): static
     {
-        return self::fromArray(get_object_vars($object));
+        return self::fromArray(data: get_object_vars($object));
     }
 }
