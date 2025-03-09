@@ -20,18 +20,18 @@ use TypeError;
 abstract class BaseModel
 {
     /**
-     * @param array<string|int, mixed> $args
+     * @param array<string|int, mixed> $data
      *
      * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
      */
-    final protected function __construct(mixed ...$args)
+    final protected function __construct(mixed ...$data)
     {
         $refClass = new ReflectionClass($this);
 
         $modelConfig = ModelConfig::factory($refClass);
 
         // 入力値を取得
-        $inputData = new InputData($args);
+        $inputData = new InputData($data);
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 

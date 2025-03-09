@@ -9,8 +9,7 @@ class InputData
      */
     public function __construct(
         public readonly array $data,
-    ) {
-    }
+    ) {}
 
     /**
      * コンストラクタへの入力値が存在しているか
