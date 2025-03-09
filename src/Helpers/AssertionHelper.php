@@ -4,10 +4,10 @@ namespace PhpValueObject\Helpers;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Support\TypeHints;
+use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Enums\TypeHintsType;
+use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Support\PropertyOperator;
@@ -76,21 +76,21 @@ class AssertionHelper
         FieldConfig $fieldConfig,
         PropertyOperator $propertyOperator,
     ): void {
-        foreach ($propertyOperator->typeHints as $typeHintsDto) {
+        foreach ($propertyOperator->typeHints as $typeHint) {
             if (
                 (
                     // 型が指定されていない場合
-                    $typeHintsDto->type === TypeHintsType::NONE
+                    $typeHint->type === TypeHintType::NONE
                     && ($modelConfig->noneTypeProperty->disallow() && $fieldConfig->noneTypeProperty->disallow())
                 )
                 || (
                     // mixed型の場合
-                    $typeHintsDto->type === TypeHintsType::MIXED
+                    $typeHint->type === TypeHintType::MIXED
                     && ($modelConfig->mixedTypeProperty->disallow() && $fieldConfig->mixedTypeProperty->disallow())
                 )
             ) {
                 throw new TypeError(
-                    "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHintsDto->type->value} type.",
+                    "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHint->type->value} type.",
                 );
             }
         }
@@ -112,9 +112,9 @@ class AssertionHelper
     ): void {
         $typeHints = $propertyOperator->typeHints;
 
-        foreach ($typeHints as $typeHintsDto) {
+        foreach ($typeHints as $typeHint) {
             // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
-            if ($typeHintsDto->isIntersection && $propertyOperator->valueType === PropertyValueType::OBJECT) {
+            if ($typeHint->isIntersection && $propertyOperator->valueType === PropertyValueType::OBJECT) {
                 return;
             }
         }
@@ -122,7 +122,7 @@ class AssertionHelper
         // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
             $typeHints,
-            fn(TypeHints $typeHintsDto): bool => $typeHintsDto->isPrimitive,
+            fn(TypeHint $typeHint): bool => $typeHint->isPrimitive,
         );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
@@ -131,15 +131,15 @@ class AssertionHelper
         }
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
-        foreach ($onlyPrimitiveTypes as $typeHintsDto) {
-            if ($typeHintsDto->type->value === $propertyOperator->valueType->shorthand()) {
+        foreach ($onlyPrimitiveTypes as $typeHint) {
+            if ($typeHint->type->value === $propertyOperator->valueType->shorthand()) {
                 return;
             }
         }
 
         $errorTypeName = join(
             '|',
-            array_map(fn(TypeHints $typeHintsDto): string => $typeHintsDto->type->value, $onlyPrimitiveTypes),
+            array_map(fn(TypeHint $typeHint): string => $typeHint->type->value, $onlyPrimitiveTypes),
         );
 
         throw new TypeError(

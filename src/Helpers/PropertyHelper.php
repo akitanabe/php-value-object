@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Helpers;
 
-use PhpValueObject\Support\TypeHints;
+use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
@@ -51,7 +51,7 @@ final class PropertyHelper
     /**
      * プロパティの型ヒントを取得
      *
-     * @return TypeHints[]
+     * @return TypeHint[]
      */
     public static function getTypeHints(ReflectionProperty $refProperty): array
     {
@@ -64,7 +64,7 @@ final class PropertyHelper
 
 
         return array_map(
-            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHints => new TypeHints($type),
+            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHint => new TypeHint($type),
             $types,
         );
 

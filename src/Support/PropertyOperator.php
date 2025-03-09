@@ -23,7 +23,7 @@ final class PropertyOperator
 
     public readonly PropertyValueType $valueType;
 
-    /** @var TypeHints[] */
+    /** @var TypeHint[] */
     public readonly array $typeHints;
 
     public function __construct(

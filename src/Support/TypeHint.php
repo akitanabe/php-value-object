@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\Enums\TypeHintsType;
+use PhpValueObject\Enums\TypeHintType;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 
-class TypeHints
+class TypeHint
 {
-    public readonly TypeHintsType $type;
+    public readonly TypeHintType $type;
 
     public readonly bool $isPrimitive;
 
@@ -20,22 +20,22 @@ class TypeHints
         ReflectionNamedType|ReflectionIntersectionType|null $propertyType,
     ) {
         if ($propertyType === null) {
-            $this->type = TypeHintsType::NONE;
+            $this->type = TypeHintType::NONE;
             $this->isIntersection = false;
         } elseif ($propertyType instanceof ReflectionIntersectionType) {
-            $this->type = TypeHintsType::OBJECT;
+            $this->type = TypeHintType::OBJECT;
             $this->isIntersection = true;
         } else {
-            $this->type = TypeHintsType::tryFrom($propertyType->getName())
-                ?? TypeHintsType::OBJECT;
+            $this->type = TypeHintType::tryFrom($propertyType->getName())
+                ?? TypeHintType::OBJECT;
             $this->isIntersection = false;
         }
 
         $this->isPrimitive = match ($this->type) {
-            TypeHintsType::STRING => true,
-            TypeHintsType::INT => true,
-            TypeHintsType::FLOAT => true,
-            TypeHintsType::BOOL => true,
+            TypeHintType::STRING => true,
+            TypeHintType::INT => true,
+            TypeHintType::FLOAT => true,
+            TypeHintType::BOOL => true,
             default => false,
         };
     }
