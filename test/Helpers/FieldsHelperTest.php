@@ -62,7 +62,7 @@ class FieldsHelperTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         // @phpstan-ignore argument.type
-        $factoryFn = FieldsHelper::createFactory('notCallable');
+        $factoryFn = FieldsHelper::createFactory('not_a_callable');
     }
 
     #[Test]

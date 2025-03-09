@@ -89,7 +89,7 @@ final class TestModel extends BaseModel
 final class InvalidCallableModel extends BaseModel
 {
     // @phpstan-ignore argument.type
-    #[Field(defaultFactory: 'notCallable')]
+    #[Field(defaultFactory: 'not_a_callable')]
     public readonly string $callable;
 
 }
