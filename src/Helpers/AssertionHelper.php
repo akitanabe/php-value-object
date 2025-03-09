@@ -9,7 +9,7 @@ use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Exceptions\DisallowPropertyStateException;
+use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use PhpValueObject\BaseModel;
@@ -39,9 +39,9 @@ class AssertionHelper
      *
      * @param ReflectionClass<BaseModel> $refClass
      *
-     * @throws DisallowPropertyStateException
+     * @throws InvalidPropertyStateException
      */
-    public static function assertUninitializedPropertyOrSkip(
+    public static function assertInvalidPropertyStateOrSkip(
         ReflectionClass $refClass,
         ModelConfig $modelConfig,
         FieldConfig $fieldConfig,
@@ -55,27 +55,11 @@ class AssertionHelper
                 return true;
             }
 
-            throw new DisallowPropertyStateException(
+            throw new InvalidPropertyStateException(
                 "{$refClass->name}::\${$propertyOperator->name} is not initialized. not allow uninitialized property.",
             );
         }
 
-        return false;
-    }
-
-    /**
-     * プロパティの状態をチェック
-     *
-     * @param ReflectionClass<BaseModel> $refClass
-     *
-     * @throws DisallowPropertyStateException
-     */
-    public static function assertDisallowPropertyType(
-        ReflectionClass $refClass,
-        ModelConfig $modelConfig,
-        FieldConfig $fieldConfig,
-        PropertyOperator $propertyOperator,
-    ): void {
         foreach ($propertyOperator->typeHints as $typeHint) {
             if (
                 (
@@ -89,11 +73,13 @@ class AssertionHelper
                     && ($modelConfig->mixedTypeProperty->disallow() && $fieldConfig->mixedTypeProperty->disallow())
                 )
             ) {
-                throw new DisallowPropertyStateException(
-                    "{$refClass->name}::\${$propertyOperator->name} is illegal property state. not allow {$typeHint->type->value} type.",
+                throw new InvalidPropertyStateException(
+                    "{$refClass->name}::\${$propertyOperator->name} is invalid property state. not allow {$typeHint->type->value} property type.",
                 );
             }
         }
+
+        return false;
     }
 
     /**

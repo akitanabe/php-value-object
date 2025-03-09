@@ -10,7 +10,7 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\DisallowPropertyStateException;
+use PhpValueObject\Exceptions\InvalidPropertyStateException;
 
 #[ModelConfig(allowUninitializedProperty: false)]
 class NotAllowUninitializedPropertyClassModel extends BaseModel
@@ -71,7 +71,7 @@ class ModelConfigTest extends TestCase
     #[Test]
     public function notAllowUninitializedProperty(): void
     {
-        $this->expectException(DisallowPropertyStateException::class);
+        $this->expectException(InvalidPropertyStateException::class);
         NotAllowUninitializedPropertyClassModel::fromArray();
     }
 
@@ -86,7 +86,7 @@ class ModelConfigTest extends TestCase
     #[Test]
     public function notAllowMixedTypeProperty(): void
     {
-        $this->expectException(DisallowPropertyStateException::class);
+        $this->expectException(InvalidPropertyStateException::class);
         NotAllowMixedTypeClassModel::fromArray();
     }
 
@@ -101,7 +101,7 @@ class ModelConfigTest extends TestCase
     #[Test]
     public function notAllowNoneTypeProperty(): void
     {
-        $this->expectException(DisallowPropertyStateException::class);
+        $this->expectException(InvalidPropertyStateException::class);
         NotAllowNoneTypePropertyClassModel::fromArray();
     }
 

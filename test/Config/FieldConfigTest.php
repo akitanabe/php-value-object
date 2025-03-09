@@ -9,7 +9,7 @@ use PhpValueObject\Config\FieldConfig;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\DisallowPropertyStateException;
+use PhpValueObject\Exceptions\InvalidPropertyStateException;
 
 class NotAllowUninitializedPropertyFieldModel extends BaseModel
 {
@@ -65,7 +65,7 @@ class FieldConfigTest extends TestCase
     #[Test]
     public function notAllowUninitializedProperty(): void
     {
-        $this->expectException(DisallowPropertyStateException::class);
+        $this->expectException(InvalidPropertyStateException::class);
         NotAllowUninitializedPropertyFieldModel::fromArray();
     }
 
@@ -80,7 +80,7 @@ class FieldConfigTest extends TestCase
     #[Test]
     public function notAllowMixedTypeProperty(): void
     {
-        $this->expectException(DisallowPropertyStateException::class);
+        $this->expectException(InvalidPropertyStateException::class);
         NotAllowMixedTypeFieldModel::fromArray();
     }
 
@@ -95,7 +95,7 @@ class FieldConfigTest extends TestCase
     #[Test]
     public function notAllowNoneTypeProperty(): void
     {
-        $this->expectException(DisallowPropertyStateException::class);
+        $this->expectException(InvalidPropertyStateException::class);
         NotAllowNoneTypePropertyFieldModel::fromArray();
     }
 

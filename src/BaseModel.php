@@ -7,7 +7,7 @@ namespace PhpValueObject;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Exceptions\DisallowPropertyStateException;
+use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
@@ -22,7 +22,7 @@ abstract class BaseModel
     /**
      * @param array<string|int, mixed> $data
      *
-     * @throws InheritableClassException|DisallowPropertyStateException|ValidationException|TypeError
+     * @throws InheritableClassException|InvalidPropertyStateException|ValidationException|TypeError
      */
     final protected function __construct(array $data = [])
     {
@@ -46,9 +46,9 @@ abstract class BaseModel
                 field: $field,
             );
 
-            // 未初期化プロパティの場合はスキップ
+            // プロパティ状態の検証
             if (
-                AssertionHelper::assertUninitializedPropertyOrSkip(
+                AssertionHelper::assertInvalidPropertyStateOrSkip(
                     refClass: $refClass,
                     modelConfig: $modelConfig,
                     fieldConfig: $fieldConfig,
@@ -57,14 +57,6 @@ abstract class BaseModel
             ) {
                 continue;
             }
-
-            // 許可されていない型を検証
-            AssertionHelper::assertDisallowPropertyType(
-                refClass: $refClass,
-                modelConfig: $modelConfig,
-                fieldConfig: $fieldConfig,
-                propertyOperator: $propertyOperator,
-            );
 
             $propertyOperator->validatePropertyValue();
 
