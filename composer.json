@@ -11,7 +11,10 @@
   "autoload": {
     "psr-4": {
       "PhpValueObject\\": "src/"
-    }
+    },
+    "files": [
+      "src/Polyfills/array_any.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

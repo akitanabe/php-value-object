@@ -110,18 +110,19 @@ class AssertionHelper
         ReflectionClass $refClass,
         PropertyOperator $propertyOperator,
     ): void {
-        $typeHints = $propertyOperator->typeHints;
 
-        foreach ($typeHints as $typeHint) {
-            // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
-            if ($typeHint->isIntersection && $propertyOperator->valueType === PropertyValueType::OBJECT) {
-                return;
-            }
+        $isIntsersectionTypeAndObjectValue = array_any(
+            $propertyOperator->typeHints,
+            fn(TypeHint $typeHint): bool => $typeHint->isIntersection && $propertyOperator->valueType === PropertyValueType::OBJECT,
+        );
+
+        // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
+        if ($isIntsersectionTypeAndObjectValue) {
+            return;
         }
 
-        // ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば以下の処理は不要
         $onlyPrimitiveTypes = array_filter(
-            $typeHints,
+            $propertyOperator->typeHints,
             fn(TypeHint $typeHint): bool => $typeHint->isPrimitive,
         );
 
@@ -130,11 +131,14 @@ class AssertionHelper
             return;
         }
 
+        $hasPrimitiveTypeAndValue = array_any(
+            $onlyPrimitiveTypes,
+            fn(TypeHint $typeHint): bool => $typeHint->type->value === $propertyOperator->valueType->shorthand(),
+        );
+
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
-        foreach ($onlyPrimitiveTypes as $typeHint) {
-            if ($typeHint->type->value === $propertyOperator->valueType->shorthand()) {
-                return;
-            }
+        if ($hasPrimitiveTypeAndValue) {
+            return;
         }
 
         $errorTypeName = join(
