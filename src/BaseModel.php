@@ -58,8 +58,6 @@ abstract class BaseModel
                 continue;
             }
 
-            $propertyOperator->validatePropertyValue();
-
             // 入力前にプリミティブ型のチェック
             AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator);
 

@@ -48,27 +48,4 @@ final class PropertyOperator
 
         $this->valueType = PropertyHelper::getValueType($this->value);
     }
-
-
-    /**
-     * プロパティに設定されているAttributeからバリデーションを実行
-     *
-     * @throws ValidationException
-     */
-    public function validatePropertyValue(): void
-    {
-        $attributes = $this->refProperty->getAttributes(Validatable::class, ReflectionAttribute::IS_INSTANCEOF);
-
-        if (count($attributes) === 0) {
-            return;
-        }
-
-        foreach ($attributes as $attribute) {
-            $attributeInstance = $attribute->newInstance();
-
-            if ($attributeInstance->validate($this->value) === false) {
-                throw new ValidationException($attributeInstance, $this->refProperty);
-            }
-        }
-    }
 }
