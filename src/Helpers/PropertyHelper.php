@@ -28,7 +28,7 @@ final class PropertyHelper
     ): mixed {
         return match (true) {
             $initializedStatus === PropertyInitializedStatus::BY_FACTORY => $field->defaultFactory(
-                $inputArguments->inputs,
+                $inputArguments->data,
             ),
             $initializedStatus === PropertyInitializedStatus::BY_INPUT => $inputArguments->getValue(
                 $refProperty->name,

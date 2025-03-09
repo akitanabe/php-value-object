@@ -5,11 +5,12 @@ namespace PhpValueObject\Support;
 class InputArguments
 {
     /**
-     * @param array<string|int, mixed> $inputs
+     * @param array<string|int, mixed> $data
      */
     public function __construct(
-        public readonly array $inputs,
-    ) {}
+        public readonly array $data,
+    ) {
+    }
 
     /**
      * コンストラクタへの入力値が存在しているか
@@ -17,7 +18,7 @@ class InputArguments
     public function hasValue(string $name, ?string $alias = null): bool
     {
         $key = $alias ?? $name;
-        return array_key_exists($key, $this->inputs);
+        return array_key_exists($key, $this->data);
     }
 
     /**
@@ -26,7 +27,7 @@ class InputArguments
     public function getValue(string $name, ?string $alias = null): mixed
     {
         $key = $alias ?? $name;
-        return $this->inputs[$key] ?? null;
+        return $this->data[$key] ?? null;
     }
 
 }
