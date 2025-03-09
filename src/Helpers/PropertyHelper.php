@@ -57,9 +57,7 @@ final class PropertyHelper
     {
         $propertyType = $refProperty->getType();
 
-        /**
-         * @var (ReflectionNamedType|ReflectionIntersectionType|null)[] $types
-         */
+        /** @var (ReflectionNamedType|ReflectionIntersectionType|null)[] $types */
         $types = ($propertyType instanceof ReflectionUnionType)
             ? $propertyType->getTypes()
             : [$propertyType];
