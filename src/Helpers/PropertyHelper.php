@@ -8,7 +8,7 @@ use PhpValueObject\Support\TypeHints;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Support\InputArguments;
+use PhpValueObject\Support\InputData;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
@@ -23,14 +23,14 @@ final class PropertyHelper
     public static function getValue(
         PropertyInitializedStatus $initializedStatus,
         ReflectionProperty $refProperty,
-        InputArguments $inputArguments,
+        InputData $inputData,
         BaseField $field,
     ): mixed {
         return match (true) {
             $initializedStatus === PropertyInitializedStatus::BY_FACTORY => $field->defaultFactory(
-                $inputArguments->data,
+                $inputData->data,
             ),
-            $initializedStatus === PropertyInitializedStatus::BY_INPUT => $inputArguments->getValue(
+            $initializedStatus === PropertyInitializedStatus::BY_INPUT => $inputData->getValue(
                 $refProperty->name,
                 $field->alias,
             ),
@@ -77,11 +77,11 @@ final class PropertyHelper
      */
     public static function getInitializedStatus(
         ReflectionProperty $refProperty,
-        InputArguments $inputArguments,
+        InputData $inputData,
         BaseField $field,
     ): PropertyInitializedStatus {
         // プロパティの初期化状態を判定
-        $hasInputValue = $inputArguments->hasValue($refProperty->name, $field->alias);
+        $hasInputValue = $inputData->hasValue($refProperty->name, $field->alias);
         $hasDefaultFactory = $field->hasDefaultFactory();
         $hasDefaultValue = $refProperty->hasDefaultValue();
 

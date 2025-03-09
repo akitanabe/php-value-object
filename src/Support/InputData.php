@@ -2,7 +2,7 @@
 
 namespace PhpValueObject\Support;
 
-class InputArguments
+class InputData
 {
     /**
      * @param array<string|int, mixed> $data

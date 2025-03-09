@@ -8,7 +8,7 @@ use PhpValueObject\Fields\Field;
 use PhpValueObject\Helpers\PropertyHelper;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Support\InputArguments;
+use PhpValueObject\Support\InputData;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionProperty;
@@ -43,7 +43,7 @@ class PropertyHelperTest extends TestCase
     {
         foreach (PropertyInitializedStatus::cases() as $status) {
             $refProperty = new ReflectionProperty(GetValueTestObject::class, 'getProperty');
-            $inputArguments = new InputArguments(['getProperty' => 'inputValue']);
+            $inputData = new InputData(['getProperty' => 'inputValue']);
             $field = new Field(defaultFactory: Factory::class);
 
             $expected = match ($status) {
@@ -52,7 +52,7 @@ class PropertyHelperTest extends TestCase
                 default => 'defaultValue',
             };
 
-            $value = PropertyHelper::getValue($status, $refProperty, $inputArguments, $field);
+            $value = PropertyHelper::getValue($status, $refProperty, $inputData, $field);
 
             $this->assertSame($expected, $value);
         }
@@ -92,11 +92,11 @@ class PropertyHelperTest extends TestCase
         $this->expectException(UnexpectedValueException::class);
 
         $refProperty = new ReflectionProperty(GetInitializedStatusTestObject::class, 'defaultProperty');
-        $inputArguments = new InputArguments([]);
+        $inputData = new InputData([]);
         $field = new Field(defaultFactory: Factory::class);
 
 
-        PropertyHelper::getInitializedStatus($refProperty, $inputArguments, $field);
+        PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
     }
 
     #[Test]
@@ -133,10 +133,10 @@ class PropertyHelperTest extends TestCase
             $expected = $tests['expected'];
             $refProperty = new ReflectionProperty(GetInitializedStatusTestObject::class, $tests['property']);
 
-            $inputArguments = new InputArguments($tests['inputs']);
+            $inputData = new InputData($tests['inputs']);
             $field = new Field(defaultFactory: $tests['defaultFactory']);
 
-            $result = PropertyHelper::getInitializedStatus($refProperty, $inputArguments, $field);
+            $result = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
 
             $this->assertSame($expected, $result);
         }

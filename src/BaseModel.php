@@ -11,7 +11,7 @@ use PhpValueObject\Exceptions\UninitializedException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Support\InputArguments;
+use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use stdClass;
@@ -31,7 +31,7 @@ abstract class BaseModel
         $modelConfig = ModelConfig::factory($refClass);
 
         // 入力値を取得
-        $inputArguments = new InputArguments($args);
+        $inputData = new InputData($args);
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
@@ -42,7 +42,7 @@ abstract class BaseModel
 
             $propertyOperator = new PropertyOperator(
                 refProperty: $property,
-                inputArguments: $inputArguments,
+                inputData: $inputData,
                 field: $field,
             );
 
@@ -69,7 +69,7 @@ abstract class BaseModel
             $propertyOperator->validatePropertyValue();
 
             // 入力前にプリミティブ型のチェック
-            AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator,);
+            AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator, );
 
             $property->setValue($this, $propertyOperator->value);
         }

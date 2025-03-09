@@ -28,14 +28,14 @@ final class PropertyOperator
 
     public function __construct(
         protected ReflectionProperty $refProperty,
-        InputArguments $inputArguments,
+        InputData $inputData,
         BaseField $field,
     ) {
         $this->name = $refProperty->name;
 
         $this->typeHints = PropertyHelper::getTypeHints($refProperty);
 
-        $this->initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputArguments, $field);
+        $this->initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
 
         // 入力値と初期化済みプロパティの両方が存在しない場合
         if ($this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
@@ -44,7 +44,7 @@ final class PropertyOperator
             return;
         }
 
-        $this->value = PropertyHelper::getValue($this->initializedStatus, $refProperty, $inputArguments, $field);
+        $this->value = PropertyHelper::getValue($this->initializedStatus, $refProperty, $inputData, $field);
 
         $this->valueType = PropertyHelper::getValueType($this->value);
     }
