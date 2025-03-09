@@ -64,11 +64,11 @@ class AssertionHelper
     }
 
     /**
-     * プロパティの型をチェック
+     * プロパティの状態をチェック
      *
      * @param ReflectionClass<BaseModel> $refClass
      *
-     * @throws TypeError
+     * @throws DisallowPropertyStateException
      */
     public static function assertDisallowPropertyType(
         ReflectionClass $refClass,
@@ -89,8 +89,8 @@ class AssertionHelper
                     && ($modelConfig->mixedTypeProperty->disallow() && $fieldConfig->mixedTypeProperty->disallow())
                 )
             ) {
-                throw new TypeError(
-                    "{$refClass->name}::\${$propertyOperator->name} is not type defined. ValueObject does not allowed {$typeHint->type->value} type.",
+                throw new DisallowPropertyStateException(
+                    "{$refClass->name}::\${$propertyOperator->name} is illegal property state. not allow {$typeHint->type->value} type.",
                 );
             }
         }

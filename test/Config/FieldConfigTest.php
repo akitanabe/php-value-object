@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\DisallowPropertyStateException;
-use TypeError;
 
 class NotAllowUninitializedPropertyFieldModel extends BaseModel
 {
@@ -81,7 +80,7 @@ class FieldConfigTest extends TestCase
     #[Test]
     public function notAllowMixedTypeProperty(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(DisallowPropertyStateException::class);
         NotAllowMixedTypeFieldModel::fromArray();
     }
 
@@ -96,7 +95,7 @@ class FieldConfigTest extends TestCase
     #[Test]
     public function notAllowNoneTypeProperty(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(DisallowPropertyStateException::class);
         NotAllowNoneTypePropertyFieldModel::fromArray();
     }
 

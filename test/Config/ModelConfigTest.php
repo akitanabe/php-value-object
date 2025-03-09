@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\DisallowPropertyStateException;
-use TypeError;
 
 #[ModelConfig(allowUninitializedProperty: false)]
 class NotAllowUninitializedPropertyClassModel extends BaseModel
@@ -87,7 +86,7 @@ class ModelConfigTest extends TestCase
     #[Test]
     public function notAllowMixedTypeProperty(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(DisallowPropertyStateException::class);
         NotAllowMixedTypeClassModel::fromArray();
     }
 
@@ -102,7 +101,7 @@ class ModelConfigTest extends TestCase
     #[Test]
     public function notAllowNoneTypeProperty(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(DisallowPropertyStateException::class);
         NotAllowNoneTypePropertyClassModel::fromArray();
     }
 
