@@ -7,7 +7,7 @@ namespace PhpValueObject;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Exceptions\UninitializedException;
+use PhpValueObject\Exceptions\DisallowPropertyStateException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
@@ -22,7 +22,7 @@ abstract class BaseModel
     /**
      * @param array<string|int, mixed> $data
      *
-     * @throws InheritableClassException|UninitializedException|ValidationException|TypeError
+     * @throws InheritableClassException|DisallowPropertyStateException|ValidationException|TypeError
      */
     final protected function __construct(array $data = [])
     {

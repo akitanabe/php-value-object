@@ -9,7 +9,7 @@ use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Exceptions\UninitializedException;
+use PhpValueObject\Exceptions\DisallowPropertyStateException;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionClass;
 use PhpValueObject\BaseModel;
@@ -39,7 +39,7 @@ class AssertionHelper
      *
      * @param ReflectionClass<BaseModel> $refClass
      *
-     * @throws UninitializedException
+     * @throws DisallowPropertyStateException
      */
     public static function assertUninitializedPropertyOrSkip(
         ReflectionClass $refClass,
@@ -55,7 +55,7 @@ class AssertionHelper
                 return true;
             }
 
-            throw new UninitializedException(
+            throw new DisallowPropertyStateException(
                 "{$refClass->name}::\${$propertyOperator->name} is not initialized. not allow uninitialized property.",
             );
         }

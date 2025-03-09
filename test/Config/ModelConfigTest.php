@@ -10,7 +10,7 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\UninitializedException;
+use PhpValueObject\Exceptions\DisallowPropertyStateException;
 use TypeError;
 
 #[ModelConfig(allowUninitializedProperty: false)]
@@ -72,7 +72,7 @@ class ModelConfigTest extends TestCase
     #[Test]
     public function notAllowUninitializedProperty(): void
     {
-        $this->expectException(UninitializedException::class);
+        $this->expectException(DisallowPropertyStateException::class);
         NotAllowUninitializedPropertyClassModel::fromArray();
     }
 
