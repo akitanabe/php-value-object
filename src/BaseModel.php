@@ -49,7 +49,6 @@ abstract class BaseModel
             // プロパティ状態の検証
             if (
                 AssertionHelper::assertInvalidPropertyStateOrSkip(
-                    refClass: $refClass,
                     modelConfig: $modelConfig,
                     fieldConfig: $fieldConfig,
                     propertyOperator: $propertyOperator,
@@ -58,8 +57,11 @@ abstract class BaseModel
                 continue;
             }
 
+            // フィールドバリデーション
+            $field->validate($propertyOperator);
+
             // 入力前にプリミティブ型のチェック
-            AssertionHelper::assertPrimitiveType(refClass: $refClass, propertyOperator: $propertyOperator);
+            AssertionHelper::assertPrimitiveType($propertyOperator);
 
             $property->setValue($this, $propertyOperator->value);
         }

@@ -36,13 +36,11 @@ class AssertionHelper
     }
 
     /**
-     *
-     * @param ReflectionClass<BaseModel> $refClass
+     * プロパティの状態を検証
      *
      * @throws InvalidPropertyStateException
      */
     public static function assertInvalidPropertyStateOrSkip(
-        ReflectionClass $refClass,
         ModelConfig $modelConfig,
         FieldConfig $fieldConfig,
         PropertyOperator $propertyOperator,
@@ -56,7 +54,7 @@ class AssertionHelper
             }
 
             throw new InvalidPropertyStateException(
-                "{$refClass->name}::\${$propertyOperator->name} is not initialized. not allow uninitialized property.",
+                "{$propertyOperator->class}::\${$propertyOperator->name} is not initialized. not allow uninitialized property.",
             );
         }
 
@@ -74,7 +72,7 @@ class AssertionHelper
                 )
             ) {
                 throw new InvalidPropertyStateException(
-                    "{$refClass->name}::\${$propertyOperator->name} is invalid property state. not allow {$typeHint->type->value} property type.",
+                    "{$propertyOperator->class}::\${$propertyOperator->name} is invalid property state. not allow {$typeHint->type->value} property type.",
                 );
             }
         }
@@ -87,13 +85,11 @@ class AssertionHelper
      * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるためアサーション
      * ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば不要
      *
-     * @param ReflectionClass<BaseModel> $refClass
      * @param PropertyOperator $propertyOperator
      * @throws TypeError
      * @return void
      */
     public static function assertPrimitiveType(
-        ReflectionClass $refClass,
         PropertyOperator $propertyOperator,
     ): void {
 
@@ -133,7 +129,7 @@ class AssertionHelper
         );
 
         throw new TypeError(
-            "Cannot assign {$propertyOperator->valueType->value} to property {$refClass->name}::\${$propertyOperator->name} of type {$errorTypeName}",
+            "Cannot assign {$propertyOperator->valueType->value} to property {$propertyOperator->class}::\${$propertyOperator->name} of type {$errorTypeName}",
         );
 
     }
