@@ -15,6 +15,8 @@ use ReflectionProperty;
 
 final class PropertyOperator
 {
+    public readonly string $class;
+
     public readonly string $name;
 
     public readonly PropertyInitializedStatus $initializedStatus;
@@ -27,10 +29,11 @@ final class PropertyOperator
     public readonly array $typeHints;
 
     public function __construct(
-        protected ReflectionProperty $refProperty,
+        ReflectionProperty $refProperty,
         InputData $inputData,
         BaseField $field,
     ) {
+        $this->class = $refProperty->class;
         $this->name = $refProperty->name;
 
         $this->typeHints = PropertyHelper::getTypeHints($refProperty);
