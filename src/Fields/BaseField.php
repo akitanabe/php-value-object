@@ -6,17 +6,18 @@ namespace PhpValueObject\Fields;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
+use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Support\PropertyOperator;
 
 /**
  * フィールドの基底クラス
- *
+ * @phpstan-type default_factory callable-string|class-string|array{string|object, string}|Closure
  */
 abstract class BaseField
 {
     /**
      *
-     * @template T of object
-     * @param  callable-string|class-string<T>|array{string|object, string}|Closure|null $defaultFactory default値の生成関数。default値が存在していたらUnexpectedValueExceptionが投げられます
+     * @param default_factory|null $defaultFactory default値の生成関数。default値が存在していたらUnexpectedValueExceptionが投げられます
      * @param string|null $alias フィールド名のエイリアス。指定された場合、エイリアス名で入力値を取得します
      */
     public function __construct(
@@ -44,4 +45,11 @@ abstract class BaseField
     {
         return $this->defaultFactory !== null;
     }
+
+    /**
+     * バリデーション
+     *
+     * @throws ValidationException
+     */
+    abstract public function validate(PropertyOperator $propertyOperator): void;
 }
