@@ -9,12 +9,10 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
-use PhpValueObject\BaseModel;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionProperty;
-use UnexpectedValueException;
 
 use function strtolower as _strtolower;
 
@@ -122,7 +120,7 @@ class FieldTest extends TestCase
 
     /**
      * デフォルトファクトリーを使用した値の変換をテストします。
-     * 
+     *
      * @param string $value テスト対象の入力値
      * @param string|DateTime $expectedValue 期待される変換後の値
      * 以下のケースをテストします：
@@ -133,10 +131,8 @@ class FieldTest extends TestCase
      */
     #[Test]
     #[DataProvider('defaultFactoryDataProvider')]
-    public function testDefaultFactoryValueTransformation(
-        string $value,
-        string|DateTime $expectedValue,
-    ): void {
+    public function testDefaultFactoryValueTransformation(string $value, string|DateTime $expectedValue,): void
+    {
         $field = match (true) {
             $expectedValue instanceof DateTime => new Field(defaultFactory: DateTimeFactory::class),
             default => new Field(defaultFactory: __NAMESPACE__ . '\\strtolower'),

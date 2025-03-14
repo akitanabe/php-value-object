@@ -55,30 +55,22 @@ final class NumericField extends BaseField
 
         // gt (>) の検証
         if ($this->gt !== null && $numericValue <= $this->gt) {
-            throw new ValidationException(
-                "{$invalidMessage}. Must be greater than {$this->gt}"
-            );
+            throw new ValidationException("{$invalidMessage}. Must be greater than {$this->gt}");
         }
 
         // lt (<) の検証
         if ($this->lt !== null && $numericValue >= $this->lt) {
-            throw new ValidationException(
-                "{$invalidMessage}. Must be less than {$this->lt}"
-            );
+            throw new ValidationException("{$invalidMessage}. Must be less than {$this->lt}");
         }
 
         // ge (>=) の検証
         if ($this->ge !== null && $numericValue < $this->ge) {
-            throw new ValidationException(
-                "{$invalidMessage}. Must be greater than or equal to {$this->ge}"
-            );
+            throw new ValidationException("{$invalidMessage}. Must be greater than or equal to {$this->ge}");
         }
 
         // le (<=) の検証
         if ($this->le !== null && $numericValue > $this->le) {
-            throw new ValidationException(
-                "{$invalidMessage}. Must be less than or equal to {$this->le}"
-            );
+            throw new ValidationException("{$invalidMessage}. Must be less than or equal to {$this->le}");
         }
     }
 }

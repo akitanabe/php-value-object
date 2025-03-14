@@ -19,7 +19,7 @@ class DecimalFieldValidateTestClass
 
 /**
  * DecimalFieldのバリデーション機能をテストするクラス
- * 
+ *
  * 小数値の検証に関する以下の機能をテスト:
  * - 基本的な小数値の変換と検証
  * - 最大桁数のバリデーション
@@ -31,11 +31,11 @@ class DecimalFieldTest extends TestCase
 {
     /**
      * テスト用のPropertyOperatorインスタンスを作成
-     * 
+     *
      * @param mixed $value バリデーション対象の値
      * @param DecimalField $field 検証に使用するDecimalFieldインスタンス
      * @return PropertyOperator 設定された検証用のPropertyOperator
-     * 
+     *
      * テストクラスのpropプロパティに対して:
      * 1. リフレクションを使用してプロパティ情報を取得
      * 2. 指定された値でInputDataを作成
@@ -50,7 +50,7 @@ class DecimalFieldTest extends TestCase
 
     /**
      * 基本的な小数値の検証をテスト
-     * 
+     *
      * 文字列で与えられた小数値'123.45'が:
      * 1. バリデーションを通過すること
      * 2. 正しくfloat型の123.45に変換されること
@@ -67,11 +67,11 @@ class DecimalFieldTest extends TestCase
 
     /**
      * 最大桁数のバリデーションをテスト
-     * 
+     *
      * maxDigits=5の場合:
      * 1. 5桁以下の数値'123.45'は許可される
      * 2. 6桁の数値'1234.56'はValidationExceptionを発生
-     * 
+     *
      * 桁数は整数部と小数部の合計で計算
      */
     #[Test]
@@ -89,7 +89,7 @@ class DecimalFieldTest extends TestCase
 
     /**
      * 小数点以下の桁数制限のバリデーションをテスト
-     * 
+     *
      * decimalPlaces=2の場合:
      * 1. 小数点以下2桁の'123.45'は許可される
      * 2. 小数点以下3桁の'123.456'はValidationExceptionを発生
@@ -109,7 +109,7 @@ class DecimalFieldTest extends TestCase
 
     /**
      * 不正な入力値に対するバリデーションをテスト
-     * 
+     *
      * 数値として解釈できない文字列'abc'を入力した場合:
      * - ValidationExceptionが発生し、'Must be numeric'というメッセージが表示される
      */
@@ -125,7 +125,7 @@ class DecimalFieldTest extends TestCase
 
     /**
      * 複数の制約を組み合わせたバリデーションをテスト
-     * 
+     *
      * maxDigits=5, decimalPlaces=2の場合:
      * 1. 条件を満たす'12.50'は許可される
      * 2. 合計桁数が6桁になる'123.456'はValidationExceptionを発生
@@ -134,10 +134,7 @@ class DecimalFieldTest extends TestCase
     #[Test]
     public function combinedConstraintsValidation(): void
     {
-        $field = new DecimalField(
-            maxDigits: 5,
-            decimalPlaces: 2
-        );
+        $field = new DecimalField(maxDigits: 5, decimalPlaces: 2);
 
         $operator = $this->createPropertyOperator('12.50', $field);
         $field->validate($operator);

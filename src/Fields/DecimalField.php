@@ -12,19 +12,19 @@ use PhpValueObject\Exceptions\ValidationException;
 
 /**
  * 小数値を扱うフィールドクラス
- * 
+ *
  * 以下の機能を提供:
  * - 数値型のバリデーション（is_numericによる検証）
  * - 合計桁数の制限（整数部と小数部の合計）
  * - 小数点以下の桁数制限
  * - 数値の範囲チェック（gt: より大きい, lt: より小さい, ge: 以上, le: 以下）
- * 
+ *
  * 検証順序:
  * 1. 数値形式の検証
  * 2. 合計桁数の検証
  * 3. 小数点以下の桁数検証
  * 4. 数値範囲の検証（NumericFieldに委譲）
- * 
+ *
  * @phpstan-import-type default_factory from BaseField
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -57,17 +57,12 @@ class DecimalField extends BaseField
         float|int|null $le = null,
     ) {
         parent::__construct($defaultFactory, $alias);
-        $this->numericField = new NumericField(
-            gt: $gt,
-            lt: $lt,
-            ge: $ge,
-            le: $le,
-        );
+        $this->numericField = new NumericField(gt: $gt, lt: $lt, ge: $ge, le: $le,);
     }
 
     /**
      * 小数値のバリデーションを実行
-     * 
+     *
      * バリデーションの流れ:
      * 1. 数値形式の検証（is_numeric）
      * 2. 合計桁数の検証（maxDigits）
@@ -75,7 +70,7 @@ class DecimalField extends BaseField
      * 3. 小数点以下の桁数検証（decimalPlaces）
      *    - 小数点で分割し、小数部の長さをチェック
      * 4. 数値範囲の検証（NumericFieldに委譲）
-     * 
+     *
      * @param PropertyOperator $propertyOperator バリデーション対象のプロパティ操作オブジェクト
      * @throws ValidationException バリデーションエラーが発生した場合
      */
@@ -93,7 +88,9 @@ class DecimalField extends BaseField
         if ($this->maxDigits !== null) {
             $digits = strlen(str_replace(['.', '-'], '', $stringValue));
             if ($digits > $this->maxDigits) {
-                throw new ValidationException("Invalid Field Value. Number must have no more than {$this->maxDigits} digits in total");
+                throw new ValidationException(
+                    "Invalid Field Value. Number must have no more than {$this->maxDigits} digits in total",
+                );
             }
         }
 
@@ -102,7 +99,9 @@ class DecimalField extends BaseField
             $parts = explode('.', $stringValue);
             $currentPlaces = strlen($parts[1] ?? '');
             if ($currentPlaces > $this->decimalPlaces) {
-                throw new ValidationException("Invalid Field Value. Number must have no more than {$this->decimalPlaces} decimal places");
+                throw new ValidationException(
+                    "Invalid Field Value. Number must have no more than {$this->decimalPlaces} decimal places",
+                );
             }
         }
 
