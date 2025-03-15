@@ -92,8 +92,7 @@ class FieldTest extends TestCase
     /**
      * @return array<string, array{
      *   value: string,
-     *   expectedValue: string|DateTime,
-     *   expectException?: class-string<\Throwable>
+     *   expectedValue: string|DateTime
      * }>
      */
     public static function defaultFactoryDataProvider(): array
@@ -131,7 +130,7 @@ class FieldTest extends TestCase
      */
     #[Test]
     #[DataProvider('defaultFactoryDataProvider')]
-    public function testDefaultFactoryValueTransformation(string $value, string|DateTime $expectedValue,): void
+    public function testDefaultFactoryValueTransformation(string $value, string|DateTime $expectedValue): void
     {
         $field = match (true) {
             $expectedValue instanceof DateTime => new Field(defaultFactory: DateTimeFactory::class),
@@ -157,6 +156,7 @@ class FieldTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
+        // @phpstan-ignore argument.type
         $field = new Field(defaultFactory: 'not_a_callable');
         $field->defaultFactory(['invalidCallable' => 'test']);
     }
@@ -215,6 +215,7 @@ class FieldTest extends TestCase
 
         // Fieldクラスのvalidateは空実装なので、例外が発生しないことを確認
         $field->validate($propertyOperator);
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertTrue(true);
     }
 }
