@@ -27,4 +27,18 @@ enum PropertyValueType: string
             default => $this->value,
         };
     }
+
+    /**
+     * @param string $shorthand 短縮形の型名から PropertyValueType を生成
+     */
+    public static function fromShorthand(string $shorthand): self
+    {
+        return match ($shorthand) {
+            'bool' => self::BOOL,
+            'int' => self::INT,
+            'float' => self::FLOAT,
+            'null' => self::NULL,
+            default => self::from($shorthand),
+        };
+    }
 }
