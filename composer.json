@@ -13,7 +13,8 @@
       "PhpValueObject\\": "src/"
     },
     "files": [
-      "src/Polyfills/array_any.php"
+      "src/Polyfills/array_any.php",
+      "src/Polyfills/array_all.php"
     ]
   },
   "autoload-dev": {
