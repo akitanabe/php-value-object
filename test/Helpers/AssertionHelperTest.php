@@ -60,7 +60,7 @@ class AssertionHelperTest extends TestCase
      * @param array<string|int, mixed> $inputData
      * @return PropertyOperator
      */
-    private function createPropertyOperator(string $propertyName, array $inputData = [],): PropertyOperator
+    private function createPropertyOperator(string $propertyName, array $inputData = []): PropertyOperator
     {
         $property = new ReflectionProperty(TestProperty::class, $propertyName);
 
