@@ -12,6 +12,7 @@ class Immutable {}
 
 final class ImmutableTestModel extends BaseModel
 {
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly Immutable $test;
 }
 

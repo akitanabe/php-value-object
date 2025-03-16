@@ -12,19 +12,25 @@ use TypeError;
 
 final class PrimitiveTestModel extends BaseModel
 {
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly string $stringVal;
 
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly int $intVal;
 
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly float $floatVal;
 
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly bool $boolVal;
 }
 
 final class UnionTestModel extends BaseModel
 {
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly string|int $stringOrInt;
 
+    // @phpstan-ignore property.uninitializedReadonly
     public readonly float|int $floatOrInt;
 }
 
