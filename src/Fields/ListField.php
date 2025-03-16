@@ -33,8 +33,14 @@ final class ListField extends BaseField
     ) {
         parent::__construct($defaultFactory, $alias);
 
-        $this->valueType = $type === null ? null :
-            (class_exists($type) ? PropertyValueType::OBJECT : PropertyValueType::fromShorthand($type));
+        if ($type === null) {
+            $this->valueType = null;
+            return;
+        }
+
+        $this->valueType = (class_exists($type)
+            ? PropertyValueType::OBJECT
+            : PropertyValueType::fromShorthand($type));
     }
 
     #[Override]
