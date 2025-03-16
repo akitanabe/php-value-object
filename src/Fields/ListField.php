@@ -61,15 +61,16 @@ final class ListField extends BaseField
             return;
         }
 
-        $validation = match (true) {
-            // オブジェクト型の場合
+        $listValidation = match (true) {
+            // クラスが指定されている場合
             ($this->valueType === PropertyValueType::OBJECT && class_exists($this->type))
             => fn(mixed $element): bool => is_object($element) && $element instanceof $this->type,
-            // プリミティブ型の場合
+
+            // プリミティブ型 or $typeがobjectの場合
             default => fn(mixed $element): bool => gettype($element) === $this->valueType->value,
         };
 
-        $isValid = array_all($value, $validation);
+        $isValid = array_all($value, $listValidation);
 
         if (!$isValid) {
             throw new ValidationException("Invalid element type");
