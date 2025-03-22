@@ -10,15 +10,20 @@ use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\TypeHint;
+use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Validation\BeforeValidator;
+use PhpValueObject\Validation\AfterValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use PhpValueObject\Exceptions\ValidationException;
 use TypeError;
+use stdClass;
 
 class PropertyOperatorTest extends TestCase
 {
+    /** @var ReflectionClass<TestModel> */
     private ReflectionClass $refClass;
 
     protected function setUp(): void
@@ -33,7 +38,7 @@ class PropertyOperatorTest extends TestCase
     #[DataProvider('providePropertyStates')]
     public function testCreateWithDifferentPropertyStates(
         mixed $input,
-        ?string $propertyName,
+        string $propertyName,
         ?string $defaultFactoryValue,
         PropertyInitializedStatus $expectedStatus,
         PropertyValueType $expectedType,
@@ -45,8 +50,9 @@ class PropertyOperatorTest extends TestCase
 
         $inputData = new InputData($input);
         $field = new TestField($defaultFactoryValue);
+        $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field);
+        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
 
         $this->assertSame(TestModel::class, $operator->class);
         $this->assertSame($propertyName, $operator->name);
@@ -56,6 +62,16 @@ class PropertyOperatorTest extends TestCase
         $this->assertSame($expectedValue, $operator->value);
     }
 
+    /**
+     * @return array<string, array{
+     *   input: mixed,
+     *   propertyName: string,
+     *   defaultFactoryValue: string|null,
+     *   expectedStatus: PropertyInitializedStatus,
+     *   expectedType: PropertyValueType,
+     *   expectedValue: mixed
+     * }>
+     */
     public static function providePropertyStates(): array
     {
         return [
@@ -112,9 +128,10 @@ class PropertyOperatorTest extends TestCase
         $input = ['name' => 'test value'];
         $inputData = new InputData($input);
         $field = new TestField();
+        $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field);
-        $result = $operator->getPropertyValue($field);
+        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $result = $operator->getPropertyValue($field, $validationManager);
 
         $this->assertSame('test value', $result);
     }
@@ -129,12 +146,13 @@ class PropertyOperatorTest extends TestCase
         $input = ['name' => 'invalid value'];
         $inputData = new InputData($input);
         $field = new ValidationErrorField();
+        $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field);
+        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Validation failed');
-        $operator->getPropertyValue($field);
+        $operator->getPropertyValue($field, $validationManager);
     }
 
     /**
@@ -144,14 +162,50 @@ class PropertyOperatorTest extends TestCase
     public function testGetPropertyValueThrowsTypeError(): void
     {
         $property = $this->refClass->getProperty('name');
-        $input = ['name' => new \stdClass()];
+        $input = ['name' => new stdClass()];
         $inputData = new InputData($input);
         $field = new TestField();
+        $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field);
+        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
 
         $this->expectException(TypeError::class);
-        $operator->getPropertyValue($field);
+        $operator->getPropertyValue($field, $validationManager);
+    }
+
+    /**
+     * BeforeValidatorが正しく実行されることを確認
+     */
+    #[Test]
+    public function testBeforeValidatorIsExecutedDuringCreate(): void
+    {
+        $property = $this->refClass->getProperty('validatedBeforeValue');
+        $input = ['validatedBeforeValue' => 'a'];
+        $inputData = new InputData($input);
+        $field = new TestField();
+        $validationManager = FieldValidationManager::createFromProperty($property);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('3文字以上必要です');
+        PropertyOperator::create($property, $inputData, $field, $validationManager);
+    }
+
+    /**
+     * AfterValidatorが正しく実行されることを確認
+     */
+    #[Test]
+    public function testAfterValidatorIsExecutedDuringGetPropertyValue(): void
+    {
+        $property = $this->refClass->getProperty('validatedAfterValue');
+        $input = ['validatedAfterValue' => 'john'];
+        $inputData = new InputData($input);
+        $field = new TestField();
+        $validationManager = FieldValidationManager::createFromProperty($property);
+
+        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $result = $operator->getPropertyValue($field, $validationManager);
+
+        $this->assertSame('John', $result);
     }
 }
 
@@ -159,6 +213,12 @@ class TestModel
 {
     public string $name;
     public string $default = 'test property';
+
+    #[BeforeValidator([TestValidator::class, 'validateLength'])]
+    public string $validatedBeforeValue;
+
+    #[AfterValidator([TestValidator::class, 'formatName'])]
+    public string $validatedAfterValue;
 }
 
 class TestField extends BaseField

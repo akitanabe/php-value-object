@@ -13,6 +13,7 @@ use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\FieldValidationManager;
 use ReflectionClass;
 use stdClass;
 use TypeError;
@@ -39,11 +40,13 @@ abstract class BaseModel
 
             $field = FieldsHelper::createField($property);
             $fieldConfig = FieldConfig::factory($property);
+            $validationManager = FieldValidationManager::createFromProperty($property);
 
             $propertyOperator = PropertyOperator::create(
                 refProperty: $property,
                 inputData: $inputData,
                 field: $field,
+                validationManager: $validationManager,
             );
 
             // プロパティ状態の検証
@@ -57,7 +60,7 @@ abstract class BaseModel
                 continue;
             }
 
-            $value = $propertyOperator->getPropertyValue($field);
+            $value = $propertyOperator->getPropertyValue($field, $validationManager);
             $property->setValue($this, $value);
         }
     }

@@ -15,18 +15,23 @@ use TypeError;
 
 final class PropertyOperator
 {
-    /** @var TypeHint[] */
     private function __construct(
         public readonly string $class,
         public readonly string $name,
+        /** @var array<TypeHint> */
         public readonly array $typeHints,
         public readonly PropertyInitializedStatus $initializedStatus,
         public readonly mixed $value,
         public readonly PropertyValueType $valueType,
-    ) {}
+    ) {
+    }
 
-    public static function create(ReflectionProperty $refProperty, InputData $inputData, BaseField $field,): self
-    {
+    public static function create(
+        ReflectionProperty $refProperty,
+        InputData $inputData,
+        BaseField $field,
+        FieldValidationManager $validationManager,
+    ): self {
         $typeHints = PropertyHelper::getTypeHints($refProperty);
         $initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
 
@@ -35,6 +40,8 @@ final class PropertyOperator
 
         if ($initializedStatus !== PropertyInitializedStatus::UNINITIALIZED) {
             $value = PropertyHelper::getValue($initializedStatus, $refProperty, $inputData, $field);
+            // BeforeValidatorの実行
+            $value = $validationManager->processBeforeValidation($value);
             $valueType = PropertyHelper::getValueType($value);
         }
 
@@ -49,13 +56,13 @@ final class PropertyOperator
     }
 
     /**
-     *
      * @param BaseField $field
+     * @param FieldValidationManager $validationManager
      * @return mixed
      * @throws ValidationException
      * @throws TypeError
      */
-    public function getPropertyValue(BaseField $field): mixed
+    public function getPropertyValue(BaseField $field, FieldValidationManager $validationManager): mixed
     {
         // フィールドバリデーション
         $field->validate($this);
@@ -63,6 +70,7 @@ final class PropertyOperator
         // 入力前にプリミティブ型のチェック
         AssertionHelper::assertPrimitiveType($this);
 
-        return $this->value;
+        // AfterValidatorの実行
+        return $validationManager->processAfterValidation($this->value);
     }
 }
