@@ -114,12 +114,12 @@ class NumericFieldTest extends TestCase
         float|int|null $ge = null,
         float|int|null $le = null,
     ): void {
-        $field = new NumericField(gt: $gt, lt: $lt, ge: $ge, le: $le,);
+        $field = new NumericField(gt: $gt, lt: $lt, ge: $ge, le: $le, );
 
         $refProperty = new ReflectionProperty(NumericFieldValidateTestClass::class, 'prop');
         $inputData = new InputData(['prop' => $value]);
 
-        $propertyOperator = new PropertyOperator($refProperty, $inputData, $field);
+        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field);
 
         if ($expectException) {
             $this->expectException(ValidationException::class);

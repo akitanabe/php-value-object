@@ -110,7 +110,7 @@ class ListFieldTest extends TestCase
         $refProperty = new ReflectionProperty(ListFieldValidateTestClass::class, 'prop');
         $inputData = new InputData(['prop' => $value]);
 
-        $propertyOperator = new PropertyOperator($refProperty, $inputData, $field);
+        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field);
 
         if ($expectException) {
             $this->expectException(ValidationException::class);

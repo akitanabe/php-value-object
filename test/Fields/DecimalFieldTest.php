@@ -45,7 +45,7 @@ class DecimalFieldTest extends TestCase
     {
         $refProperty = new ReflectionProperty(DecimalFieldValidateTestClass::class, 'prop');
         $inputData = new InputData(['prop' => $value]);
-        return new PropertyOperator($refProperty, $inputData, $field);
+        return PropertyOperator::create($refProperty, $inputData, $field);
     }
 
     /**

@@ -211,7 +211,7 @@ class FieldTest extends TestCase
         $field = new Field();
         $refProperty = new ReflectionProperty(FieldValidateTestClass::class, 'defaultValue');
         $inputData = new InputData(['defaultValue' => 'test']);
-        $propertyOperator = new PropertyOperator($refProperty, $inputData, $field);
+        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field);
 
         // Fieldクラスのvalidateは空実装なので、例外が発生しないことを確認
         $field->validate($propertyOperator);
