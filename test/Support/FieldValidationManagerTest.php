@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validation;
+namespace PhpValueObject\Test\Support;
 
 use PhpValueObject\Validation\BeforeValidator;
 use PhpValueObject\Validation\AfterValidator;
-use PhpValueObject\Validation\FieldValidationManager;
+use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Test\Support\TestValidator;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 
