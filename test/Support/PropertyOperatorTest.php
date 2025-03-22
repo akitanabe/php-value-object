@@ -230,9 +230,7 @@ class TestField extends BaseField
         );
     }
 
-    public function validate(mixed $value): void
-    {
-    }
+    public function validate(mixed $value): void {}
 }
 
 class ValidationErrorField extends BaseField

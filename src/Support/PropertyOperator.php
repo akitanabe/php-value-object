@@ -23,8 +23,7 @@ final class PropertyOperator
         public readonly PropertyInitializedStatus $initializedStatus,
         public readonly mixed $value,
         public readonly PropertyValueType $valueType,
-    ) {
-    }
+    ) {}
 
     public static function create(
         ReflectionProperty $refProperty,
