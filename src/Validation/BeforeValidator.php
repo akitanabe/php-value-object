@@ -8,7 +8,7 @@ use Attribute;
 
 /**
  * PropertyOperator::valueへの代入前にバリデーションを実行するAttribute
- * 
+ *
  * @example
  * ```php
  * #[BeforeValidator([ValidationClass::class, 'validateLength'])]
@@ -16,6 +16,4 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class BeforeValidator extends Validator
-{
-}
+final class BeforeValidator extends Validator {}

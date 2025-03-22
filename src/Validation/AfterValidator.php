@@ -8,7 +8,7 @@ use Attribute;
 
 /**
  * setPropertyValueの前にバリデーションを実行するAttribute
- * 
+ *
  * @example
  * ```php
  * #[AfterValidator([ValidationClass::class, 'formatString'])]
@@ -16,6 +16,4 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class AfterValidator extends Validator
-{
-}
+final class AfterValidator extends Validator {}

@@ -40,11 +40,11 @@ final class AttributeHelper
     public static function getAttributeInstances(
         ReflectionClass|ReflectionProperty $reflection,
         string $attributeName,
-        int $flags = 0
+        int $flags = 0,
     ): array {
         return array_map(
             fn(ReflectionAttribute $attr) => $attr->newInstance(),
-            $reflection->getAttributes($attributeName, $flags)
+            $reflection->getAttributes($attributeName, $flags),
         );
     }
 }

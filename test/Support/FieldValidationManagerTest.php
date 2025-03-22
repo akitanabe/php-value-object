@@ -8,7 +8,6 @@ use PhpValueObject\Validation\BeforeValidator;
 use PhpValueObject\Validation\AfterValidator;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Test\Support\TestValidator;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 

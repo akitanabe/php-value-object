@@ -27,7 +27,7 @@ class FieldValidationManager
      */
     private function __construct(
         array $beforeValidators,
-        array $afterValidators
+        array $afterValidators,
     ) {
         $this->beforeValidators = $beforeValidators;
         $this->afterValidators = $afterValidators;
@@ -41,12 +41,12 @@ class FieldValidationManager
     {
         return new self(
             AttributeHelper::getAttributeInstances($property, BeforeValidator::class),
-            AttributeHelper::getAttributeInstances($property, AfterValidator::class)
+            AttributeHelper::getAttributeInstances($property, AfterValidator::class),
         );
     }
 
     /**
-     * 
+     *
      * @param Validatorable[] $validators
      * @param mixed $value
      * @return mixed
@@ -56,7 +56,7 @@ class FieldValidationManager
         return array_reduce(
             $validators,
             fn(mixed $value, Validatorable $validator): mixed => $validator->validate($value),
-            $value
+            $value,
         );
     }
 
