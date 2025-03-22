@@ -11,6 +11,7 @@ use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\NumericField;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\FieldValidationManager;
 use ReflectionProperty;
 
 class NumericFieldValidateTestClass
@@ -119,7 +120,8 @@ class NumericFieldTest extends TestCase
         $refProperty = new ReflectionProperty(NumericFieldValidateTestClass::class, 'prop');
         $inputData = new InputData(['prop' => $value]);
 
-        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field);
+        $validationManager = FieldValidationManager::createFromProperty($refProperty);
+        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
 
         if ($expectException) {
             $this->expectException(ValidationException::class);

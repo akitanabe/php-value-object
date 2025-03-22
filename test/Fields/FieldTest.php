@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\Fields\Field;
+use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use ReflectionProperty;
@@ -211,7 +212,8 @@ class FieldTest extends TestCase
         $field = new Field();
         $refProperty = new ReflectionProperty(FieldValidateTestClass::class, 'defaultValue');
         $inputData = new InputData(['defaultValue' => 'test']);
-        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field);
+        $validationManager = FieldValidationManager::createFromProperty($refProperty);
+        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
 
         // Fieldクラスのvalidateは空実装なので、例外が発生しないことを確認
         $field->validate($propertyOperator);

@@ -7,6 +7,7 @@ namespace PhpValueObject\Test\Fields;
 use PhpValueObject\Fields\DecimalField;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\InputData;
+use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -45,7 +46,8 @@ class DecimalFieldTest extends TestCase
     {
         $refProperty = new ReflectionProperty(DecimalFieldValidateTestClass::class, 'prop');
         $inputData = new InputData(['prop' => $value]);
-        return PropertyOperator::create($refProperty, $inputData, $field);
+        $validationManager = FieldValidationManager::createFromProperty($refProperty);
+        return PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
     }
 
     /**

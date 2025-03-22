@@ -11,6 +11,7 @@ use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\FieldValidationManager;
 use ReflectionProperty;
 
 class StringFieldValidateTestClass
@@ -99,7 +100,8 @@ class StringFieldTest extends TestCase
         $refProperty = new ReflectionProperty(StringFieldValidateTestClass::class, 'prop');
         $inputData = new InputData(['prop' => $value]);
 
-        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field);
+        $validationManager = FieldValidationManager::createFromProperty($refProperty);
+        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
 
         if ($expectException) {
             $this->expectException(ValidationException::class);

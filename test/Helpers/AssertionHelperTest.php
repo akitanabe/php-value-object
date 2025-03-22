@@ -11,6 +11,7 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Helpers\AssertionHelper;
+use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PHPUnit\Framework\TestCase;
@@ -63,8 +64,9 @@ class AssertionHelperTest extends TestCase
     private function createPropertyOperator(string $propertyName, array $inputData = []): PropertyOperator
     {
         $property = new ReflectionProperty(TestProperty::class, $propertyName);
+        $validationManager = FieldValidationManager::createFromProperty($property);
 
-        return PropertyOperator::create($property, new InputData($inputData), $this->field);
+        return PropertyOperator::create($property, new InputData($inputData), $this->field, $validationManager);
     }
 
     /**
