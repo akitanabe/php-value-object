@@ -57,13 +57,8 @@ abstract class BaseModel
                 continue;
             }
 
-            // フィールドバリデーション
-            $field->validate($propertyOperator);
-
-            // 入力前にプリミティブ型のチェック
-            AssertionHelper::assertPrimitiveType($propertyOperator);
-
-            $property->setValue($this, $propertyOperator->value);
+            $value = $propertyOperator->getPropertyValue($field);
+            $property->setValue($this, $value);
         }
     }
 

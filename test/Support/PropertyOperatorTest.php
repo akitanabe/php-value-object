@@ -14,6 +14,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use PhpValueObject\Exceptions\ValidationException;
+use TypeError;
 
 class PropertyOperatorTest extends TestCase
 {
@@ -99,6 +101,58 @@ class PropertyOperatorTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * getPropertyValueメソッドが正常に値を返すことを確認
+     */
+    #[Test]
+    public function testGetPropertyValueReturnsValueSuccessfully(): void
+    {
+        $property = $this->refClass->getProperty('name');
+        $input = ['name' => 'test value'];
+        $inputData = new InputData($input);
+        $field = new TestField();
+
+        $operator = PropertyOperator::create($property, $inputData, $field);
+        $result = $operator->getPropertyValue($field);
+
+        $this->assertSame('test value', $result);
+    }
+
+    /**
+     * バリデーションが失敗した場合にValidationExceptionが発生することを確認
+     */
+    #[Test]
+    public function testGetPropertyValueThrowsValidationException(): void
+    {
+        $property = $this->refClass->getProperty('name');
+        $input = ['name' => 'invalid value'];
+        $inputData = new InputData($input);
+        $field = new ValidationErrorField();
+
+        $operator = PropertyOperator::create($property, $inputData, $field);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Validation failed');
+        $operator->getPropertyValue($field);
+    }
+
+    /**
+     * プリミティブ型チェックに失敗した場合にTypeErrorが発生することを確認
+     */
+    #[Test]
+    public function testGetPropertyValueThrowsTypeError(): void
+    {
+        $property = $this->refClass->getProperty('name');
+        $input = ['name' => new \stdClass()];
+        $inputData = new InputData($input);
+        $field = new TestField();
+
+        $operator = PropertyOperator::create($property, $inputData, $field);
+
+        $this->expectException(TypeError::class);
+        $operator->getPropertyValue($field);
+    }
 }
 
 class TestModel
@@ -116,5 +170,15 @@ class TestField extends BaseField
         );
     }
 
-    public function validate(mixed $value): void {}
+    public function validate(mixed $value): void
+    {
+    }
+}
+
+class ValidationErrorField extends BaseField
+{
+    public function validate(mixed $value): void
+    {
+        throw new ValidationException('Validation failed');
+    }
 }
