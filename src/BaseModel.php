@@ -40,7 +40,7 @@ abstract class BaseModel
             $field = FieldsHelper::createField($property);
             $fieldConfig = FieldConfig::factory($property);
 
-            $propertyOperator = new PropertyOperator(
+            $propertyOperator = PropertyOperator::create(
                 refProperty: $property,
                 inputData: $inputData,
                 field: $field,

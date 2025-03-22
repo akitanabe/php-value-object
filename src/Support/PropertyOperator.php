@@ -12,40 +12,40 @@ use ReflectionProperty;
 
 final class PropertyOperator
 {
-    public readonly string $class;
-
-    public readonly string $name;
-
-    public readonly PropertyInitializedStatus $initializedStatus;
-
-    public readonly mixed $value;
-
-    public readonly PropertyValueType $valueType;
-
     /** @var TypeHint[] */
-    public readonly array $typeHints;
+    private function __construct(
+        public readonly string $class,
+        public readonly string $name,
+        public readonly array $typeHints,
+        public readonly PropertyInitializedStatus $initializedStatus,
+        public readonly mixed $value,
+        public readonly PropertyValueType $valueType,
+    ) {
+    }
 
-    public function __construct(
+    public static function create(
         ReflectionProperty $refProperty,
         InputData $inputData,
         BaseField $field,
-    ) {
-        $this->class = $refProperty->class;
-        $this->name = $refProperty->name;
+    ): self {
+        $typeHints = PropertyHelper::getTypeHints($refProperty);
+        $initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
 
-        $this->typeHints = PropertyHelper::getTypeHints($refProperty);
+        $value = null;
+        $valueType = PropertyValueType::NULL;
 
-        $this->initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
-
-        // 入力値と初期化済みプロパティの両方が存在しない場合
-        if ($this->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
-            $this->value = null;
-            $this->valueType = PropertyValueType::NULL;
-            return;
+        if ($initializedStatus !== PropertyInitializedStatus::UNINITIALIZED) {
+            $value = PropertyHelper::getValue($initializedStatus, $refProperty, $inputData, $field);
+            $valueType = PropertyHelper::getValueType($value);
         }
 
-        $this->value = PropertyHelper::getValue($this->initializedStatus, $refProperty, $inputData, $field);
-
-        $this->valueType = PropertyHelper::getValueType($this->value);
+        return new self(
+            $refProperty->class,
+            $refProperty->name,
+            $typeHints,
+            $initializedStatus,
+            $value,
+            $valueType
+        );
     }
 }
