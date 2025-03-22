@@ -21,12 +21,8 @@ use PhpValueObject\BaseModel;
 use stdClass;
 
 // テスト用のクラス定義
-final class FinalClass extends BaseModel
-{
-}
-class InheritableClass extends BaseModel
-{
-}
+final class FinalClass extends BaseModel {}
+class InheritableClass extends BaseModel {}
 
 /**
  * プロパティの状態をテストするためのクラス

@@ -10,12 +10,10 @@ use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\TypeHint;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-
 
 class PropertyOperatorTest extends TestCase
 {
@@ -37,7 +35,7 @@ class PropertyOperatorTest extends TestCase
         ?string $defaultFactoryValue,
         PropertyInitializedStatus $expectedStatus,
         PropertyValueType $expectedType,
-        mixed $expectedValue
+        mixed $expectedValue,
     ): void {
         $property = $this->refClass->getProperty($propertyName);
 
@@ -46,11 +44,7 @@ class PropertyOperatorTest extends TestCase
         $inputData = new InputData($input);
         $field = new TestField($defaultFactoryValue);
 
-        $operator = PropertyOperator::create(
-            $property,
-            $inputData,
-            $field
-        );
+        $operator = PropertyOperator::create($property, $inputData, $field);
 
         $this->assertSame(TestModel::class, $operator->class);
         $this->assertSame($propertyName, $operator->name);
@@ -118,11 +112,9 @@ class TestField extends BaseField
     public function __construct(?string $defaultFactoryValue = null)
     {
         parent::__construct(
-            defaultFactory: $defaultFactoryValue === null ? null : fn() => $defaultFactoryValue
+            defaultFactory: $defaultFactoryValue === null ? null : fn() => $defaultFactoryValue,
         );
     }
 
-    public function validate(mixed $value): void
-    {
-    }
+    public function validate(mixed $value): void {}
 }
