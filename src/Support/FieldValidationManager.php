@@ -4,34 +4,22 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
+use ReflectionAttribute;
 use ReflectionProperty;
 use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validation\BeforeValidator;
-use PhpValueObject\Validation\AfterValidator;
 use PhpValueObject\Validation\Validatorable;
 
 /**
  * 単一のプロパティに対するバリデーション処理を管理するクラス
+ *
+ * @phpstan-import-type validator_mode from Validatorable
  */
 class FieldValidationManager
 {
-    /** @var Validatorable[] */
-    private readonly array $beforeValidators;
-
-    /** @var Validatorable[] */
-    private readonly array $afterValidators;
-
-    /**
-     * @param Validatorable[] $beforeValidators
-     * @param Validatorable[] $afterValidators
-     */
     private function __construct(
-        array $beforeValidators,
-        array $afterValidators,
-    ) {
-        $this->beforeValidators = $beforeValidators;
-        $this->afterValidators = $afterValidators;
-    }
+        /** @var Validatorable[] */
+        private readonly array $validators,
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -39,20 +27,29 @@ class FieldValidationManager
      */
     public static function createFromProperty(ReflectionProperty $property): self
     {
+
         return new self(
-            AttributeHelper::getAttributeInstances($property, BeforeValidator::class),
-            AttributeHelper::getAttributeInstances($property, AfterValidator::class),
+            AttributeHelper::getAttributeInstances(
+                $property,
+                Validatorable::class,
+                ReflectionAttribute::IS_INSTANCEOF,
+            ),
         );
     }
 
     /**
      *
-     * @param Validatorable[] $validators
+     * @param validator_mode $mode
      * @param mixed $value
      * @return mixed
      */
-    private function processValidation(array $validators, mixed $value): mixed
+    private function processValidation(string $mode, mixed $value): mixed
     {
+        $validators = array_filter(
+            $this->validators,
+            fn(Validatorable $validator): bool => $validator->getMode() === $mode,
+        );
+
         return array_reduce(
             $validators,
             fn(mixed $value, Validatorable $validator): mixed => $validator->validate($value),
@@ -66,7 +63,7 @@ class FieldValidationManager
      */
     public function processBeforeValidation(mixed $value): mixed
     {
-        return $this->processValidation($this->beforeValidators, $value);
+        return $this->processValidation('before', $value);
     }
 
     /**
@@ -75,6 +72,6 @@ class FieldValidationManager
      */
     public function processAfterValidation(mixed $value): mixed
     {
-        return $this->processValidation($this->afterValidators, $value);
+        return $this->processValidation('after', $value);
     }
 }

@@ -16,4 +16,13 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class BeforeValidator extends Validator {}
+final class BeforeValidator extends Validator
+{
+    /**
+     * @return 'before'
+     */
+    public function getMode(): string
+    {
+        return 'before';
+    }
+}

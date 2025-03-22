@@ -8,6 +8,8 @@ use PhpValueObject\Exceptions\ValidationException;
 
 /**
  * バリデーション処理のインターフェース
+ *
+ * @phpstan-type validator_mode 'before'|'after'
  */
 interface Validatorable
 {
@@ -19,4 +21,11 @@ interface Validatorable
      * @throws ValidationException バリデーションに失敗した場合
      */
     public function validate(mixed $value): mixed;
+
+    /**
+     * バリデーション処理の実行順序を取得する
+     * @return validator_mode バリデーション処理の実行順序
+     */
+    public function getMode(): string;
+
 }

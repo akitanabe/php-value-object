@@ -16,4 +16,13 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class AfterValidator extends Validator {}
+final class AfterValidator extends Validator
+{
+    /**
+     * @return 'after'
+     */
+    public function getMode(): string
+    {
+        return 'after';
+    }
+}
