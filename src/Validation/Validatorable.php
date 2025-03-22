@@ -10,6 +10,7 @@ use PhpValueObject\Exceptions\ValidationException;
  * バリデーション処理のインターフェース
  *
  * @phpstan-type validator_mode 'before'|'after'
+ * @phpstan-type validator_callable callable-string|class-string|array{string|object, string}|\Closure
  */
 interface Validatorable
 {

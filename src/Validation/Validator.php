@@ -17,7 +17,7 @@ use PhpValueObject\Helpers\FieldsHelper;
  * public string $value;
  * ```
  *
- * @phpstan-type validator_callable callable-string|class-string|array{string|object, string}|Closure
+ * @phpstan-import-type validator_callable from Validatorable
  */
 abstract class Validator implements Validatorable
 {
