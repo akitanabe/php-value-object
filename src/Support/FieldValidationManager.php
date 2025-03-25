@@ -8,6 +8,7 @@ use ReflectionAttribute;
 use ReflectionProperty;
 use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Validation\Validatorable;
+use PhpValueObject\Validation\FieldValidator;
 
 /**
  * 単一のプロパティに対するバリデーション処理を管理するクラス
@@ -24,17 +25,30 @@ class FieldValidationManager
     /**
      * プロパティからFieldValidationManagerを生成する
      * BeforeValidatorとAfterValidatorの属性を取得し、バリデーション処理を初期化する
+     *
+     * @param ReflectionProperty $property
+     * @param array<FieldValidator> $fieldValidators
+     *
      */
-    public static function createFromProperty(ReflectionProperty $property): self
+    public static function createFromProperty(ReflectionProperty $property, array $fieldValidators = []): self
     {
 
-        return new self(
-            AttributeHelper::getAttributeInstances(
+
+        $validators = [
+            ...AttributeHelper::getAttributeInstances(
                 $property,
                 Validatorable::class,
                 ReflectionAttribute::IS_INSTANCEOF,
             ),
-        );
+            ...array_values(
+                array_filter(
+                    $fieldValidators,
+                    fn(FieldValidator $validator): bool => $validator->field === $property->getName(),
+                ),
+            ),
+        ];
+
+        return new self(validators: $validators);
     }
 
     /**

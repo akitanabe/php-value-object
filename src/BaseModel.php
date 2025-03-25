@@ -36,17 +36,19 @@ abstract class BaseModel
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
+        $fieldValidators = FieldsHelper::getFieldValidators($refClass, $this);
+
         foreach ($refClass->getProperties() as $property) {
 
             $field = FieldsHelper::createField($property);
             $fieldConfig = FieldConfig::factory($property);
-            $validationManager = FieldValidationManager::createFromProperty($property);
+            $fieldValidationManager = FieldValidationManager::createFromProperty($property, $fieldValidators);
 
             $propertyOperator = PropertyOperator::create(
                 refProperty: $property,
                 inputData: $inputData,
                 field: $field,
-                validationManager: $validationManager,
+                validationManager: $fieldValidationManager,
             );
 
             // プロパティ状態の検証
@@ -60,7 +62,7 @@ abstract class BaseModel
                 continue;
             }
 
-            $value = $propertyOperator->getPropertyValue($field, $validationManager);
+            $value = $propertyOperator->getPropertyValue($field, $fieldValidationManager);
             $property->setValue($this, $value);
         }
     }
