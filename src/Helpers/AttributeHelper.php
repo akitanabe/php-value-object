@@ -8,6 +8,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionClassConstant;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 use ReflectionObject;
 use ReflectionParameter;
 use ReflectionProperty;
@@ -33,12 +34,12 @@ final class AttributeHelper
     /**
      * @template T of object
      * @template C of object
-     * @param ReflectionClass<C>|ReflectionProperty $reflection
+     * @param ReflectionClass<C>|ReflectionProperty|ReflectionMethod $reflection
      * @param class-string<T> $attributeName
      * @return T[]
      */
     public static function getAttributeInstances(
-        ReflectionClass|ReflectionProperty $reflection,
+        ReflectionClass|ReflectionProperty|ReflectionMethod $reflection,
         string $attributeName,
         int $flags = 0,
     ): array {

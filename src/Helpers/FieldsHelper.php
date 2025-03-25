@@ -8,8 +8,12 @@ use Closure;
 use InvalidArgumentException;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Fields\Field;
+use PhpValueObject\Validation\FieldValidator;
 use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionMethod;
 use ReflectionProperty;
+use PhpValueObject\BaseModel;
 
 class FieldsHelper
 {
@@ -61,5 +65,47 @@ class FieldsHelper
             BaseField::class,
             ReflectionAttribute::IS_INSTANCEOF,
         )?->newInstance() ?? new Field();
+    }
+
+    /**
+     * FieldValidatorのリストを取得する
+     *
+     * @template T of BaseModel
+     * @param ReflectionClass<T> $refClass
+     * @param T $model
+     *
+     * @return FieldValidator[]
+     */
+    public static function getFieldValidators(ReflectionClass $refClass, BaseModel $model): array
+    {
+        // バリデーションメソッドをFieldValidatorに入力する
+        $setValidator = function (FieldValidator $fieldValidator, ReflectionMethod $refMethod) use (
+            $model
+        ): FieldValidator {
+            $methodName = $refMethod->getName();
+            $validator = $model->{$methodName}(...);
+
+            $fieldValidator->setValidator($validator);
+
+            return $fieldValidator;
+        };
+
+        return array_reduce(
+            $refClass->getMethods(),
+            function (array $carry, ReflectionMethod $refMethod) use ($setValidator): array {
+                $fieldValidators = AttributeHelper::getAttributeInstances($refMethod, FieldValidator::class);
+
+                return [
+                    ...$carry,
+                    ...array_map(
+                        fn(FieldValidator $fieldValidator): FieldValidator
+                        => $setValidator($fieldValidator, $refMethod),
+                        $fieldValidators,
+                    ),
+                ];
+            },
+            [],
+        );
+
     }
 }
