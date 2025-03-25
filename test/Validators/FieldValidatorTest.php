@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validation;
+namespace PhpValueObject\Test\Validators;
 
-use PhpValueObject\Validation\FieldValidator;
+use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Exceptions\ValidationException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;

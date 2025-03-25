@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Test\Support\TestValidator;
-use PhpValueObject\Validation\FieldValidator;
+use PhpValueObject\Validators\FieldValidator;
 use DateTime;
 use ReflectionClass;
 

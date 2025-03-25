@@ -11,8 +11,8 @@ use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\FieldValidationManager;
-use PhpValueObject\Validation\BeforeValidator;
-use PhpValueObject\Validation\AfterValidator;
+use PhpValueObject\Validators\BeforeValidator;
+use PhpValueObject\Validators\AfterValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -230,7 +230,9 @@ class TestField extends BaseField
         );
     }
 
-    public function validate(mixed $value): void {}
+    public function validate(mixed $value): void
+    {
+    }
 }
 
 class ValidationErrorField extends BaseField

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validation;
+namespace PhpValueObject\Validators;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
@@ -26,7 +26,8 @@ abstract class Validator implements Validatorable
      */
     public function __construct(
         private readonly string|array|Closure $validator,
-    ) {}
+    ) {
+    }
 
     public function validate(mixed $value): mixed
     {

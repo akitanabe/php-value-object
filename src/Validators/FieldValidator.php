@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpValueObject\Validation;
+namespace PhpValueObject\Validators;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
@@ -22,7 +22,8 @@ final class FieldValidator implements Validatorable
     public function __construct(
         public readonly string $field,
         private string $mode = 'after',
-    ) {}
+    ) {
+    }
 
     public function setValidator(Closure $validator): void
     {

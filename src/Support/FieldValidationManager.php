@@ -7,8 +7,8 @@ namespace PhpValueObject\Support;
 use ReflectionAttribute;
 use ReflectionProperty;
 use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validation\Validatorable;
-use PhpValueObject\Validation\FieldValidator;
+use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\FieldValidator;
 
 /**
  * 単一のプロパティに対するバリデーション処理を管理するクラス
@@ -20,7 +20,8 @@ class FieldValidationManager
     private function __construct(
         /** @var Validatorable[] */
         private readonly array $validators,
-    ) {}
+    ) {
+    }
 
     /**
      * プロパティからFieldValidationManagerを生成する

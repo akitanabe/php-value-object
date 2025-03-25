@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validation;
+namespace PhpValueObject\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
 

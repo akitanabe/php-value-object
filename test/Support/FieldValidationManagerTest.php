@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support;
 
-use PhpValueObject\Validation\BeforeValidator;
-use PhpValueObject\Validation\AfterValidator;
+use PhpValueObject\Validators\BeforeValidator;
+use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validation\FieldValidator;
+use PhpValueObject\Validators\FieldValidator;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 
