@@ -16,7 +16,7 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class AfterValidator extends Validator
+final class AfterValidator extends BaseValidator
 {
     /**
      * @return 'after'

@@ -19,7 +19,7 @@ use PhpValueObject\Helpers\FieldsHelper;
  *
  * @phpstan-import-type validator_callable from Validatorable
  */
-abstract class Validator implements Validatorable
+abstract class BaseValidator implements Validatorable
 {
     /**
      * @param validator_callable $validator バリデーション処理を行うcallable
