@@ -15,7 +15,7 @@ use Attribute;
  * public string $value;
  * ```
  */
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class BeforeValidator extends BaseValidator
 {
     /**
