@@ -15,10 +15,12 @@ use TypeError;
 
 final class PropertyOperator
 {
+    /**
+     * @param TypeHint[] $typeHints
+     */
     private function __construct(
         public readonly string $class,
         public readonly string $name,
-        /** @var array<TypeHint> */
         public readonly array $typeHints,
         public readonly PropertyInitializedStatus $initializedStatus,
         public readonly mixed $value,
@@ -66,10 +68,12 @@ final class PropertyOperator
         // フィールドバリデーション
         $field->validate($this);
 
-        // 入力前にプリミティブ型のチェック
-        AssertionHelper::assertPrimitiveType($this);
-
         // AfterValidatorの実行
-        return $validationManager->processAfterValidation($this->value);
+        $value = $validationManager->processAfterValidation($this->value);
+
+        // 入力前にプリミティブ型のチェック
+        AssertionHelper::assertPrimitiveType($this->typeHints, $value, $this->class, $this->name,);
+
+        return $value;
     }
 }
