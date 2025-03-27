@@ -26,8 +26,7 @@ abstract class BaseValidator implements Validatorable
      */
     public function __construct(
         private readonly string|array|Closure $validator,
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value): mixed
     {

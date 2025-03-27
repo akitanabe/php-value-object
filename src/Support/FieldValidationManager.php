@@ -20,8 +20,7 @@ class FieldValidationManager
     private function __construct(
         /** @var Validatorable[] */
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する

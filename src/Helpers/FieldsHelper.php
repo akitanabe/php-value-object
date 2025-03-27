@@ -39,7 +39,7 @@ class FieldsHelper
     public static function createFactory(string|array|Closure $factory): Closure
     {
         $fn = match (true) {
-                // クラス名の場合はインスタンスを生成
+            // クラス名の場合はインスタンスを生成
             (is_string($factory) && class_exists($factory)) => new $factory(),
             default => $factory,
         };
@@ -79,7 +79,9 @@ class FieldsHelper
     public static function getFieldValidators(ReflectionClass $refClass, BaseModel $model): array
     {
         // バリデーションメソッドをFieldValidatorに入力する
-        $setValidator = function (FieldValidator $fieldValidator, ReflectionMethod $refMethod) use ($model): FieldValidator {
+        $setValidator = function (FieldValidator $fieldValidator, ReflectionMethod $refMethod) use (
+            $model
+        ): FieldValidator {
             $methodName = $refMethod->getName();
             $validator = $model->{$methodName}(...);
 
