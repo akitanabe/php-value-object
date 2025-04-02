@@ -9,7 +9,6 @@ use Closure;
 use Override;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\PropertyOperator;
 
 /**
  * ListField
@@ -43,10 +42,15 @@ final class ListField extends BaseField
             : PropertyValueType::fromShorthand($type));
     }
 
+    /**
+     * 配列のバリデーションを実行
+     *
+     * @param mixed $value バリデーション対象の値
+     * @throws ValidationException バリデーションエラーが発生した場合
+     */
     #[Override]
-    public function validate(PropertyOperator $propertyOperator): void
+    public function validate(mixed $value): void
     {
-        $value = $propertyOperator->value;
 
         if (!is_array($value)) {
             throw new ValidationException("Invalid Field Value. Must be array");

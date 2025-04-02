@@ -10,10 +10,6 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\Fields\Field;
-use PhpValueObject\Support\FieldValidationManager;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\PropertyOperator;
-use ReflectionProperty;
 
 use function strtolower as _strtolower;
 
@@ -210,13 +206,7 @@ class FieldTest extends TestCase
     public function testValidateMethodWorks(): void
     {
         $field = new Field();
-        $refProperty = new ReflectionProperty(FieldValidateTestClass::class, 'defaultValue');
-        $inputData = new InputData(['defaultValue' => 'test']);
-        $validationManager = FieldValidationManager::createFromProperty($refProperty);
-        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
-
-        // Fieldクラスのvalidateは空実装なので、例外が発生しないことを確認
-        $field->validate($propertyOperator);
+        $field->validate('test');
         // @phpstan-ignore method.alreadyNarrowedType
         $this->assertTrue(true);
     }

@@ -11,10 +11,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\ListField;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Support\FieldValidationManager;
-use ReflectionProperty;
 
 class ListFieldValidateTestClass
 {
@@ -108,17 +104,11 @@ class ListFieldTest extends TestCase
     {
         $field = new ListField(type: $type);
 
-        $refProperty = new ReflectionProperty(ListFieldValidateTestClass::class, 'prop');
-        $inputData = new InputData(['prop' => $value]);
-
-        $validationManager = FieldValidationManager::createFromProperty($refProperty);
-        $propertyOperator = PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
-
         if ($expectException) {
             $this->expectException(ValidationException::class);
         }
 
-        $field->validate($propertyOperator);
+        $field->validate($value);
 
         // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
         $this->assertTrue(true);

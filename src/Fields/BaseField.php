@@ -7,7 +7,6 @@ namespace PhpValueObject\Fields;
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\PropertyOperator;
 
 /**
  * フィールドの基底クラス
@@ -51,5 +50,5 @@ abstract class BaseField
      *
      * @throws ValidationException
      */
-    abstract public function validate(PropertyOperator $propertyOperator): void;
+    abstract public function validate(mixed $value): void;
 }

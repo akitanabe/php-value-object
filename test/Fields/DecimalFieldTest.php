@@ -6,12 +6,9 @@ namespace PhpValueObject\Test\Fields;
 
 use PhpValueObject\Fields\DecimalField;
 use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 
 class DecimalFieldValidateTestClass
 {
@@ -42,29 +39,19 @@ class DecimalFieldTest extends TestCase
      * 2. 指定された値でInputDataを作成
      * 3. PropertyOperatorインスタンスを生成して返却
      */
-    private function createPropertyOperator(mixed $value, DecimalField $field): PropertyOperator
-    {
-        $refProperty = new ReflectionProperty(DecimalFieldValidateTestClass::class, 'prop');
-        $inputData = new InputData(['prop' => $value]);
-        $validationManager = FieldValidationManager::createFromProperty($refProperty);
-        return PropertyOperator::create($refProperty, $inputData, $field, $validationManager);
-    }
-
     /**
      * 基本的な小数値の検証をテスト
      *
      * 文字列で与えられた小数値'123.45'が:
      * 1. バリデーションを通過すること
-     * 2. 正しくfloat型の123.45に変換されること
      */
     #[Test]
     public function basicValidation(): void
     {
         $field = new DecimalField();
-        $operator = $this->createPropertyOperator('123.45', $field);
-
-        $field->validate($operator);
-        $this->assertEquals(123.45, $operator->value);
+        $field->validate('123.45');
+        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
+        $this->assertTrue(true);
     }
 
     /**
@@ -80,13 +67,13 @@ class DecimalFieldTest extends TestCase
     public function maxDigitsValidation(): void
     {
         $field = new DecimalField(maxDigits: 5);
-        $operator = $this->createPropertyOperator('123.45', $field);
-        $field->validate($operator);
-        $this->assertEquals(123.45, $operator->value);
+        $field->validate('123.45');
+        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
+        $this->assertTrue(true);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Number must have no more than 5 digits in total');
-        $field->validate($this->createPropertyOperator('1234.56', $field));
+        $field->validate('1234.56');
     }
 
     /**
@@ -100,13 +87,13 @@ class DecimalFieldTest extends TestCase
     public function decimalPlacesValidation(): void
     {
         $field = new DecimalField(decimalPlaces: 2);
-        $operator = $this->createPropertyOperator('123.45', $field);
-        $field->validate($operator);
-        $this->assertEquals(123.45, $operator->value);
+        $field->validate('123.45');
+        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
+        $this->assertTrue(true);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Number must have no more than 2 decimal places');
-        $field->validate($this->createPropertyOperator('123.456', $field));
+        $field->validate('123.456');
     }
 
     /**
@@ -122,7 +109,7 @@ class DecimalFieldTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be numeric');
-        $field->validate($this->createPropertyOperator('abc', $field));
+        $field->validate('abc');
     }
 
     /**
@@ -138,12 +125,13 @@ class DecimalFieldTest extends TestCase
     {
         $field = new DecimalField(maxDigits: 5, decimalPlaces: 2);
 
-        $operator = $this->createPropertyOperator('12.50', $field);
-        $field->validate($operator);
-        $this->assertEquals(12.50, $operator->value);
+        $field->validate('12.50');
+
+        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
+        $this->assertTrue(true);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Number must have no more than 5 digits in total');
-        $field->validate($this->createPropertyOperator('123.456', $field)); // 6 digits in total
+        $field->validate('123.456'); // 6 digits in total
     }
 }

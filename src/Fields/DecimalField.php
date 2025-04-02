@@ -7,7 +7,6 @@ namespace PhpValueObject\Fields;
 use Attribute;
 use Closure;
 use Override;
-use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Exceptions\ValidationException;
 
 /**
@@ -71,13 +70,12 @@ class DecimalField extends BaseField
      *    - 小数点で分割し、小数部の長さをチェック
      * 4. 数値範囲の検証（NumericFieldに委譲）
      *
-     * @param PropertyOperator $propertyOperator バリデーション対象のプロパティ操作オブジェクト
+     * @param mixed $value バリデーション対象の値
      * @throws ValidationException バリデーションエラーが発生した場合
      */
     #[Override]
-    public function validate(PropertyOperator $propertyOperator): void
+    public function validate(mixed $value): void
     {
-        $value = $propertyOperator->value;
         if (!is_numeric($value)) {
             throw new ValidationException('Invalid Field Value. Must be numeric');
         }
@@ -106,6 +104,6 @@ class DecimalField extends BaseField
         }
 
         // After our validations, pass to NumericField for gt, lt, ge, le checks
-        $this->numericField->validate($propertyOperator);
+        $this->numericField->validate($value);
     }
 }

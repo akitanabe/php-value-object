@@ -8,7 +8,6 @@ use Attribute;
 use Closure;
 use Override;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\PropertyOperator;
 
 /**
  * StringField
@@ -38,16 +37,14 @@ final class StringField extends BaseField
     }
 
     /**
+     * 文字列のバリデーションを実行
      *
-     * @throws ValidationException
-     *
-     *
-     * */
+     * @param mixed $value バリデーション対象の値
+     * @throws ValidationException バリデーションエラーが発生した場合
+     */
     #[Override]
-    public function validate(PropertyOperator $propertyOperator): void
+    public function validate(mixed $value): void
     {
-        $value = $propertyOperator->value;
-
         $invalidMessage = 'Invalid Field Value';
         if (is_string($value) === false) {
             throw new ValidationException("{$invalidMessage}. Must be string");

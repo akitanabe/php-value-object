@@ -8,7 +8,6 @@ use Attribute;
 use Closure;
 use Override;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\PropertyOperator;
 
 /**
  * NumericField
@@ -38,13 +37,14 @@ final class NumericField extends BaseField
     }
 
     /**
+     * 数値のバリデーションを実行
      *
-     * @throws ValidationException
+     * @param mixed $value バリデーション対象の値
+     * @throws ValidationException バリデーションエラーが発生した場合
      */
     #[Override]
-    public function validate(PropertyOperator $propertyOperator): void
+    public function validate(mixed $value): void
     {
-        $value = $propertyOperator->value;
 
         $invalidMessage = 'Invalid Field Value';
         if (!is_numeric($value)) {
