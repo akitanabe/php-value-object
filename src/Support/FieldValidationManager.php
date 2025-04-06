@@ -40,7 +40,9 @@ class FieldValidationManager
                 Validatorable::class,
                 ReflectionAttribute::IS_INSTANCEOF,
             ),
-            ...array_values(
+            ...(empty($fieldValidators))
+            ? []
+            : array_values(
                 array_filter(
                     $fieldValidators,
                     fn(FieldValidator $validator): bool => $validator->field === $property->getName(),
