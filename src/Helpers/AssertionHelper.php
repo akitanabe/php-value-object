@@ -107,10 +107,10 @@ class AssertionHelper
             return;
         }
 
-        $onlyPrimitiveTypes = array_filter($typeHints, fn(TypeHint $typeHint): bool => $typeHint->isPrimitive,);
+        $onlyPrimitiveTypes = array_filter($typeHints, fn(TypeHint $typeHint): bool => $typeHint->isPrimitive);
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
-        if (count($onlyPrimitiveTypes) === 0) {
+        if (empty($onlyPrimitiveTypes)) {
             return;
         }
 
