@@ -19,7 +19,6 @@ final class ValidatorFunctionWrapHandler
     public function __construct(
         private ArrayIterator $validators,
     ) {
-        $validators->next();
         $this->currentIndex = $validators->key() > -1 ? $validators->key() : -1;
     }
 
@@ -38,6 +37,7 @@ final class ValidatorFunctionWrapHandler
         $this->validators->seek($this->currentIndex);
 
         $validator = $this->validators->current();
+        $this->validators->next();
 
         $nextHandler = new self($this->validators);
 

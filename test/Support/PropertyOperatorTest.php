@@ -178,7 +178,7 @@ class PropertyOperatorTest extends TestCase
      * BeforeValidatorが正しく実行されることを確認
      */
     #[Test]
-    public function testBeforeValidatorIsExecutedDuringCreate(): void
+    public function testBeforeValidatorIsExecuted(): void
     {
         $property = $this->refClass->getProperty('validatedBeforeValue');
         $input = ['validatedBeforeValue' => 'a'];
@@ -186,9 +186,11 @@ class PropertyOperatorTest extends TestCase
         $field = new TestField();
         $validationManager = FieldValidationManager::createFromProperty($property);
 
+        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator->getPropertyValue($field, $validationManager);
     }
 
     /**

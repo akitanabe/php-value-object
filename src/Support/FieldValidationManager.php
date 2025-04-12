@@ -12,15 +12,14 @@ use PhpValueObject\Validators\FieldValidator;
 
 /**
  * 単一のプロパティに対するバリデーション処理を管理するクラス
- *
- * @phpstan-import-type validator_mode from Validatorable
  */
 class FieldValidationManager
 {
     private function __construct(
         /** @var Validatorable[] */
         private readonly array $validators,
-    ) {}
+    ) {
+    }
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -32,8 +31,6 @@ class FieldValidationManager
      */
     public static function createFromProperty(ReflectionProperty $property, array $fieldValidators = []): self
     {
-
-
         $validators = [
             ...AttributeHelper::getAttributeInstances(
                 $property,
@@ -54,40 +51,21 @@ class FieldValidationManager
     }
 
     /**
-     *
-     * @param validator_mode $mode
-     * @param mixed $value
-     * @return mixed
+     * ValidatorFunctionWrapHandlerを使用してバリデーション処理を実行する
+     * 
+     * @param mixed $value 検証する値 
+     * @return mixed 検証結果の値
      */
-    private function processValidation(string $mode, mixed $value): mixed
+    public function processValidation(mixed $value): mixed
     {
-        $validators = array_filter(
-            $this->validators,
-            fn(Validatorable $validator): bool => $validator->getMode() === $mode,
-        );
+        if (empty($this->validators)) {
+            return $value;
+        }
 
-        return array_reduce(
-            $validators,
-            fn(mixed $value, Validatorable $validator): mixed => $validator->validate($value),
-            $value,
-        );
-    }
+        // ArrayIteratorに変換してValidatorFunctionWrapHandlerで処理
+        $validators = new \ArrayIterator($this->validators);
 
-    /**
-     * BeforeValidatorによるバリデーション処理を実行する
-     * PropertyOperator::valueへの入力前に実行される
-     */
-    public function processBeforeValidation(mixed $value): mixed
-    {
-        return $this->processValidation('before', $value);
-    }
-
-    /**
-     * AfterValidatorによるバリデーション処理を実行する
-     * setPropertyValueの前に実行される
-     */
-    public function processAfterValidation(mixed $value): mixed
-    {
-        return $this->processValidation('after', $value);
+        $handler = new ValidatorFunctionWrapHandler($validators);
+        return $handler($value);
     }
 }

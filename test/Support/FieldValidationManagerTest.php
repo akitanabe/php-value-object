@@ -58,34 +58,25 @@ class FieldValidationManagerTest extends TestCase
     }
 
     /**
-     * BeforeValidatorのテスト（バリデーション失敗）
+     * バリデーション失敗のテスト
      * 属性を使用したバリデーションで3文字未満の入力を検証
      */
-    public function testBeforeValidationThrowsException(): void
+    public function testValidationThrowsException(): void
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        $this->managerWithAttributes->processBeforeValidation('ab');
+        $this->managerWithAttributes->processValidation('ab');
     }
 
     /**
-     * BeforeValidatorのテスト（バリデーション成功）
-     * 属性を使用したバリデーションで3文字以上の入力を検証
+     * バリデーション成功のテスト
+     * 属性を使用したバリデーションで3文字以上の入力を検証し、
+     * その後文字列の先頭を大文字に変換
      */
-    public function testBeforeValidationSuccess(): void
+    public function testValidationSuccess(): void
     {
-        $result = $this->managerWithAttributes->processBeforeValidation('abc');
-        $this->assertEquals('abc', $result);
-    }
-
-    /**
-     * AfterValidatorのテスト
-     * 属性を使用したバリデーションで文字列の先頭を大文字に変換
-     */
-    public function testAfterValidation(): void
-    {
-        $result = $this->managerWithAttributes->processAfterValidation('john');
-        $this->assertEquals('John', $result);
+        $result = $this->managerWithAttributes->processValidation('abc');
+        $this->assertEquals('Abc', $result);
     }
 
     /**
@@ -94,57 +85,50 @@ class FieldValidationManagerTest extends TestCase
      */
     public function testValidationOrder(): void
     {
-        $result = $this->managerWithAttributes->processBeforeValidation('john');
-        $this->assertEquals('john', $result);
-
-        $result = $this->managerWithAttributes->processAfterValidation($result);
+        $result = $this->managerWithAttributes->processValidation('john');
         $this->assertEquals('John', $result);
     }
 
     /**
-     * beforeモードのFieldValidatorのテスト
-     * FieldValidatorを使用して入力値の長さを検証
+     * FieldValidatorのバリデーションテスト
+     * 入力値の長さを検証し、文字列の先頭を大文字に変換
      */
-    public function testBeforeFieldValidation(): void
+    public function testFieldValidation(): void
     {
         // バリデーション失敗のケース
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        $this->managerWithFieldValidators->processBeforeValidation('ab');
+        $this->managerWithFieldValidators->processValidation('ab');
     }
 
     /**
-     * afterモードのFieldValidatorのテスト
-     * FieldValidatorを使用して文字列の先頭を大文字に変換
+     * FieldValidatorのバリデーション成功テスト
      */
-    public function testAfterFieldValidation(): void
+    public function testFieldValidationSuccess(): void
     {
-        $result = $this->managerWithFieldValidators->processAfterValidation('john');
+        $result = $this->managerWithFieldValidators->processValidation('john');
         $this->assertEquals('John', $result);
     }
 
     /**
      * 属性とFieldValidatorの組み合わせテスト
-     * BeforeValidator属性とbeforeモードのFieldValidatorが両方適用される
+     * BeforeValidator属性とFieldValidatorが両方適用される
      */
     public function testCombinedValidation(): void
     {
         // 最初のバリデーション（3文字以上）は通過するが、2番目のバリデーション（6文字以上）で失敗
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('6文字以上必要です');
-        $this->managerWithBoth->processBeforeValidation('abcde');
+        $this->managerWithBoth->processValidation('abcde');
     }
 
     /**
      * 属性とFieldValidatorの組み合わせテスト（成功ケース）
-     * BeforeValidator属性とbeforeモードのFieldValidatorの両方を通過
+     * 全てのバリデーションを通過
      */
     public function testCombinedValidationSuccess(): void
     {
-        $result = $this->managerWithBoth->processBeforeValidation('abcdef');
-        $this->assertEquals('abcdef', $result);
-
-        $result = $this->managerWithBoth->processAfterValidation($result);
+        $result = $this->managerWithBoth->processValidation('abcdef');
         $this->assertEquals('Abcdef', $result);
     }
 }
