@@ -199,15 +199,13 @@ class FieldTest extends TestCase
 
     /**
      * validateメソッドの基本的な動作をテストします。
-     * Fieldクラスのvalidateメソッドは空実装のため、
-     * メソッドが例外を発生させずに正常に実行されることを確認します。
+     * 値をそのまま返すことを確認します。
      */
     #[Test]
     public function testValidateMethodWorks(): void
     {
         $field = new Field();
-        $field->validate('test');
-        // @phpstan-ignore method.alreadyNarrowedType
-        $this->assertTrue(true);
+        $result = $field->validate('test');
+        $this->assertEquals('test', $result);
     }
 }

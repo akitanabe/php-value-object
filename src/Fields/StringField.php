@@ -8,6 +8,7 @@ use Attribute;
 use Closure;
 use Override;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * StringField
@@ -43,7 +44,7 @@ final class StringField extends BaseField
      * @throws ValidationException バリデーションエラーが発生した場合
      */
     #[Override]
-    public function validate(mixed $value): void
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         $invalidMessage = 'Invalid Field Value';
         if (is_string($value) === false) {
@@ -55,7 +56,7 @@ final class StringField extends BaseField
         }
 
         if ($value === '') {
-            return;
+            return $value;
         }
 
         $valueLength = mb_strlen($value);
@@ -73,5 +74,7 @@ final class StringField extends BaseField
         if ($this->pattern !== '' && preg_match($this->pattern, $value) === 0) {
             throw new ValidationException("{$invalidMessage}. Invalid format");
         }
+
+        return $value;
     }
 }

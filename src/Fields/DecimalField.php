@@ -8,6 +8,7 @@ use Attribute;
 use Closure;
 use Override;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * 小数値を扱うフィールドクラス
@@ -74,7 +75,7 @@ class DecimalField extends BaseField
      * @throws ValidationException バリデーションエラーが発生した場合
      */
     #[Override]
-    public function validate(mixed $value): void
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         if (!is_numeric($value)) {
             throw new ValidationException('Invalid Field Value. Must be numeric');
@@ -105,5 +106,7 @@ class DecimalField extends BaseField
 
         // After our validations, pass to NumericField for gt, lt, ge, le checks
         $this->numericField->validate($value);
+
+        return $value;
     }
 }

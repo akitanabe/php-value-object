@@ -8,6 +8,7 @@ use Attribute;
 use Closure;
 use Override;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * NumericField
@@ -43,9 +44,8 @@ final class NumericField extends BaseField
      * @throws ValidationException バリデーションエラーが発生した場合
      */
     #[Override]
-    public function validate(mixed $value): void
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
-
         $invalidMessage = 'Invalid Field Value';
         if (!is_numeric($value)) {
             throw new ValidationException("{$invalidMessage}. Must be numeric");
@@ -72,5 +72,7 @@ final class NumericField extends BaseField
         if ($this->le !== null && $numericValue > $this->le) {
             throw new ValidationException("{$invalidMessage}. Must be less than or equal to {$this->le}");
         }
+
+        return $value;
     }
 }

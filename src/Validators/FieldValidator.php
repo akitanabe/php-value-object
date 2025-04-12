@@ -5,6 +5,7 @@ namespace PhpValueObject\Validators;
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 use Attribute;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * @phpstan-import-type validator_mode from Validatorable
@@ -29,7 +30,7 @@ final class FieldValidator implements Validatorable
         $this->validator = $validator;
     }
 
-    public function validate(mixed $value): mixed
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         $validatorFn = FieldsHelper::createFactory($this->validator);
 

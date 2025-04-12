@@ -6,6 +6,7 @@ namespace PhpValueObject\Validators;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * バリデーション処理の基底クラス
@@ -28,7 +29,7 @@ abstract class BaseValidator implements Validatorable
         private readonly string|array|Closure $validator,
     ) {}
 
-    public function validate(mixed $value): mixed
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         $validator = FieldsHelper::createFactory($this->validator);
         return $validator($value);

@@ -20,6 +20,7 @@ use ReflectionClass;
 use PhpValueObject\Exceptions\ValidationException;
 use TypeError;
 use stdClass;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 class PropertyOperatorTest extends TestCase
 {
@@ -230,12 +231,15 @@ class TestField extends BaseField
         );
     }
 
-    public function validate(mixed $value): void {}
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    {
+        return $value;
+    }
 }
 
 class ValidationErrorField extends BaseField
 {
-    public function validate(mixed $value): void
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         throw new ValidationException('Validation failed');
     }

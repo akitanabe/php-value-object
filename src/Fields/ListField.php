@@ -9,6 +9,7 @@ use Closure;
 use Override;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * ListField
@@ -49,9 +50,8 @@ final class ListField extends BaseField
      * @throws ValidationException バリデーションエラーが発生した場合
      */
     #[Override]
-    public function validate(mixed $value): void
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
-
         if (!is_array($value)) {
             throw new ValidationException("Invalid Field Value. Must be array");
         }
@@ -62,7 +62,7 @@ final class ListField extends BaseField
 
         // 型の指定がない場合は配列とリストの検証のみ
         if ($this->type === null || $this->valueType === null) {
-            return;
+            return $value;
         }
 
         $listValidation = match (true) {
@@ -79,5 +79,7 @@ final class ListField extends BaseField
         if (!$isValid) {
             throw new ValidationException("Invalid element type");
         }
+
+        return $value;
     }
 }

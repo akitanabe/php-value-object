@@ -6,13 +6,15 @@ namespace PhpValueObject\Fields;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Support\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\Validatorable;
 
 /**
  * フィールドの基底クラス
  * @phpstan-type default_factory callable-string|class-string|array{string|object, string}|Closure
+ * @phpstan-import-type validator_mode from Validatorable
  */
-abstract class BaseField
+abstract class BaseField implements Validatorable
 {
     /**
      *
@@ -48,7 +50,22 @@ abstract class BaseField
     /**
      * バリデーション
      *
-     * @throws ValidationException
+     * @param mixed $value バリデーション対象の値
+     * @param ValidatorFunctionWrapHandler|null $handler バリデーションハンドラー
+     * @return mixed バリデーション後の値
      */
-    abstract public function validate(mixed $value): void;
+    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    {
+        return $value;
+    }
+
+    /**
+     * バリデーション処理の実行順序を取得する
+     *
+     * @return validator_mode
+     */
+    public function getMode(): string
+    {
+        return 'field';
+    }
 }
