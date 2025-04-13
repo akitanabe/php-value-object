@@ -42,7 +42,7 @@ abstract class BaseModel
 
             $field = FieldsHelper::createField($property);
             $fieldConfig = FieldConfig::factory($property);
-            $fieldValidationManager = FieldValidationManager::createFromProperty($property, $fieldValidators);
+            $fieldValidationManager = FieldValidationManager::createFromProperty($property, $field, $fieldValidators);
 
             $propertyOperator = PropertyOperator::create(
                 refProperty: $property,

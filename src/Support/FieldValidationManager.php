@@ -7,6 +7,7 @@ namespace PhpValueObject\Support;
 use ReflectionAttribute;
 use ReflectionProperty;
 use PhpValueObject\Helpers\AttributeHelper;
+use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Validators\Validatorable;
 use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
@@ -17,10 +18,13 @@ use ArrayIterator;
  */
 class FieldValidationManager
 {
+    /**
+     * @param array<int, Validatorable> $validators
+     */
     private function __construct(
-        /** @var Validatorable[] */
         private readonly array $validators,
-    ) {}
+    ) {
+    }
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -28,25 +32,44 @@ class FieldValidationManager
      *
      * @param ReflectionProperty $property
      * @param array<FieldValidator> $fieldValidators
-     *
      */
-    public static function createFromProperty(ReflectionProperty $property, array $fieldValidators = []): self
-    {
-        $validators = [
-            ...AttributeHelper::getAttributeInstances(
-                $property,
-                Validatorable::class,
-                ReflectionAttribute::IS_INSTANCEOF,
-            ),
-            ...(empty($fieldValidators))
+    public static function createFromProperty(
+        ReflectionProperty $property,
+        BaseField $field,
+        array $fieldValidators = []
+    ): self {
+
+        // 属性から取得したバリデータを追加
+        $attributeValidators = AttributeHelper::getAttributeInstances(
+            $property,
+            Validatorable::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        );
+
+        // フィールドバリデータを追加
+        $thisFieldValdators =
+            empty($fieldValidators)
             ? []
-            : array_values(
-                array_filter(
-                    $fieldValidators,
-                    fn(FieldValidator $validator): bool => $validator->field === $property->getName(),
-                ),
-            ),
+            : array_values(array_filter(
+                $fieldValidators,
+                fn(FieldValidator $validator): bool => $validator->field === $property->name,
+            ));
+
+        $validators = [
+            ...$attributeValidators,
+            ...$thisFieldValdators,
+            $field,
         ];
+
+        // バリデータをモードによってソート
+        usort($validators, function (Validatorable $a, Validatorable $b): int {
+            $modes = [
+                'before' => 1,
+                'field' => 2,
+                'after' => 3
+            ];
+            return $modes[$a->getMode()] <=> $modes[$b->getMode()];
+        });
 
         return new self(validators: $validators);
     }

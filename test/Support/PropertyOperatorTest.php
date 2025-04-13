@@ -51,7 +51,7 @@ class PropertyOperatorTest extends TestCase
 
         $inputData = new InputData($input);
         $field = new TestField($defaultFactoryValue);
-        $validationManager = FieldValidationManager::createFromProperty($property);
+        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
 
@@ -129,7 +129,7 @@ class PropertyOperatorTest extends TestCase
         $input = ['name' => 'test value'];
         $inputData = new InputData($input);
         $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property);
+        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
         $result = $operator->getPropertyValue($field, $validationManager);
@@ -147,7 +147,7 @@ class PropertyOperatorTest extends TestCase
         $input = ['name' => 'invalid value'];
         $inputData = new InputData($input);
         $field = new ValidationErrorField();
-        $validationManager = FieldValidationManager::createFromProperty($property);
+        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
 
@@ -166,7 +166,7 @@ class PropertyOperatorTest extends TestCase
         $input = ['name' => new stdClass()];
         $inputData = new InputData($input);
         $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property);
+        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
 
@@ -184,7 +184,7 @@ class PropertyOperatorTest extends TestCase
         $input = ['validatedBeforeValue' => 'a'];
         $inputData = new InputData($input);
         $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property);
+        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
 
@@ -203,7 +203,7 @@ class PropertyOperatorTest extends TestCase
         $input = ['validatedAfterValue' => 'john'];
         $inputData = new InputData($input);
         $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property);
+        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
         $result = $operator->getPropertyValue($field, $validationManager);

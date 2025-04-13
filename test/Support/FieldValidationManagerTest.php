@@ -31,8 +31,10 @@ class FieldValidationManagerTest extends TestCase
         $class = new TestClass();
         $this->property = new ReflectionProperty($class, 'name');
 
+        $field = new \PhpValueObject\Fields\StringField();
+
         // 属性のみを使用したマネージャー
-        $this->managerWithAttributes = FieldValidationManager::createFromProperty($this->property);
+        $this->managerWithAttributes = FieldValidationManager::createFromProperty($this->property, $field);
 
         // FieldValidatorのみを使用したマネージャー
         $beforeValidator = new FieldValidator('name', 'before');
@@ -41,6 +43,7 @@ class FieldValidationManagerTest extends TestCase
         $afterValidator->setValidator(fn(string $value) => TestValidator::formatName($value));
         $this->managerWithFieldValidators = FieldValidationManager::createFromProperty(
             $this->property,
+            $field,
             [$beforeValidator, $afterValidator],
         );
 
@@ -53,6 +56,7 @@ class FieldValidationManagerTest extends TestCase
         );
         $this->managerWithBoth = FieldValidationManager::createFromProperty(
             $this->property,
+            $field,
             [$additionalBeforeValidator],
         );
     }

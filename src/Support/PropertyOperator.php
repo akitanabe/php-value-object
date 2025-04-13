@@ -63,14 +63,11 @@ final class PropertyOperator
      */
     public function getPropertyValue(BaseField $field, FieldValidationManager $validationManager): mixed
     {
-        // フィールドバリデーション
-        $field->validate($this);
-
         // バリデーションの実行
         $value = $validationManager->processValidation($this->value);
 
         // 入力前にプリミティブ型のチェック
-        AssertionHelper::assertPrimitiveType($this->typeHints, $value, $this->class, $this->name, );
+        AssertionHelper::assertPrimitiveType($this->typeHints, $value, $this->class, $this->name);
 
         return $value;
     }
