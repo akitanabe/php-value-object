@@ -23,7 +23,8 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {}
+    ) {
+    }
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -59,7 +60,7 @@ class FieldValidationManager
         // バリデータをモードによってソート
         usort(
             array: $validators,
-            callback: fn(Validatorable $a, Validatorable $b): int => $a->getMode()->value <=> $b->getMode()->value,
+            callback: fn(Validatorable $a, Validatorable $b): int => $a->getMode()->getPriority() <=> $b->getMode()->getPriority(),
         );
 
 
