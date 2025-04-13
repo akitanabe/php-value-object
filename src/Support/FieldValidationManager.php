@@ -23,8 +23,7 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -36,7 +35,7 @@ class FieldValidationManager
     public static function createFromProperty(
         ReflectionProperty $property,
         BaseField $field,
-        array $fieldValidators = []
+        array $fieldValidators = [],
     ): self {
 
         // 属性から取得したバリデータを追加
@@ -55,20 +54,11 @@ class FieldValidationManager
                 fn(FieldValidator $validator): bool => $validator->field === $property->name,
             ));
 
-        $validators = [
-            ...$attributeValidators,
-            ...$thisFieldValdators,
-            $field,
-        ];
+        $validators = [...$attributeValidators, ...$thisFieldValdators, $field,];
 
         // バリデータをモードによってソート
         usort($validators, function (Validatorable $a, Validatorable $b): int {
-            $modes = [
-                'before' => 1,
-                'field' => 2,
-                'after' => 3
-            ];
-            return $modes[$a->getMode()] <=> $modes[$b->getMode()];
+            return $a->getMode()->value <=> $b->getMode()->value;
         });
 
         return new self(validators: $validators);

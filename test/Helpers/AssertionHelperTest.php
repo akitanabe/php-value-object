@@ -11,7 +11,6 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Helpers\AssertionHelper;
-use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PHPUnit\Framework\TestCase;
@@ -22,12 +21,8 @@ use PhpValueObject\BaseModel;
 use stdClass;
 
 // テスト用のクラス定義
-final class FinalClass extends BaseModel
-{
-}
-class InheritableClass extends BaseModel
-{
-}
+final class FinalClass extends BaseModel {}
+class InheritableClass extends BaseModel {}
 
 /**
  * プロパティの状態をテストするためのクラス

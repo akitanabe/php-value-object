@@ -7,11 +7,10 @@ namespace PhpValueObject\Validators;
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 use Attribute;
+use PhpValueObject\Enums\ValidatorMode;
 
 /**
- * @phpstan-import-type validator_mode from Validatorable
  * @phpstan-import-type validator_callable from Validatorable
- *
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
 final class FieldValidator implements Validatorable
@@ -19,11 +18,11 @@ final class FieldValidator implements Validatorable
     private Closure $validator;
 
     /**
-     * @param validator_mode $mode
+     * @param ValidatorMode $mode
      */
     public function __construct(
         public readonly string $field,
-        private string $mode = 'after',
+        private ValidatorMode $mode = ValidatorMode::AFTER,
     ) {}
 
     public function setValidator(Closure $validator): void
@@ -39,9 +38,9 @@ final class FieldValidator implements Validatorable
     }
 
     /**
-     * @return validator_mode
+     * @return ValidatorMode
      */
-    public function getMode(): string
+    public function getMode(): ValidatorMode
     {
         return $this->mode;
     }

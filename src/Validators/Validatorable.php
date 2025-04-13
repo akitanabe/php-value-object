@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * バリデーション処理のインターフェース
  *
- * @phpstan-type validator_mode 'before'|'after'|'field'
  * @phpstan-type validator_callable callable-string|class-string|array{string|object, string}|\Closure
  */
 interface Validatorable
@@ -26,8 +26,8 @@ interface Validatorable
 
     /**
      * バリデーション処理の実行順序を取得する
-     * @return validator_mode バリデーション処理の実行順序
+     * @return ValidatorMode バリデーション処理の実行順序
      */
-    public function getMode(): string;
+    public function getMode(): ValidatorMode;
 
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
+use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * setPropertyValueの前にバリデーションを実行するAttribute
@@ -19,10 +20,10 @@ use Attribute;
 final class AfterValidator extends BaseValidator
 {
     /**
-     * @return 'after'
+     * @return ValidatorMode
      */
-    public function getMode(): string
+    public function getMode(): ValidatorMode
     {
-        return 'after';
+        return ValidatorMode::AFTER;
     }
 }

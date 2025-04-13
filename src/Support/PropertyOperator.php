@@ -25,14 +25,10 @@ final class PropertyOperator
         public readonly PropertyInitializedStatus $initializedStatus,
         public readonly mixed $value,
         public readonly PropertyValueType $valueType,
-    ) {
-    }
+    ) {}
 
-    public static function create(
-        ReflectionProperty $refProperty,
-        InputData $inputData,
-        BaseField $field,
-    ): self {
+    public static function create(ReflectionProperty $refProperty, InputData $inputData, BaseField $field,): self
+    {
         $typeHints = PropertyHelper::getTypeHints($refProperty);
         $initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
 

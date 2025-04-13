@@ -9,8 +9,10 @@ use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Enums\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use PhpValueObject\Fields\StringField;
 
 class TestClass
 {
@@ -31,15 +33,15 @@ class FieldValidationManagerTest extends TestCase
         $class = new TestClass();
         $this->property = new ReflectionProperty($class, 'name');
 
-        $field = new \PhpValueObject\Fields\StringField();
+        $field = new StringField();
 
         // 属性のみを使用したマネージャー
         $this->managerWithAttributes = FieldValidationManager::createFromProperty($this->property, $field);
 
         // FieldValidatorのみを使用したマネージャー
-        $beforeValidator = new FieldValidator('name', 'before');
+        $beforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
         $beforeValidator->setValidator(fn(string $value) => TestValidator::validateLength($value));
-        $afterValidator = new FieldValidator('name', 'after');
+        $afterValidator = new FieldValidator('name', ValidatorMode::AFTER);
         $afterValidator->setValidator(fn(string $value) => TestValidator::formatName($value));
         $this->managerWithFieldValidators = FieldValidationManager::createFromProperty(
             $this->property,
@@ -48,7 +50,7 @@ class FieldValidationManagerTest extends TestCase
         );
 
         // 属性とFieldValidatorを組み合わせたマネージャー
-        $additionalBeforeValidator = new FieldValidator('name', 'before');
+        $additionalBeforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
         $additionalBeforeValidator->setValidator(
             fn(string $value) => strlen($value) > 5 ? $value : throw new ValidationException(
                 '6文字以上必要です',

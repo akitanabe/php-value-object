@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
+use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * PropertyOperator::valueへの代入前にバリデーションを実行するAttribute
@@ -19,10 +20,10 @@ use Attribute;
 final class BeforeValidator extends BaseValidator
 {
     /**
-     * @return 'before'
+     * @return ValidatorMode
      */
-    public function getMode(): string
+    public function getMode(): ValidatorMode
     {
-        return 'before';
+        return ValidatorMode::BEFORE;
     }
 }

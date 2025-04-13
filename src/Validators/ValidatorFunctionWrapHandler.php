@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use ArrayIterator;
 use PhpValueObject\Exceptions\ValidationException;
-use InvalidArgumentException;
 
 final class ValidatorFunctionWrapHandler
 {
@@ -43,10 +42,7 @@ final class ValidatorFunctionWrapHandler
         $nextHandler = new self($this->validators);
 
         $mode = $validator->getMode();
-        if (in_array($mode, ['before', 'after', 'field']) === false) {
-            throw new InvalidArgumentException('Invalid validator mode');
-        }
-
+        // すべてのValidatorModeケースが処理対象
         return $nextHandler($validator->validate($value));
     }
 }

@@ -8,11 +8,11 @@ use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * フィールドの基底クラス
  * @phpstan-type default_factory callable-string|class-string|array{string|object, string}|Closure
- * @phpstan-import-type validator_mode from Validatorable
  */
 abstract class BaseField implements Validatorable
 {
@@ -62,10 +62,10 @@ abstract class BaseField implements Validatorable
     /**
      * バリデーション処理の実行順序を取得する
      *
-     * @return validator_mode
+     * @return ValidatorMode
      */
-    public function getMode(): string
+    public function getMode(): ValidatorMode
     {
-        return 'field';
+        return ValidatorMode::FIELD;
     }
 }
