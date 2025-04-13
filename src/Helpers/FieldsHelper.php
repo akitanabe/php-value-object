@@ -13,7 +13,6 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use PhpValueObject\BaseModel;
 
 class FieldsHelper
 {
@@ -70,21 +69,27 @@ class FieldsHelper
     /**
      * FieldValidatorのリストを取得する
      *
-     * @template T of BaseModel
-     * @param ReflectionClass<T> $refClass
-     * @param T $model
+     * @template T of object
+     * @param ReflectionClass<T> $refClass 対象クラスのReflection
      *
      * @return FieldValidator[]
      */
-    public static function getFieldValidators(ReflectionClass $refClass, BaseModel $model): array
+    public static function getFieldValidators(ReflectionClass $refClass): array
     {
+        $className = $refClass->name;
+
         // バリデーションメソッドをFieldValidatorに入力する
         $setValidator = function (FieldValidator $fieldValidator, ReflectionMethod $refMethod) use (
-            $model
+            $className
         ): FieldValidator {
             $methodName = $refMethod->getName();
-            $validator = $model->{$methodName}(...);
 
+            // staticメソッドであることを確認
+            if ($refMethod->isStatic() === false) {
+                throw new InvalidArgumentException("Method {$methodName} must be static for use with FieldValidator");
+            }
+
+            $validator = [$className, $methodName];
             $fieldValidator->setValidator($validator);
 
             return $fieldValidator;
@@ -106,6 +111,5 @@ class FieldsHelper
             },
             [],
         );
-
     }
 }

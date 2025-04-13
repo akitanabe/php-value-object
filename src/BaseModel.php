@@ -36,7 +36,7 @@ abstract class BaseModel
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
-        $fieldValidators = FieldsHelper::getFieldValidators($refClass, $this);
+        $fieldValidators = FieldsHelper::getFieldValidators($refClass);
 
         foreach ($refClass->getProperties() as $property) {
 
@@ -64,7 +64,7 @@ abstract class BaseModel
             $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
 
             // プリミティブ型のチェック
-            AssertionHelper::assertPrimitiveType(propertyOperator: $validatedPropertyOperator,);
+            AssertionHelper::assertPrimitiveType(propertyOperator: $validatedPropertyOperator);
 
             $property->setValue($this, $validatedPropertyOperator->value);
         }

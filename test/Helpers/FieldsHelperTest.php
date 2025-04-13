@@ -37,7 +37,7 @@ class SingleValidatorModel extends BaseModel
     public string $name;
 
     #[FieldValidator('name')]
-    public function validateName(string $value): string
+    public static function validateName(string $value): string
     {
         return TestValidator::validateLength($value);
     }
@@ -49,15 +49,27 @@ class MultipleValidatorModel extends BaseModel
     public string $title;
 
     #[FieldValidator('name')]
-    public function validateName(string $value): string
+    public static function validateName(string $value): string
     {
         return TestValidator::validateLength($value);
     }
 
     #[FieldValidator('title')]
-    public function validateTitle(string $value): string
+    public static function validateTitle(string $value): string
     {
         return TestValidator::formatName($value);
+    }
+}
+
+class NonStaticValidatorModel extends BaseModel
+{
+    public string $name;
+
+    // staticでないメソッドにFieldValidatorを設定
+    #[FieldValidator('name')]
+    public function validateName(string $value): string
+    {
+        return TestValidator::validateLength($value);
     }
 }
 
@@ -132,7 +144,7 @@ class FieldsHelperTest extends TestCase
         $model = EmptyValidatorModel::fromArray(['name' => 'test']);
         $refClass = new ReflectionClass($model);
 
-        $result = FieldsHelper::getFieldValidators($refClass, $model);
+        $result = FieldsHelper::getFieldValidators($refClass);
 
         $this->assertEmpty($result);
     }
@@ -149,7 +161,7 @@ class FieldsHelperTest extends TestCase
         $model = SingleValidatorModel::fromArray(['name' => 'test_name']);
         $refClass = new ReflectionClass($model);
 
-        $result = FieldsHelper::getFieldValidators($refClass, $model);
+        $result = FieldsHelper::getFieldValidators($refClass);
 
         $this->assertCount(1, $result);
         $this->assertEquals('name', $result[0]->field);
@@ -171,11 +183,10 @@ class FieldsHelperTest extends TestCase
         $model = MultipleValidatorModel::fromArray(['name' => 'test_name', 'title' => '']);
         $refClass = new ReflectionClass($model);
 
-        $result = FieldsHelper::getFieldValidators($refClass, $model);
+        $result = FieldsHelper::getFieldValidators($refClass);
 
         $filter = fn(string $field): array => array_values(array_filter($result, fn($v) => $v->field === $field));
         $this->assertCount(2, $result);
-
 
         // nameフィールドのバリデータをテスト
         $nameValidator = $filter('name')[0];
@@ -187,5 +198,25 @@ class FieldsHelperTest extends TestCase
         $titleValidator = $filter('title')[0];
         $this->assertEquals('title', $titleValidator->field);
         $this->assertEquals('Test', $titleValidator->validate('test'));
+    }
+
+    /**
+     * staticでないメソッドにFieldValidatorが設定されている場合、
+     * InvalidArgumentExceptionが発生することを確認
+     */
+    #[Test]
+    public function getFieldValidatorsThrowsExceptionForNonStaticMethod(): void
+    {
+        // NonStaticValidatorModelのインスタンスを作成
+        // BaseModelのコンストラクタのテストは別途行うので、ここではnewInstanceWithoutConstructorを使用
+        $refClass = new ReflectionClass(NonStaticValidatorModel::class);
+        $model = $refClass->newInstanceWithoutConstructor();
+
+        // staticでないメソッドを持つクラスを検出したとき例外が発生することを確認
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must be static');
+
+        // FieldsHelperのgetFieldValidatorsメソッドを実行
+        FieldsHelper::getFieldValidators($refClass);
     }
 }

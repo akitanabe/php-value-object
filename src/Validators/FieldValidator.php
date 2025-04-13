@@ -15,7 +15,10 @@ use PhpValueObject\Enums\ValidatorMode;
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
 final class FieldValidator implements Validatorable
 {
-    private Closure $validator;
+    /**
+     * @var validator_callable
+     */
+    private string|array|Closure $validator;
 
     /**
      * @param ValidatorMode $mode
@@ -25,7 +28,11 @@ final class FieldValidator implements Validatorable
         private ValidatorMode $mode = ValidatorMode::AFTER,
     ) {}
 
-    public function setValidator(Closure $validator): void
+    /**
+     * @param validator_callable $validator バリデーション処理を行うcallable（静的メソッド）
+     * @return void
+     */
+    public function setValidator(string|array|Closure $validator): void
     {
         $this->validator = $validator;
     }
