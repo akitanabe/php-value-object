@@ -10,6 +10,11 @@ namespace PhpValueObject\Enums;
 enum ValidatorMode: int
 {
     /**
+     * 他のバリデーション処理の前に実行し、他のバリデーション処理をスキップする
+     */
+    case PLAIN = 0;
+
+    /**
      * 他のバリデーション処理の前に実行
      */
     case BEFORE = 1;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use ArrayIterator;
+use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\ValidationException;
 
 final class ValidatorFunctionWrapHandler
@@ -35,14 +36,15 @@ final class ValidatorFunctionWrapHandler
         }
 
         $this->validators->seek($this->currentIndex);
-
         $validator = $this->validators->current();
+
+        // PLAINモードの場合は他のvalidatorをスキップ
+        if ($validator->getMode() === ValidatorMode::PLAIN) {
+            return $validator->validate($value);
+        }
+
         $this->validators->next();
-
         $nextHandler = new self($this->validators);
-
-        $mode = $validator->getMode();
-        // すべてのValidatorModeケースが処理対象
         return $nextHandler($validator->validate($value));
     }
 }
