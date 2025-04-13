@@ -87,7 +87,7 @@ class AssertionHelper
      *
      * @throws TypeError
      */
-    public static function assertPrimitiveType(PropertyOperator $propertyOperator,): void
+    public static function assertPrimitiveType(PropertyOperator $propertyOperator): void
     {
         $isIntsersectionTypeAndObjectValue = array_any(
             $propertyOperator->typeHints,
