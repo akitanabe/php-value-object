@@ -29,6 +29,8 @@ final class ValidatorFunctionWrapHandler
      */
     public function __invoke(mixed $value): mixed
     {
+        // currentIndexが-1の場合は、バリデーションを行わない。
+        // $this->validators->valid() === falseと同じ意味
         if ($this->currentIndex < 0) {
             return $value;
         }
@@ -41,7 +43,7 @@ final class ValidatorFunctionWrapHandler
         $nextHandler = new self($this->validators);
 
         $mode = $validator->getMode();
-        if (!in_array($mode, ['before', 'after', 'field'])) {
+        if (in_array($mode, ['before', 'after', 'field']) === false) {
             throw new InvalidArgumentException('Invalid validator mode');
         }
 
