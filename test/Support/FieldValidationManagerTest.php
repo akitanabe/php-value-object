@@ -13,6 +13,8 @@ use PhpValueObject\Enums\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use PhpValueObject\Fields\StringField;
+use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\InputData;
 
 class TestClass
 {
@@ -64,77 +66,129 @@ class FieldValidationManagerTest extends TestCase
     }
 
     /**
-     * バリデーション失敗のテスト
-     * 属性を使用したバリデーションで3文字未満の入力を検証
+     * PropertyOperatorを使用したバリデーション失敗のテスト
+     * 3文字未満の入力を検証した場合、ValidationExceptionが発生する
      */
     public function testValidationThrowsException(): void
     {
+        $inputData = new InputData(['name' => 'ab']);
+        $operator = PropertyOperator::create($this->property, $inputData, new StringField());
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        $this->managerWithAttributes->processValidation('ab');
+        $this->managerWithAttributes->processValidation($operator);
     }
 
     /**
-     * バリデーション成功のテスト
-     * 属性を使用したバリデーションで3文字以上の入力を検証し、
-     * その後文字列の先頭を大文字に変換
+     * PropertyOperatorを使用したバリデーション成功のテスト
+     * 値が変更された場合は新しいPropertyOperatorが返される
      */
     public function testValidationSuccess(): void
     {
-        $result = $this->managerWithAttributes->processValidation('abc');
-        $this->assertEquals('Abc', $result);
+        // テスト用のPropertyOperatorを作成
+        $inputData = new InputData(['name' => 'abc']);
+        $original = PropertyOperator::create($this->property, $inputData, new StringField());
+
+        $result = $this->managerWithAttributes->processValidation($original);
+
+        // 新しいインスタンスが返されることを確認
+        $this->assertNotSame($original, $result);
+        // 元のオブジェクトの値は変更されていない
+        $this->assertEquals('abc', $original->value);
+        // 新しいオブジェクトの値は変更されている
+        $this->assertEquals('Abc', $result->value);
+        // クラス名とプロパティ名は維持されている
+        $this->assertEquals($original->class, $result->class);
+        $this->assertEquals($original->name, $result->name);
     }
 
     /**
-     * バリデーション順序のテスト
-     * 属性を使用したバリデーションの実行順序を検証
+     * PropertyOperatorを使用したバリデーション順序のテスト
+     * Before -> After の順で属性バリデーションが実行される
      */
     public function testValidationOrder(): void
     {
-        $result = $this->managerWithAttributes->processValidation('john');
-        $this->assertEquals('John', $result);
+        $inputData = new InputData(['name' => 'john']);
+        $operator = PropertyOperator::create($this->property, $inputData, new StringField());
+
+        $result = $this->managerWithAttributes->processValidation($operator);
+
+        // 元のオブジェクトの値は変更されていない
+        $this->assertEquals('john', $operator->value);
+        // 新しいオブジェクトの値は変更されている（最初の文字が大文字に）
+        $this->assertEquals('John', $result->value);
     }
 
     /**
-     * FieldValidatorのバリデーションテスト
-     * 入力値の長さを検証し、文字列の先頭を大文字に変換
+     * PropertyOperatorを使用したFieldValidatorのバリデーション失敗テスト
+     * 入力値の長さが3文字未満の場合、ValidationExceptionが発生する
      */
     public function testFieldValidation(): void
     {
-        // バリデーション失敗のケース
+        $inputData = new InputData(['name' => 'ab']);
+        $operator = PropertyOperator::create($this->property, $inputData, new StringField());
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        $this->managerWithFieldValidators->processValidation('ab');
+        $this->managerWithFieldValidators->processValidation($operator);
     }
 
     /**
-     * FieldValidatorのバリデーション成功テスト
+     * PropertyOperatorを使用したFieldValidatorのバリデーション成功テスト
+     * 値が変更された場合は新しいPropertyOperatorが返される
      */
     public function testFieldValidationSuccess(): void
     {
-        $result = $this->managerWithFieldValidators->processValidation('john');
-        $this->assertEquals('John', $result);
+        $inputData = new InputData(['name' => 'john']);
+        $original = PropertyOperator::create($this->property, $inputData, new StringField());
+
+        $result = $this->managerWithFieldValidators->processValidation($original);
+
+        // 新しいインスタンスが返されることを確認
+        $this->assertNotSame($original, $result);
+        // 元のオブジェクトの値は変更されていない
+        $this->assertEquals('john', $original->value);
+        // 新しいオブジェクトの値は変更されている
+        $this->assertEquals('John', $result->value);
+        // クラス名とプロパティ名は維持されている
+        $this->assertEquals($original->class, $result->class);
+        $this->assertEquals($original->name, $result->name);
     }
 
     /**
-     * 属性とFieldValidatorの組み合わせテスト
+     * PropertyOperatorを使用した属性とFieldValidatorの組み合わせテスト
      * BeforeValidator属性とFieldValidatorが両方適用される
+     * 最初のバリデーション（3文字以上）は通過するが、2番目のバリデーション（6文字以上）で失敗
      */
     public function testCombinedValidation(): void
     {
-        // 最初のバリデーション（3文字以上）は通過するが、2番目のバリデーション（6文字以上）で失敗
+        $inputData = new InputData(['name' => 'abcde']);
+        $operator = PropertyOperator::create($this->property, $inputData, new StringField());
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('6文字以上必要です');
-        $this->managerWithBoth->processValidation('abcde');
+        $this->managerWithBoth->processValidation($operator);
     }
 
     /**
-     * 属性とFieldValidatorの組み合わせテスト（成功ケース）
-     * 全てのバリデーションを通過
+     * PropertyOperatorを使用した属性とFieldValidatorの組み合わせテスト（成功ケース）
+     * 全てのバリデーションを通過し、新しいPropertyOperatorが返される
      */
     public function testCombinedValidationSuccess(): void
     {
-        $result = $this->managerWithBoth->processValidation('abcdef');
-        $this->assertEquals('Abcdef', $result);
+        $inputData = new InputData(['name' => 'abcdef']);
+        $original = PropertyOperator::create($this->property, $inputData, new StringField());
+
+        $result = $this->managerWithBoth->processValidation($original);
+
+        // 新しいインスタンスが返されることを確認
+        $this->assertNotSame($original, $result);
+        // 元のオブジェクトの値は変更されていない
+        $this->assertEquals('abcdef', $original->value);
+        // 新しいオブジェクトの値は変更されている
+        $this->assertEquals('Abcdef', $result->value);
+        // クラス名とプロパティ名は維持されている
+        $this->assertEquals($original->class, $result->class);
+        $this->assertEquals($original->name, $result->name);
     }
 }

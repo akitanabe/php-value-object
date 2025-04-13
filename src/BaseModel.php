@@ -61,8 +61,8 @@ abstract class BaseModel
                 continue;
             }
 
-            $value = $propertyOperator->getPropertyValue($field, $fieldValidationManager);
-            $property->setValue($this, $value);
+            $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
+            $property->setValue($this, $validatedPropertyOperator->value);
         }
     }
 

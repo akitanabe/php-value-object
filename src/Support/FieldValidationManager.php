@@ -23,8 +23,7 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -70,19 +69,26 @@ class FieldValidationManager
     /**
      * ValidatorFunctionWrapHandlerを使用してバリデーション処理を実行する
      *
-     * @param mixed $value 検証する値
-     * @return mixed 検証結果の値
+     * @param PropertyOperator $operator プロパティ操作オブジェクト
+     * @return PropertyOperator バリデーション後のプロパティ操作オブジェクト
      */
-    public function processValidation(mixed $value): mixed
+    public function processValidation(PropertyOperator $operator): PropertyOperator
     {
         if (empty($this->validators)) {
-            return $value;
+            return $operator;
         }
 
         // ArrayIteratorに変換してValidatorFunctionWrapHandlerで処理
         $validators = new ArrayIterator($this->validators);
-
         $handler = new ValidatorFunctionWrapHandler($validators);
-        return $handler($value);
+
+        $validatedValue = $handler($operator->value);
+
+        // 値が変更された場合は新しいPropertyOperatorを作成
+        if ($validatedValue !== $operator->value) {
+            return $operator->withValue($validatedValue);
+        }
+
+        return $operator;
     }
 }

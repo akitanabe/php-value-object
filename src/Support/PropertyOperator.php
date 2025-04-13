@@ -27,7 +27,7 @@ final class PropertyOperator
         public readonly PropertyValueType $valueType,
     ) {}
 
-    public static function create(ReflectionProperty $refProperty, InputData $inputData, BaseField $field,): self
+    public static function create(ReflectionProperty $refProperty, InputData $inputData, BaseField $field): self
     {
         $typeHints = PropertyHelper::getTypeHints($refProperty);
         $initializedStatus = PropertyHelper::getInitializedStatus($refProperty, $inputData, $field);
@@ -57,14 +57,32 @@ final class PropertyOperator
      * @throws ValidationException
      * @throws TypeError
      */
+    /**
+     * 新しい値で新しいPropertyOperatorを作成する
+     */
+    public function withValue(mixed $value): self
+    {
+        // 値の型を判定
+        $valueType = PropertyHelper::getValueType($value);
+
+        return new self(
+            $this->class,
+            $this->name,
+            $this->typeHints,
+            $this->initializedStatus,
+            $value,
+            $valueType,
+        );
+    }
+
     public function getPropertyValue(BaseField $field, FieldValidationManager $validationManager): mixed
     {
         // バリデーションの実行
-        $value = $validationManager->processValidation($this->value);
+        $result = $validationManager->processValidation($this);
 
         // 入力前にプリミティブ型のチェック
-        AssertionHelper::assertPrimitiveType($this->typeHints, $value, $this->class, $this->name);
+        AssertionHelper::assertPrimitiveType($this->typeHints, $result->value, $this->class, $this->name);
 
-        return $value;
+        return $result->value;
     }
 }
