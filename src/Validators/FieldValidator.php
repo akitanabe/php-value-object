@@ -32,9 +32,10 @@ final class FieldValidator implements Validatorable
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
-        $validatorFn = FieldsHelper::createFactory($this->validator);
+        $validator = FieldsHelper::createFactory($this->validator);
+        $args = ($handler !== null) ? [$value, $handler] : [$value];
 
-        return $validatorFn($value);
+        return $validator(...$args);
     }
 
     /**

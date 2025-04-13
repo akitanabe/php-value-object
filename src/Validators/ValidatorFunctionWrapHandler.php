@@ -38,13 +38,18 @@ final class ValidatorFunctionWrapHandler
         $this->validators->seek($this->currentIndex);
         $validator = $this->validators->current();
 
-        // PLAINモードの場合は他のvalidatorをスキップ
-        if ($validator->getMode() === ValidatorMode::PLAIN) {
-            return $validator->validate($value);
-        }
-
+        // 次のハンドラーを準備
         $this->validators->next();
         $nextHandler = new self($this->validators);
-        return $nextHandler($validator->validate($value));
+
+        // モードに応じて処理を分岐
+        return match ($validator->getMode()) {
+            // PLAINは常に先頭なので自身のバリデーション以外を実行しない
+            ValidatorMode::PLAIN => $validator->validate($value),
+            // WRAPはvalidator内で次のハンドラを実行するか委ねる
+            ValidatorMode::WRAP => $validator->validate($value, $nextHandler),
+            // BEFORE,AFTERは次のハンドラを実行する
+            default => $nextHandler($validator->validate($value)),
+        };
     }
 }

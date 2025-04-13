@@ -34,6 +34,9 @@ abstract class BaseValidator implements Validatorable
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         $validator = FieldsHelper::createFactory($this->validator);
-        return $validator($value);
+
+        $args = ($handler !== null) ? [$value, $handler] : [$value];
+
+        return $validator(...$args);
     }
 }
