@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use ArrayIterator;
+use LogicException;
 use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\ValidationException;
 
@@ -26,6 +27,7 @@ final class ValidatorFunctionWrapHandler
      *
      * @return mixed
      * @throws ValidationException
+     * @throws LogicException
      */
     public function __invoke(mixed $value): mixed
     {
@@ -37,13 +39,19 @@ final class ValidatorFunctionWrapHandler
 
         $this->validators->seek($this->currentIndex);
         $validator = $this->validators->current();
+        $validatorMode = $validator->getMode();
+
+        // PLAINモードのバリデーターは常に先頭（currentIndex = 0）でなければならない
+        if ($validatorMode === ValidatorMode::PLAIN && $this->currentIndex !== 0) {
+            throw new LogicException('ValidatorMode::PLAIN must be at the first position (currentIndex = 0)');
+        }
 
         // 次のハンドラーを準備
         $this->validators->next();
         $nextHandler = new self($this->validators);
 
         // モードに応じて処理を分岐
-        return match ($validator->getMode()) {
+        return match ($validatorMode) {
             // PLAINは常に先頭なので自身のバリデーション以外を実行しない
             ValidatorMode::PLAIN => $validator->validate($value),
             // WRAPはvalidator内で次のハンドラを実行するか委ねる

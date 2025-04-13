@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use ArrayIterator;
+use LogicException;
 use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
@@ -78,6 +79,37 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
         $result = $handler('test');
 
         $this->assertEquals('second validated', $result);
+    }
+
+    /**
+     * PLAINモードのバリデータが先頭（インデックス0）以外の位置にある場合、LogicExceptionが投げられることを確認
+     */
+    #[Test]
+    public function testPlainValidatorNotAtFirstPositionThrowsLogicException(): void
+    {
+        // 先頭のバリデータ
+        $firstValidator = Mockery::mock(Validatorable::class);
+        $firstValidator->shouldReceive('getMode')
+            ->andReturn(ValidatorMode::BEFORE);
+
+        // PLAINモードのバリデータを2番目に配置（誤った配置）
+        $plainValidator = Mockery::mock(Validatorable::class);
+        $plainValidator->shouldReceive('getMode')
+            ->andReturn(ValidatorMode::PLAIN);
+
+        // バリデータの配列を作成（PLAINモードが2番目に配置されている不正な状態）
+        $validators = new ArrayIterator([$firstValidator, $plainValidator]);
+        $validators->next(); // 2番目の要素（PLAINモード）を現在位置に設定
+
+        // @phpstan-ignore argument.type
+        $handler = new ValidatorFunctionWrapHandler($validators);
+
+        // LogicExceptionが発生することを期待
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('ValidatorMode::PLAIN must be at the first position (currentIndex = 0)');
+
+        // 実行時にLogicExceptionが投げられるはず
+        $handler('test');
     }
 
     protected function tearDown(): void
