@@ -48,7 +48,6 @@ abstract class BaseModel
                 refProperty: $property,
                 inputData: $inputData,
                 field: $field,
-                validationManager: $fieldValidationManager,
             );
 
             // プロパティ状態の検証

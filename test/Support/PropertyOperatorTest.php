@@ -53,7 +53,7 @@ class PropertyOperatorTest extends TestCase
         $field = new TestField($defaultFactoryValue);
         $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator = PropertyOperator::create($property, $inputData, $field);
 
         $this->assertSame(TestModel::class, $operator->class);
         $this->assertSame($propertyName, $operator->name);
@@ -131,7 +131,7 @@ class PropertyOperatorTest extends TestCase
         $field = new TestField();
         $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator = PropertyOperator::create($property, $inputData, $field);
         $result = $operator->getPropertyValue($field, $validationManager);
 
         $this->assertSame('test value', $result);
@@ -149,7 +149,7 @@ class PropertyOperatorTest extends TestCase
         $field = new ValidationErrorField();
         $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator = PropertyOperator::create($property, $inputData, $field);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Validation failed');
@@ -168,7 +168,7 @@ class PropertyOperatorTest extends TestCase
         $field = new TestField();
         $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator = PropertyOperator::create($property, $inputData, $field);
 
         $this->expectException(TypeError::class);
         $operator->getPropertyValue($field, $validationManager);
@@ -186,7 +186,7 @@ class PropertyOperatorTest extends TestCase
         $field = new TestField();
         $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator = PropertyOperator::create($property, $inputData, $field);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
@@ -205,7 +205,7 @@ class PropertyOperatorTest extends TestCase
         $field = new TestField();
         $validationManager = FieldValidationManager::createFromProperty($property);
 
-        $operator = PropertyOperator::create($property, $inputData, $field, $validationManager);
+        $operator = PropertyOperator::create($property, $inputData, $field);
         $result = $operator->getPropertyValue($field, $validationManager);
 
         $this->assertSame('John', $result);

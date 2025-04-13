@@ -22,8 +22,12 @@ use PhpValueObject\BaseModel;
 use stdClass;
 
 // テスト用のクラス定義
-final class FinalClass extends BaseModel {}
-class InheritableClass extends BaseModel {}
+final class FinalClass extends BaseModel
+{
+}
+class InheritableClass extends BaseModel
+{
+}
 
 /**
  * プロパティの状態をテストするためのクラス
@@ -64,9 +68,7 @@ class AssertionHelperTest extends TestCase
     private function createPropertyOperator(string $propertyName, array $inputData = []): PropertyOperator
     {
         $property = new ReflectionProperty(TestProperty::class, $propertyName);
-        $validationManager = FieldValidationManager::createFromProperty($property);
-
-        return PropertyOperator::create($property, new InputData($inputData), $this->field, $validationManager);
+        return PropertyOperator::create($property, new InputData($inputData), $this->field);
     }
 
     /**
