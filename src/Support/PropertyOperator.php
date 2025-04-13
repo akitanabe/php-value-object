@@ -9,8 +9,6 @@ use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Helpers\PropertyHelper;
 use ReflectionProperty;
-use PhpValueObject\Exceptions\ValidationException;
-use TypeError;
 
 final class PropertyOperator
 {
@@ -53,8 +51,6 @@ final class PropertyOperator
      * @param BaseField $field
      * @param FieldValidationManager $validationManager
      * @return mixed
-     * @throws ValidationException
-     * @throws TypeError
      */
     /**
      * 新しい値で新しいPropertyOperatorを作成する
