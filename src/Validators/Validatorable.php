@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * バリデーション処理のインターフェース

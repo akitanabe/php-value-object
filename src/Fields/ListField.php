@@ -9,7 +9,7 @@ use Closure;
 use Override;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * ListField

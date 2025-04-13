@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhpValueObject\Validators;
 
 use ArrayIterator;
 use PhpValueObject\Exceptions\ValidationException;
 use InvalidArgumentException;
-use PhpValueObject\Validators\Validatorable;
 
 final class ValidatorFunctionWrapHandler
 {
@@ -41,9 +40,11 @@ final class ValidatorFunctionWrapHandler
 
         $nextHandler = new self($this->validators);
 
-        return match ($validator->getMode()) {
-            'before', 'after', 'field' => $nextHandler($validator->validate($value)),
-            default => throw new InvalidArgumentException('Invalid validator mode'),
-        };
+        $mode = $validator->getMode();
+        if (!in_array($mode, ['before', 'after', 'field'])) {
+            throw new InvalidArgumentException('Invalid validator mode');
+        }
+
+        return $nextHandler($validator->validate($value));
     }
 }

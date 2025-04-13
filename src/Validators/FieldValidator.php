@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpValueObject\Validators;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 use Attribute;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * @phpstan-import-type validator_mode from Validatorable

@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
 
 /**
  * バリデーション処理の基底クラス

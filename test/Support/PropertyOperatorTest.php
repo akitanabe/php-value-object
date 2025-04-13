@@ -20,7 +20,7 @@ use ReflectionClass;
 use PhpValueObject\Exceptions\ValidationException;
 use TypeError;
 use stdClass;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 class PropertyOperatorTest extends TestCase
 {

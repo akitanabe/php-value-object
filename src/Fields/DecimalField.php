@@ -8,7 +8,7 @@ use Attribute;
 use Closure;
 use Override;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 小数値を扱うフィールドクラス

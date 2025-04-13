@@ -6,7 +6,7 @@ namespace PhpValueObject\Fields;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Support\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
 
 /**

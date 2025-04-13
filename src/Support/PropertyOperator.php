@@ -25,8 +25,7 @@ final class PropertyOperator
         public readonly PropertyInitializedStatus $initializedStatus,
         public readonly mixed $value,
         public readonly PropertyValueType $valueType,
-    ) {
-    }
+    ) {}
 
     public static function create(
         ReflectionProperty $refProperty,
@@ -71,7 +70,7 @@ final class PropertyOperator
         $value = $validationManager->processValidation($this->value);
 
         // 入力前にプリミティブ型のチェック
-        AssertionHelper::assertPrimitiveType($this->typeHints, $value, $this->class, $this->name, );
+        AssertionHelper::assertPrimitiveType($this->typeHints, $value, $this->class, $this->name,);
 
         return $value;
     }
