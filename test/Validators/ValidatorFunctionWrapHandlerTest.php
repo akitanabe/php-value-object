@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use ArrayIterator;
-use InvalidArgumentException;
 use PhpValueObject\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Enums\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Mockery;
@@ -42,7 +42,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     {
         /** @var MockInterface $validator1 */
         $validator1 = Mockery::mock(Validatorable::class);
-        $validator1->shouldReceive('getMode')->andReturn('before');
+        $validator1->shouldReceive('getMode')->andReturn(ValidatorMode::BEFORE);
         $validator1->shouldReceive('validate')
             ->with('test')
             ->andReturn('TEST');
@@ -57,26 +57,6 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
         $this->assertSame('TEST', $result);
     }
 
-    /**
-     * 無効なモードを持つバリデーターが例外をスローすることを確認するテスト
-     */
-    #[Test]
-    public function throwsExceptionWithInvalidMode(): void
-    {
-        /** @var MockInterface $validator1 */
-        $validator1 = Mockery::mock(Validatorable::class);
-        $validator1->shouldReceive('getMode')->andReturn('invalid');
-
-        $validators = new ArrayIterator([$validator1]);
-
-        // @phpstan-ignore argument.type (ValidatorableのMockオブジェクトが入力されている)
-        $handler = new ValidatorFunctionWrapHandler($validators);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid validator mode');
-
-        $handler('test');
-    }
 
     /**
      * 複数のバリデーターが順番に処理されることを確認するテスト
@@ -86,14 +66,14 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     {
         /** @var MockInterface $validator1 */
         $validator1 = Mockery::mock(Validatorable::class);
-        $validator1->shouldReceive('getMode')->andReturn('before');
+        $validator1->shouldReceive('getMode')->andReturn(ValidatorMode::BEFORE);
         $validator1->shouldReceive('validate')
             ->with('test')
             ->andReturn('TEST');
 
         /** @var MockInterface $validator2 */
         $validator2 = Mockery::mock(Validatorable::class);
-        $validator2->shouldReceive('getMode')->andReturn('after');
+        $validator2->shouldReceive('getMode')->andReturn(ValidatorMode::AFTER);
         $validator2->shouldReceive('validate')
             ->with('TEST')
             ->andReturn('TEST_MODIFIED');
