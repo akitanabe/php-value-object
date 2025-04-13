@@ -62,6 +62,15 @@ abstract class BaseModel
             }
 
             $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
+
+            // プリミティブ型のチェック
+            AssertionHelper::assertPrimitiveType(
+                typeHints: $validatedPropertyOperator->typeHints,
+                value: $validatedPropertyOperator->value,
+                className: $validatedPropertyOperator->class,
+                propertyName: $validatedPropertyOperator->name,
+            );
+
             $property->setValue($this, $validatedPropertyOperator->value);
         }
     }

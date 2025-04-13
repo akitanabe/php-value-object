@@ -7,7 +7,6 @@ namespace PhpValueObject\Support;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\PropertyHelper;
 use ReflectionProperty;
 use PhpValueObject\Exceptions\ValidationException;
@@ -75,14 +74,4 @@ final class PropertyOperator
         );
     }
 
-    public function getPropertyValue(BaseField $field, FieldValidationManager $validationManager): mixed
-    {
-        // バリデーションの実行
-        $result = $validationManager->processValidation($this);
-
-        // 入力前にプリミティブ型のチェック
-        AssertionHelper::assertPrimitiveType($this->typeHints, $result->value, $this->class, $this->name);
-
-        return $result->value;
-    }
 }

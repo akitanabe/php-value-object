@@ -18,8 +18,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use PhpValueObject\Exceptions\ValidationException;
-use TypeError;
-use stdClass;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 class PropertyOperatorTest extends TestCase
@@ -119,97 +117,6 @@ class PropertyOperatorTest extends TestCase
         ];
     }
 
-    /**
-     * getPropertyValueメソッドが正常に値を返すことを確認
-     */
-    #[Test]
-    public function testGetPropertyValueReturnsValueSuccessfully(): void
-    {
-        $property = $this->refClass->getProperty('name');
-        $input = ['name' => 'test value'];
-        $inputData = new InputData($input);
-        $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property, $field);
-
-        $operator = PropertyOperator::create($property, $inputData, $field);
-        $result = $operator->getPropertyValue($field, $validationManager);
-
-        $this->assertSame('test value', $result);
-    }
-
-    /**
-     * バリデーションが失敗した場合にValidationExceptionが発生することを確認
-     */
-    #[Test]
-    public function testGetPropertyValueThrowsValidationException(): void
-    {
-        $property = $this->refClass->getProperty('name');
-        $input = ['name' => 'invalid value'];
-        $inputData = new InputData($input);
-        $field = new ValidationErrorField();
-        $validationManager = FieldValidationManager::createFromProperty($property, $field);
-
-        $operator = PropertyOperator::create($property, $inputData, $field);
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Validation failed');
-        $operator->getPropertyValue($field, $validationManager);
-    }
-
-    /**
-     * プリミティブ型チェックに失敗した場合にTypeErrorが発生することを確認
-     */
-    #[Test]
-    public function testGetPropertyValueThrowsTypeError(): void
-    {
-        $property = $this->refClass->getProperty('name');
-        $input = ['name' => new stdClass()];
-        $inputData = new InputData($input);
-        $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property, $field);
-
-        $operator = PropertyOperator::create($property, $inputData, $field);
-
-        $this->expectException(TypeError::class);
-        $operator->getPropertyValue($field, $validationManager);
-    }
-
-    /**
-     * BeforeValidatorが正しく実行されることを確認
-     */
-    #[Test]
-    public function testBeforeValidatorIsExecuted(): void
-    {
-        $property = $this->refClass->getProperty('validatedBeforeValue');
-        $input = ['validatedBeforeValue' => 'a'];
-        $inputData = new InputData($input);
-        $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property, $field);
-
-        $operator = PropertyOperator::create($property, $inputData, $field);
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('3文字以上必要です');
-        $operator->getPropertyValue($field, $validationManager);
-    }
-
-    /**
-     * AfterValidatorが正しく実行されることを確認
-     */
-    #[Test]
-    public function testAfterValidatorIsExecutedDuringGetPropertyValue(): void
-    {
-        $property = $this->refClass->getProperty('validatedAfterValue');
-        $input = ['validatedAfterValue' => 'john'];
-        $inputData = new InputData($input);
-        $field = new TestField();
-        $validationManager = FieldValidationManager::createFromProperty($property, $field);
-
-        $operator = PropertyOperator::create($property, $inputData, $field);
-        $result = $operator->getPropertyValue($field, $validationManager);
-
-        $this->assertSame('John', $result);
-    }
 }
 
 class TestModel
