@@ -232,12 +232,7 @@ class AssertionHelperTest extends TestCase
     {
         $propertyOperator = $this->createPropertyOperator('unionType');
 
-        AssertionHelper::assertPrimitiveType(
-            $propertyOperator->typeHints,
-            $propertyOperator->value,
-            $propertyOperator->class,
-            $propertyOperator->name,
-        );
+        AssertionHelper::assertPrimitiveType($propertyOperator);
         // @phpstan-ignore method.alreadyNarrowedType
         $this->assertTrue(true); // アサーションが必要なため
     }
@@ -250,12 +245,7 @@ class AssertionHelperTest extends TestCase
     {
         $propertyOperator = $this->createPropertyOperator('noneType');
 
-        AssertionHelper::assertPrimitiveType(
-            $propertyOperator->typeHints,
-            $propertyOperator->value,
-            $propertyOperator->class,
-            $propertyOperator->name,
-        );
+        AssertionHelper::assertPrimitiveType($propertyOperator);
         // @phpstan-ignore method.alreadyNarrowedType
         $this->assertTrue(true); // アサーションが必要なため
     }
@@ -268,12 +258,7 @@ class AssertionHelperTest extends TestCase
     {
         $propertyOperator = $this->createPropertyOperator('initialized', ['initialized' => 'test']);
 
-        AssertionHelper::assertPrimitiveType(
-            $propertyOperator->typeHints,
-            $propertyOperator->value,
-            $propertyOperator->class,
-            $propertyOperator->name,
-        );
+        AssertionHelper::assertPrimitiveType($propertyOperator);
         // @phpstan-ignore method.alreadyNarrowedType
         $this->assertTrue(true); // アサーションが必要なため
     }

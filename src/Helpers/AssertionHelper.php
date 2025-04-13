@@ -85,21 +85,13 @@ class AssertionHelper
      * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるためアサーション
      * ReflectionProperty::setValueでプリミティブ型もチェックされるようになれば不要
      *
-     * @param TypeHint[] $typeHints
      * @throws TypeError
-     * @return void
      */
-    public static function assertPrimitiveType(
-        array $typeHints,
-        mixed $value,
-        string $className,
-        string $propertyName,
-    ): void {
-        $valueType = PropertyHelper::getValueType($value);
-
+    public static function assertPrimitiveType(PropertyOperator $propertyOperator,): void
+    {
         $isIntsersectionTypeAndObjectValue = array_any(
-            $typeHints,
-            fn(TypeHint $typeHint): bool => $typeHint->isIntersection && $valueType === PropertyValueType::OBJECT,
+            $propertyOperator->typeHints,
+            fn(TypeHint $typeHint): bool => $typeHint->isIntersection && $propertyOperator->valueType === PropertyValueType::OBJECT,
         );
 
         // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
@@ -107,7 +99,10 @@ class AssertionHelper
             return;
         }
 
-        $onlyPrimitiveTypes = array_filter($typeHints, fn(TypeHint $typeHint): bool => $typeHint->isPrimitive);
+        $onlyPrimitiveTypes = array_filter(
+            $propertyOperator->typeHints,
+            fn(TypeHint $typeHint): bool => $typeHint->isPrimitive,
+        );
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
         if (empty($onlyPrimitiveTypes)) {
@@ -116,7 +111,7 @@ class AssertionHelper
 
         $hasPrimitiveTypeAndValue = array_any(
             $onlyPrimitiveTypes,
-            fn(TypeHint $typeHint): bool => $typeHint->type->value === $valueType->shorthand(),
+            fn(TypeHint $typeHint): bool => $typeHint->type->value === $propertyOperator->valueType->shorthand(),
         );
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
@@ -130,7 +125,7 @@ class AssertionHelper
         );
 
         throw new TypeError(
-            "Cannot assign {$valueType->value} to property {$className}::\${$propertyName} of type {$errorTypeName}",
+            "Cannot assign {$propertyOperator->valueType->value} to property {$propertyOperator->class}::\${$propertyOperator->name} of type {$errorTypeName}",
         );
 
     }
