@@ -54,7 +54,7 @@ class FieldValidationManager
                 fn(FieldValidator $validator): bool => $validator->field === $property->name,
             ));
 
-        $validators = [...$attributeValidators, ...$thisFieldValdators, $field,];
+        $validators = [...$attributeValidators, ...$thisFieldValdators, $field];
 
         // バリデータをモードによってソート
         usort(
@@ -85,10 +85,8 @@ class FieldValidationManager
         $validatedValue = $handler($operator->value);
 
         // 値が変更された場合は新しいPropertyOperatorを作成
-        if ($validatedValue !== $operator->value) {
-            return $operator->withValue($validatedValue);
-        }
-
-        return $operator;
+        return ($validatedValue !== $operator->value)
+            ? $operator->withValue($validatedValue)
+            : $operator;
     }
 }
