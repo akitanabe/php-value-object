@@ -30,7 +30,7 @@ final class FieldValidatorTest extends TestCase
     #[Test]
     public function constructorShouldSetCustomModeWhenSpecified(): void
     {
-        $validator = new FieldValidator('test_field', ValidatorMode::BEFORE);
+        $validator = new FieldValidator('test_field', 'before');
 
         $this->assertSame(ValidatorMode::BEFORE, $validator->getMode());
     }
@@ -105,7 +105,7 @@ final class FieldValidatorTest extends TestCase
     #[Test]
     public function getModeShouldReturnValidationMode(): void
     {
-        $validator = new FieldValidator('test_field', ValidatorMode::BEFORE);
+        $validator = new FieldValidator('test_field', 'before');
 
         $this->assertSame(ValidatorMode::BEFORE, $validator->getMode());
     }

@@ -11,7 +11,6 @@ use PhpValueObject\Validators\WrapValidator;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Enums\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use PhpValueObject\Fields\StringField;
@@ -100,9 +99,9 @@ class FieldValidationManagerTest extends TestCase
         $this->managerWithAttributes = FieldValidationManager::createFromProperty($this->property, $field);
 
         // FieldValidatorのみを使用したマネージャー
-        $beforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
+        $beforeValidator = new FieldValidator('name', 'before');
         $beforeValidator->setValidator(fn(string $value) => TestValidator::validateLength($value));
-        $afterValidator = new FieldValidator('name', ValidatorMode::AFTER);
+        $afterValidator = new FieldValidator('name', 'after');
         $afterValidator->setValidator(fn(string $value) => TestValidator::formatName($value));
         $this->managerWithFieldValidators = FieldValidationManager::createFromProperty(
             $this->property,
@@ -111,7 +110,7 @@ class FieldValidationManagerTest extends TestCase
         );
 
         // 属性とFieldValidatorを組み合わせたマネージャー
-        $additionalBeforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
+        $additionalBeforeValidator = new FieldValidator('name', 'before');
         $additionalBeforeValidator->setValidator(
             fn(string $value) => strlen($value) > 5 ? $value : throw new ValidationException(
                 '6文字以上必要です',
@@ -316,13 +315,13 @@ class FieldValidationManagerTest extends TestCase
         // 複数のバリデーターを持つマネージャーを作成
         $field = new StringField();
 
-        $firstBeforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
+        $firstBeforeValidator = new FieldValidator('name', 'before');
         $firstBeforeValidator->setValidator(fn(string $value) => $value . '_before1');
 
-        $secondBeforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
+        $secondBeforeValidator = new FieldValidator('name', 'before');
         $secondBeforeValidator->setValidator(fn(string $value) => $value . '_before2');
 
-        $afterValidator = new FieldValidator('name', ValidatorMode::AFTER);
+        $afterValidator = new FieldValidator('name', 'after');
         $afterValidator->setValidator(fn(string $value) => $value . '_after');
 
         $manager = FieldValidationManager::createFromProperty(
@@ -377,10 +376,10 @@ class FieldValidationManagerTest extends TestCase
         $prop = new ReflectionProperty($testClass, 'allValidatorsProp');
         $field = new StringField();
 
-        $beforeFieldValidator = new FieldValidator('allValidatorsProp', ValidatorMode::BEFORE);
+        $beforeFieldValidator = new FieldValidator('allValidatorsProp', 'before');
         $beforeFieldValidator->setValidator(fn(string $value) => $value . '_field_before');
 
-        $afterFieldValidator = new FieldValidator('allValidatorsProp', ValidatorMode::AFTER);
+        $afterFieldValidator = new FieldValidator('allValidatorsProp', 'after');
         $afterFieldValidator->setValidator(fn(string $value) => $value . '_field_after');
 
         $manager = FieldValidationManager::createFromProperty(
@@ -423,10 +422,10 @@ class FieldValidationManagerTest extends TestCase
         $prop = new ReflectionProperty($testClass, 'testProp');
         $field = new StringField();
 
-        $beforeFieldValidator = new FieldValidator('testProp', ValidatorMode::BEFORE);
+        $beforeFieldValidator = new FieldValidator('testProp', 'before');
         $beforeFieldValidator->setValidator(fn(string $value) => $value . '_field_before');
 
-        $afterFieldValidator = new FieldValidator('testProp', ValidatorMode::AFTER);
+        $afterFieldValidator = new FieldValidator('testProp', 'after');
         $afterFieldValidator->setValidator(fn(string $value) => $value . '_field_after');
 
         $manager = FieldValidationManager::createFromProperty(
