@@ -24,7 +24,7 @@ class ValidatorModeTest extends TestCase
         $this->assertSame('plain', ValidatorMode::PLAIN->value);
         $this->assertSame('wrap', ValidatorMode::WRAP->value);
         $this->assertSame('before', ValidatorMode::BEFORE->value);
-        $this->assertSame('field', ValidatorMode::FIELD->value);
+        $this->assertSame('internal', ValidatorMode::INTERNAL->value);
         $this->assertSame('after', ValidatorMode::AFTER->value);
     }
 
@@ -37,7 +37,7 @@ class ValidatorModeTest extends TestCase
         $this->assertSame(0, ValidatorMode::PLAIN->getPriority());
         $this->assertSame(1, ValidatorMode::WRAP->getPriority());
         $this->assertSame(1, ValidatorMode::BEFORE->getPriority());
-        $this->assertSame(2, ValidatorMode::FIELD->getPriority());
+        $this->assertSame(2, ValidatorMode::INTERNAL->getPriority());
         $this->assertSame(3, ValidatorMode::AFTER->getPriority());
     }
 

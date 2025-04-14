@@ -25,9 +25,9 @@ enum ValidatorMode: string
     case BEFORE = 'before';
 
     /**
-     * フィールドのバリデーション処理として実行
+     * 内部バリデーション処理として実行
      */
-    case FIELD = 'field';
+    case INTERNAL = 'internal';
 
     /**
      * 他のバリデーション処理の後に実行
@@ -45,7 +45,7 @@ enum ValidatorMode: string
             self::PLAIN => 0,
             self::WRAP => 1,
             self::BEFORE => 1,  // WRAPとBEFOREは同じ優先順位
-            self::FIELD => 2,
+            self::INTERNAL => 2,
             self::AFTER => 3,
         };
     }

@@ -66,6 +66,6 @@ abstract class BaseField implements Validatorable
      */
     public function getMode(): ValidatorMode
     {
-        return ValidatorMode::FIELD;
+        return ValidatorMode::INTERNAL;
     }
 }
