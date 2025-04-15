@@ -82,10 +82,10 @@ class FieldValidationManager
         $validators = new ArrayIterator($this->validators);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
-        $validatedValue = $handler($operator->value);
+        $validatedValue = $handler($operator->value->value);
 
         // 値が変更された場合は新しいPropertyOperatorを作成
-        return ($validatedValue !== $operator->value)
+        return ($validatedValue !== $operator->value->value)
             ? $operator->withValue($validatedValue)
             : $operator;
     }

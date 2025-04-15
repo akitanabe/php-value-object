@@ -9,6 +9,8 @@ use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\PropertyMetadata;
+use PhpValueObject\Support\PropertyValue;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Validators\BeforeValidator;
@@ -53,12 +55,41 @@ class PropertyOperatorTest extends TestCase
 
         $operator = PropertyOperator::create($property, $inputData, $field);
 
-        $this->assertSame(TestModel::class, $operator->class);
-        $this->assertSame($propertyName, $operator->name);
-        $this->assertInstanceOf(TypeHint::class, $operator->typeHints[0]);
-        $this->assertSame($expectedStatus, $operator->initializedStatus);
-        $this->assertSame($expectedType, $operator->valueType);
-        $this->assertSame($expectedValue, $operator->value);
+        // 新しい構造に対応したアサーション
+        $this->assertInstanceOf(PropertyMetadata::class, $operator->metadata);
+        $this->assertInstanceOf(PropertyValue::class, $operator->value);
+
+        $this->assertSame(TestModel::class, $operator->metadata->class);
+        $this->assertSame($propertyName, $operator->metadata->name);
+        $this->assertInstanceOf(TypeHint::class, $operator->metadata->typeHints[0]);
+        $this->assertSame($expectedStatus, $operator->metadata->initializedStatus);
+        $this->assertSame($expectedType, $operator->value->valueType);
+        $this->assertSame($expectedValue, $operator->value->value);
+    }
+
+    /**
+     * withValueメソッドのテスト
+     */
+    #[Test]
+    public function testWithValue(): void
+    {
+        $property = $this->refClass->getProperty('name');
+        $inputData = new InputData(['name' => 'original']);
+        $field = new TestField();
+
+        $operator = PropertyOperator::create($property, $inputData, $field);
+        $newOperator = $operator->withValue('modified');
+
+        // 元のオペレーターは変更されていない
+        $this->assertSame('original', $operator->value->value);
+        $this->assertSame(PropertyValueType::STRING, $operator->value->valueType);
+
+        // 新しいオペレーターには新しい値が設定されている
+        $this->assertSame('modified', $newOperator->value->value);
+        $this->assertSame(PropertyValueType::STRING, $newOperator->value->valueType);
+
+        // メタデータは共有されている
+        $this->assertSame($operator->metadata, $newOperator->metadata);
     }
 
     /**
@@ -116,7 +147,6 @@ class PropertyOperatorTest extends TestCase
             ],
         ];
     }
-
 }
 
 class TestModel

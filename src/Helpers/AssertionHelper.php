@@ -47,18 +47,18 @@ class AssertionHelper
     ): bool {
 
         // プロパティが未初期化の場合
-        if ($propertyOperator->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
+        if ($propertyOperator->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
             // 未初期化プロパティが許可されている場合はスキップ
             if ($modelConfig->uninitializedProperty->allow() || $fieldConfig->uninitializedProperty->allow()) {
                 return true;
             }
 
             throw new InvalidPropertyStateException(
-                "{$propertyOperator->class}::\${$propertyOperator->name} is not initialized. not allow uninitialized property.",
+                "{$propertyOperator->metadata->class}::\${$propertyOperator->metadata->name} is not initialized. not allow uninitialized property.",
             );
         }
 
-        foreach ($propertyOperator->typeHints as $typeHint) {
+        foreach ($propertyOperator->metadata->typeHints as $typeHint) {
             if (
                 (
                     // 型が指定されていない場合
@@ -72,7 +72,7 @@ class AssertionHelper
                 )
             ) {
                 throw new InvalidPropertyStateException(
-                    "{$propertyOperator->class}::\${$propertyOperator->name} is invalid property state. not allow {$typeHint->type->value} property type.",
+                    "{$propertyOperator->metadata->class}::\${$propertyOperator->metadata->name} is invalid property state. not allow {$typeHint->type->value} property type.",
                 );
             }
         }
@@ -90,8 +90,8 @@ class AssertionHelper
     public static function assertPrimitiveType(PropertyOperator $propertyOperator): void
     {
         $isIntsersectionTypeAndObjectValue = array_any(
-            $propertyOperator->typeHints,
-            fn(TypeHint $typeHint): bool => $typeHint->isIntersection && $propertyOperator->valueType === PropertyValueType::OBJECT,
+            $propertyOperator->metadata->typeHints,
+            fn(TypeHint $typeHint): bool => $typeHint->isIntersection && $propertyOperator->value->valueType === PropertyValueType::OBJECT,
         );
 
         // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
@@ -100,7 +100,7 @@ class AssertionHelper
         }
 
         $onlyPrimitiveTypes = array_filter(
-            $propertyOperator->typeHints,
+            $propertyOperator->metadata->typeHints,
             fn(TypeHint $typeHint): bool => $typeHint->isPrimitive,
         );
 
@@ -111,7 +111,7 @@ class AssertionHelper
 
         $hasPrimitiveTypeAndValue = array_any(
             $onlyPrimitiveTypes,
-            fn(TypeHint $typeHint): bool => $typeHint->type->value === $propertyOperator->valueType->shorthand(),
+            fn(TypeHint $typeHint): bool => $typeHint->type->value === $propertyOperator->value->valueType->shorthand(),
         );
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
@@ -125,9 +125,7 @@ class AssertionHelper
         );
 
         throw new TypeError(
-            "Cannot assign {$propertyOperator->valueType->value} to property {$propertyOperator->class}::\${$propertyOperator->name} of type {$errorTypeName}",
+            "Cannot assign {$propertyOperator->value->valueType->value} to property {$propertyOperator->metadata->class}::\${$propertyOperator->metadata->name} of type {$errorTypeName}",
         );
-
     }
-
 }

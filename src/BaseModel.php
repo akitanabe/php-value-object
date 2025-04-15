@@ -66,7 +66,8 @@ abstract class BaseModel
             // プリミティブ型のチェック
             AssertionHelper::assertPrimitiveType(propertyOperator: $validatedPropertyOperator);
 
-            $property->setValue($this, $validatedPropertyOperator->value);
+            // PropertyValueオブジェクトからactualValueを取得して設定
+            $property->setValue($this, $validatedPropertyOperator->value->value);
         }
     }
 

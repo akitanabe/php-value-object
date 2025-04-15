@@ -158,12 +158,12 @@ class FieldValidationManagerTest extends TestCase
         // 新しいインスタンスが返されることを確認
         $this->assertNotSame($original, $result);
         // 元のオブジェクトの値は変更されていない
-        $this->assertEquals('abc', $original->value);
+        $this->assertEquals('abc', $original->value->value);
         // 新しいオブジェクトの値は変更されている
-        $this->assertEquals('Abc', $result->value);
+        $this->assertEquals('Abc', $result->value->value);
         // クラス名とプロパティ名は維持されている
-        $this->assertEquals($original->class, $result->class);
-        $this->assertEquals($original->name, $result->name);
+        $this->assertEquals($original->metadata->class, $result->metadata->class);
+        $this->assertEquals($original->metadata->name, $result->metadata->name);
     }
 
     /**
@@ -178,9 +178,9 @@ class FieldValidationManagerTest extends TestCase
         $result = $this->managerWithAttributes->processValidation($operator);
 
         // 元のオブジェクトの値は変更されていない
-        $this->assertEquals('john', $operator->value);
+        $this->assertEquals('john', $operator->value->value);
         // 新しいオブジェクトの値は変更されている（最初の文字が大文字に）
-        $this->assertEquals('John', $result->value);
+        $this->assertEquals('John', $result->value->value);
     }
 
     /**
@@ -211,12 +211,12 @@ class FieldValidationManagerTest extends TestCase
         // 新しいインスタンスが返されることを確認
         $this->assertNotSame($original, $result);
         // 元のオブジェクトの値は変更されていない
-        $this->assertEquals('john', $original->value);
+        $this->assertEquals('john', $original->value->value);
         // 新しいオブジェクトの値は変更されている
-        $this->assertEquals('John', $result->value);
+        $this->assertEquals('John', $result->value->value);
         // クラス名とプロパティ名は維持されている
-        $this->assertEquals($original->class, $result->class);
-        $this->assertEquals($original->name, $result->name);
+        $this->assertEquals($original->metadata->class, $result->metadata->class);
+        $this->assertEquals($original->metadata->name, $result->metadata->name);
     }
 
     /**
@@ -248,12 +248,12 @@ class FieldValidationManagerTest extends TestCase
         // 新しいインスタンスが返されることを確認
         $this->assertNotSame($original, $result);
         // 元のオブジェクトの値は変更されていない
-        $this->assertEquals('abcdef', $original->value);
+        $this->assertEquals('abcdef', $original->value->value);
         // 新しいオブジェクトの値は変更されている
-        $this->assertEquals('Abcdef', $result->value);
+        $this->assertEquals('Abcdef', $result->value->value);
         // クラス名とプロパティ名は維持されている
-        $this->assertEquals($original->class, $result->class);
-        $this->assertEquals($original->name, $result->name);
+        $this->assertEquals($original->metadata->class, $result->metadata->class);
+        $this->assertEquals($original->metadata->name, $result->metadata->name);
     }
 
     /**
@@ -284,9 +284,9 @@ class FieldValidationManagerTest extends TestCase
         // 新しいインスタンスが返されることを確認
         $this->assertNotSame($original, $result);
         // 元のオブジェクトの値は変更されていない
-        $this->assertEquals('test', $original->value);
+        $this->assertEquals('test', $original->value->value);
         // 新しいオブジェクトの値は変更されている（大文字に変換）
-        $this->assertEquals('TEST', $result->value);
+        $this->assertEquals('TEST', $result->value->value);
     }
 
     /**
@@ -302,9 +302,9 @@ class FieldValidationManagerTest extends TestCase
         // 新しいインスタンスが返されることを確認
         $this->assertNotSame($original, $result);
         // 元のオブジェクトの値は変更されていない
-        $this->assertEquals('TEST', $original->value);
+        $this->assertEquals('TEST', $original->value->value);
         // 新しいオブジェクトの値は変更されている（小文字に変換）
-        $this->assertEquals('test', $result->value);
+        $this->assertEquals('test', $result->value->value);
     }
 
     /**
@@ -336,7 +336,7 @@ class FieldValidationManagerTest extends TestCase
         $result = $manager->processValidation($original);
 
         // 実際の挙動に合わせて期待値を修正
-        $this->assertEquals('Test_before1_before2_after', $result->value);
+        $this->assertEquals('Test_before1_before2_after', $result->value->value);
     }
 
     /**
@@ -394,7 +394,7 @@ class FieldValidationManagerTest extends TestCase
         $result = $manager->processValidation($original);
 
         // 実際の挙動に合わせて期待値を修正
-        $this->assertEquals('BASE', $result->value);
+        $this->assertEquals('BASE', $result->value->value);
     }
 
     /**
@@ -441,7 +441,7 @@ class FieldValidationManagerTest extends TestCase
 
         // 属性のBEFOREバリデーターが最初に実行され、次にFieldValidatorのBEFOREバリデーター、
         // 次に属性のAFTERバリデーター、最後にFieldValidatorのAFTERバリデーターが実行されることを確認
-        $this->assertEquals('base_attr_before_field_before_attr_after_field_after', $result->value);
+        $this->assertEquals('base_attr_before_field_before_attr_after_field_after', $result->value->value);
     }
 
     /**
