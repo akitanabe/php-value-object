@@ -19,7 +19,7 @@ use PhpValueObject\Enums\ValidatorMode;
  * @phpstan-import-type validator_callable from Validatorable
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class PlainValidator extends BaseValidator
+final class PlainValidator extends FunctionValidator
 {
     public function getMode(): ValidatorMode
     {

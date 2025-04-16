@@ -20,7 +20,7 @@ use PhpValueObject\Enums\ValidatorMode;
  *
  * @phpstan-import-type validator_callable from Validatorable
  */
-abstract class BaseValidator implements Validatorable
+abstract class FunctionValidator implements Validatorable
 {
     /**
      * @param validator_callable $validator バリデーション処理を行うcallable

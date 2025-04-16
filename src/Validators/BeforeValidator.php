@@ -17,7 +17,7 @@ use PhpValueObject\Enums\ValidatorMode;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class BeforeValidator extends BaseValidator
+final class BeforeValidator extends FunctionValidator
 {
     /**
      * @return ValidatorMode
