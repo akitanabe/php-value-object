@@ -17,12 +17,12 @@ use stdClass;
  * BaseModel統合バリデータテスト用のクラス
  * プロパティの型定義：string
  */
-#[ModelConfig(false, false, false)]
+#[ModelConfig()]
 class TestModelWithStringProperty extends BaseModel
 {
     // 未初期化プロパティとして明示的に設定することで、テストをより明確にする
     // デフォルトでは未初期化プロパティは許可されていない
-    #[FieldConfig(false, false, false)]
+    #[FieldConfig()]
     public string $name;
 }
 
@@ -30,7 +30,7 @@ class TestModelWithStringProperty extends BaseModel
  * BaseModel統合バリデータテスト用のクラス
  * プロパティの型定義：int
  */
-#[ModelConfig(false, false, false)]
+#[ModelConfig()]
 class TestModelWithIntProperty extends BaseModel
 {
     public int $count;
@@ -40,7 +40,7 @@ class TestModelWithIntProperty extends BaseModel
  * BaseModel統合バリデータテスト用のクラス
  * mixed型プロパティ（通常は許可されないが、このテストでは許可する設定）
  */
-#[ModelConfig(false, false, true)]
+#[ModelConfig(allowMixedTypeProperty: true)]
 class TestModelWithMixedProperty extends BaseModel
 {
     public mixed $data;
@@ -50,10 +50,10 @@ class TestModelWithMixedProperty extends BaseModel
  * None型プロパティを持つテストモデル
  * 型定義のないプロパティ（通常は許可されないが、このテストでは許可する設定）
  */
-#[ModelConfig(false, true, false)]
+#[ModelConfig(allowNoneTypeProperty: true)]
 class TestModelWithNoneTypeProperty extends BaseModel
 {
-    #[FieldConfig(false, true, false)]
+    #[FieldConfig(allowNoneTypeProperty: true)]
     // @phpstan-ignore missingType.property (None型プロパティのテスト)
     public $data;
 }
