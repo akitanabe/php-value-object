@@ -64,10 +64,11 @@ final class PropertyHelper
 
 
         return array_map(
-            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHint => new TypeHint($type),
+            fn(ReflectionNamedType|ReflectionIntersectionType|null $type): TypeHint => TypeHint::fromReflectionType(
+                $type,
+            ),
             $types,
         );
-
     }
 
     /**
