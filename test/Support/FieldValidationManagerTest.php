@@ -559,8 +559,8 @@ class FieldValidationManagerTest extends TestCase
         );
 
         // モデルとフィールドの設定
-        $modelConfig = new ModelConfig(false, false, false);
-        $fieldConfig = new FieldConfig(false, false, false);
+        $modelConfig = new ModelConfig();
+        $fieldConfig = new FieldConfig();
 
         // コアバリデータを作成
         $coreValidators = [
@@ -611,8 +611,8 @@ class FieldValidationManagerTest extends TestCase
         );
 
         // 未初期化プロパティを許可しない設定
-        $modelConfig = new ModelConfig(false, false, false);
-        $fieldConfig = new FieldConfig(false, false, false);
+        $modelConfig = new ModelConfig();
+        $fieldConfig = new FieldConfig();
 
         // コアバリデータを作成
         $coreValidators = [
@@ -656,9 +656,9 @@ class FieldValidationManagerTest extends TestCase
             PropertyInitializedStatus::BY_DEFAULT,
         );
 
-        // None型を許可しない設定
-        $modelConfig = new ModelConfig(false, false, false);
-        $fieldConfig = new FieldConfig(false, false, false);
+        // None型を許可しない設定（デフォルト値で十分）
+        $modelConfig = new ModelConfig();
+        $fieldConfig = new FieldConfig();
 
         // コアバリデータを作成
         $coreValidators = [
