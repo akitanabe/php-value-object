@@ -167,7 +167,7 @@ class PropertyTypeValidatorTest extends TestCase
 
     /**
      * プロパティメタデータインスタンスを作成
-     * 
+     *
      * @param array<int, TypeHint> $typeHints
      */
     private function createPropertyMetadata(array $typeHints = []): PropertyMetadata
