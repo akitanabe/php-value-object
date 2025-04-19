@@ -6,6 +6,7 @@ namespace PhpValueObject;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Exceptions\ValidationException;
@@ -14,6 +15,9 @@ use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Validators\PrimitiveTypeValidator;
+use PhpValueObject\Validators\PropertyInitializedValidator;
+use PhpValueObject\Validators\PropertyTypeValidator;
 use ReflectionClass;
 use stdClass;
 use TypeError;
@@ -39,10 +43,8 @@ abstract class BaseModel
         $fieldValidators = FieldsHelper::getFieldValidators($refClass);
 
         foreach ($refClass->getProperties() as $property) {
-
             $field = FieldsHelper::createField($property);
             $fieldConfig = FieldConfig::factory($property);
-            $fieldValidationManager = FieldValidationManager::createFromProperty($property, $field, $fieldValidators);
 
             $propertyOperator = PropertyOperator::create(
                 refProperty: $property,
@@ -50,24 +52,36 @@ abstract class BaseModel
                 field: $field,
             );
 
-            // プロパティ状態の検証
+            // プロパティの検証を行うバリデータを追加
+            $coreValidators = [
+                new PropertyInitializedValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
+                new PropertyTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
+                new PrimitiveTypeValidator($propertyOperator->metadata),
+            ];
+
+            // フィールドバリデーションマネージャーの作成（コアバリデータも含める）
+            $fieldValidationManager = FieldValidationManager::createFromProperty(
+                $property,
+                $field,
+                $fieldValidators,
+                $coreValidators,
+            );
+
+
+            // すべてのバリデーションを実行
+            $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
+
+            // 未初期化プロパティのままならスルー
             if (
-                AssertionHelper::assertInvalidPropertyStateOrSkip(
-                    modelConfig: $modelConfig,
-                    fieldConfig: $fieldConfig,
-                    propertyOperator: $propertyOperator,
-                )
+                $validatedPropertyOperator->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED
+                && $validatedPropertyOperator->value->value === null
             ) {
                 continue;
             }
 
-            $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
-
-            // プリミティブ型のチェック
-            AssertionHelper::assertPrimitiveType(propertyOperator: $validatedPropertyOperator);
-
             // PropertyValueオブジェクトからactualValueを取得して設定
             $property->setValue($this, $validatedPropertyOperator->value->value);
+
         }
     }
 

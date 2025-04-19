@@ -30,12 +30,15 @@ class FieldValidationManager
      * BeforeValidatorとAfterValidatorの属性を取得し、バリデーション処理を初期化する
      *
      * @param ReflectionProperty $property
+     * @param BaseField $field
      * @param array<FieldValidator> $fieldValidators
+     * @param array<Validatorable> $coreValidators
      */
     public static function createFromProperty(
         ReflectionProperty $property,
         BaseField $field,
         array $fieldValidators = [],
+        array $coreValidators = [],
     ): self {
 
         // 属性から取得したバリデータを追加
@@ -54,7 +57,7 @@ class FieldValidationManager
                 fn(FieldValidator $validator): bool => $validator->field === $property->name,
             ));
 
-        $validators = [...$attributeValidators, ...$thisFieldValdators, $field];
+        $validators = [...$attributeValidators, ...$thisFieldValdators, ...$coreValidators, $field];
 
         // バリデータをモードによってソート
         usort(

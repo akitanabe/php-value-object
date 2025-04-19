@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Validators;
 
+use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Support\PropertyValue;
 use PhpValueObject\Support\TypeHint;
@@ -23,6 +24,11 @@ class PrimitiveTypeValidator extends CorePropertyValidator
      */
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
+        // 未初期化プロパティの場合は型チェックをスキップ
+        if ($this->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED && $value === null) {
+            return $value;
+        }
+
         $propertyValue = PropertyValue::fromValue($value);
 
         $isIntsersectionTypeAndObjectValue = array_any(

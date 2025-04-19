@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support;
 
+use PhpValueObject\Config\FieldConfig;
+use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Enums\PropertyInitializedStatus;
+use PhpValueObject\Enums\TypeHintType;
+use PhpValueObject\Exceptions\InvalidPropertyStateException;
+use PhpValueObject\Support\PropertyMetadata;
+use PhpValueObject\Support\TypeHint;
+use PhpValueObject\Validators\PrimitiveTypeValidator;
+use PhpValueObject\Validators\PropertyInitializedValidator;
+use PhpValueObject\Validators\PropertyTypeValidator;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\PlainValidator;
@@ -12,10 +22,12 @@ use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\FieldValidator;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionProperty;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\InputData;
+use TypeError;
 
 class TestValidator
 {
@@ -521,5 +533,149 @@ class FieldValidationManagerTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('2番目のバリデーションに失敗');
         $manager->processValidation($operator);
+    }
+
+    /**
+     * コアバリデータ（PropertyInitializedValidator、PropertyTypeValidator、PrimitiveTypeValidator）を
+     * 使用した統合テスト
+     */
+    #[Test]
+    public function testWithCoreValidators(): void
+    {
+        // テスト用のクラスを作成
+        $testClass = new class {
+            public string $testProp;
+        };
+
+        $prop = new ReflectionProperty($testClass, 'testProp');
+        $field = new StringField();
+
+        // プロパティのメタデータを作成
+        $metadata = new PropertyMetadata(
+            get_class($testClass),
+            'testProp',
+            [new TypeHint(TypeHintType::STRING, true, false)],
+            PropertyInitializedStatus::BY_DEFAULT,
+        );
+
+        // モデルとフィールドの設定
+        $modelConfig = new ModelConfig(false, false, false);
+        $fieldConfig = new FieldConfig(false, false, false);
+
+        // コアバリデータを作成
+        $coreValidators = [
+            new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
+            new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
+            new PrimitiveTypeValidator($metadata),
+        ];
+
+        // コアバリデータを含むマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $coreValidators);
+
+        // 正常値でのテスト
+        $inputData = new InputData(['testProp' => 'valid_string']);
+        $original = PropertyOperator::create($prop, $inputData, $field);
+
+        $result = $manager->processValidation($original);
+        $this->assertEquals('valid_string', $result->value->value);
+
+        // 不正な型の値でのテスト（StringFieldに対して数値を渡す）
+        $inputData = new InputData(['testProp' => 123]);
+        $original = PropertyOperator::create($prop, $inputData, $field);
+
+        // PrimitiveTypeValidatorによって型エラーが発生することを確認
+        $this->expectException(TypeError::class);
+        $manager->processValidation($original);
+    }
+
+    /**
+     * 未初期化プロパティに対するコアバリデータのテスト
+     */
+    #[Test]
+    public function testWithCoreValidatorsForUninitializedProperty(): void
+    {
+        // テスト用のクラスを作成
+        $testClass = new class {
+            public string $testProp;
+        };
+
+        $prop = new ReflectionProperty($testClass, 'testProp');
+        $field = new StringField();
+
+        // 未初期化状態のプロパティのメタデータを作成
+        $metadata = new PropertyMetadata(
+            get_class($testClass),
+            'testProp',
+            [new TypeHint(TypeHintType::STRING, true, false)],
+            PropertyInitializedStatus::UNINITIALIZED,
+        );
+
+        // 未初期化プロパティを許可しない設定
+        $modelConfig = new ModelConfig(false, false, false);
+        $fieldConfig = new FieldConfig(false, false, false);
+
+        // コアバリデータを作成
+        $coreValidators = [
+            new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
+            new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
+            new PrimitiveTypeValidator($metadata),
+        ];
+
+        // コアバリデータを含むマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $coreValidators);
+
+        // 未初期化プロパティのテスト
+        $inputData = new InputData(['testProp' => 'some_value']);
+        $original = PropertyOperator::create($prop, $inputData, $field);
+
+        // PropertyInitializedValidatorによって例外が発生することを確認
+        $this->expectException(InvalidPropertyStateException::class);
+        $manager->processValidation($original);
+    }
+
+    /**
+     * None型プロパティに対するコアバリデータのテスト
+     */
+    #[Test]
+    public function testWithCoreValidatorsForNoneTypeProperty(): void
+    {
+        // テスト用のクラスを作成
+        $testClass = new class {
+            // @phpstan-ignore missingType.property (None型プロパティのテスト)
+            public $testProp;
+        };
+
+        $prop = new ReflectionProperty($testClass, 'testProp');
+        $field = new StringField();
+
+        // None型のプロパティのメタデータを作成
+        $metadata = new PropertyMetadata(
+            get_class($testClass),
+            'testProp',
+            [new TypeHint(TypeHintType::NONE, false, false)],
+            PropertyInitializedStatus::BY_DEFAULT,
+        );
+
+        // None型を許可しない設定
+        $modelConfig = new ModelConfig(false, false, false);
+        $fieldConfig = new FieldConfig(false, false, false);
+
+        // コアバリデータを作成
+        $coreValidators = [
+            new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
+            new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
+            new PrimitiveTypeValidator($metadata),
+        ];
+
+        // コアバリデータを含むマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $coreValidators);
+
+        // None型プロパティのテスト
+        $inputData = new InputData(['testProp' => 'some_value']);
+        $original = PropertyOperator::create($prop, $inputData, $field);
+
+        // PropertyTypeValidatorによって例外が発生することを確認
+        $this->expectException(InvalidPropertyStateException::class);
+        $manager->processValidation($original);
     }
 }
