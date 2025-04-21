@@ -21,6 +21,9 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Enums\ValidatorMode;
+use PhpValueObject\Validators\IdenticalValidator;
+use PhpValueObject\Validators\Validatorable;
 
 class PropertyOperatorTest extends TestCase
 {
@@ -170,16 +173,28 @@ class TestField extends BaseField
         );
     }
 
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getValidator(): Validatorable
     {
-        return $value;
+        return new IdenticalValidator();
     }
 }
 
 class ValidationErrorField extends BaseField
 {
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getValidator(): Validatorable
     {
-        throw new ValidationException('Validation failed');
+        $validator = new class implements Validatorable {
+            public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+            {
+                throw new ValidationException('Validation failed');
+            }
+
+            public function getMode(): ValidatorMode
+            {
+                return ValidatorMode::INTERNAL;
+            }
+        };
+
+        return $validator;
     }
 }
