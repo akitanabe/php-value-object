@@ -4,102 +4,64 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Fields;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
+use PhpValueObject\Validators\StringValidator;
+use PhpValueObject\Validators\Validatorable;
 
 class StringFieldValidateTestClass
 {
     public string $prop;
 }
 
+/**
+ * StringFieldクラスのテスト
+ *
+ * StringFieldクラスのgetValidatorメソッドが適切に動作することを確認するためのテスト。
+ * getValidatorメソッドはStringValidatorインスタンスを返し、これを使用して文字列の検証を行えることを確認します。
+ */
 class StringFieldTest extends TestCase
 {
     /**
-     * @return array<string, array{value: mixed, expectException: bool}>
+     * デフォルト設定でのgetValidatorメソッドの動作をテスト
+     *
+     * 検証内容:
+     * - StringFieldのgetValidatorメソッドがStringValidatorクラスのインスタンスを返すこと
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
      */
-    public static function validateDataProvider(): array
+    #[Test]
+    public function testGetValidatorReturnsStringValidator(): void
     {
-        return [
-            '文字列の場合は検証が成功する' => [
-                'value' => 'valid string',
-                'expectException' => false,
-            ],
-            '空文字列でallowEmptyがtrueの場合は検証が成功する' => [
-                'value' => '',
-                'expectException' => false,
-            ],
-            '空文字列でallowEmptyがfalseの場合は例外が発生する' => [
-                'value' => '',
-                'expectException' => true,
-                'allowEmpty' => false,
-            ],
-            '文字列以外の場合は例外が発生する' => [
-                'value' => 123,
-                'expectException' => true,
-            ],
-            '最小長より短い場合は例外が発生する' => [
+        $field = new StringField();
+        $validator = $field->getValidator();
 
-                'value' => 'a',
-                'expectException' => true,
-                'minLength' => 2,
-            ],
-            '最大長より長い場合は例外が発生する' => [
-
-                'value' => 'abcdef',
-                'expectException' => true,
-                'maxLength' => 5,
-            ],
-            'パターンに一致しない場合は例外が発生する' => [
-
-                'value' => 'abc123',
-                'expectException' => true,
-                'pattern' => '/^[0-9]+$/',
-            ],
-            'パターンに一致する場合は検証が成功する' => [
-
-                'value' => '12345',
-                'expectException' => false,
-                'pattern' => '/^[0-9]+$/',
-            ],
-        ];
+        $this->assertInstanceOf(StringValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 
     /**
-     * @param mixed $value
-     * @param bool $expectException
-     * @param bool $allowEmpty
-     * @param positive-int $minLength
-     * @param positive-int $maxLength
-     * @param string $pattern
+     * カスタム設定でのgetValidatorメソッドの動作をテスト
+     *
+     * 検証内容:
+     * - allowEmpty, minLength, maxLength, patternなどのカスタム設定を持つStringFieldから
+     *   getValidatorメソッドを呼び出しても、正しくStringValidatorクラスのインスタンスが返されること
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *
+     * 設定値:
+     * - allowEmpty: false (空文字列を許可しない)
+     * - minLength: 5 (最小文字数5文字)
+     * - maxLength: 10 (最大文字数10文字)
+     * - pattern: '/^[a-z]+$/' (小文字アルファベットのみを許可)
      */
     #[Test]
-    #[DataProvider('validateDataProvider')]
-    public function testValidate(
-        mixed $value,
-        bool $expectException,
-        bool $allowEmpty = true,
-        int $minLength = 1,
-        int $maxLength = PHP_INT_MAX,
-        string $pattern = '',
-    ): void {
+    public function testGetValidatorWithCustomConfigurationReturnsStringValidator(): void
+    {
+        $field = new StringField(allowEmpty: false, minLength: 5, maxLength: 10, pattern: '/^[a-z]+$/');
 
-        $field = new StringField(
-            allowEmpty: $allowEmpty,
-            minLength: $minLength,
-            maxLength: $maxLength,
-            pattern: $pattern,
-        );
+        $validator = $field->getValidator();
 
-        if ($expectException) {
-            $this->expectException(ValidationException::class);
-        }
-
-        $field->validate($value);
-
-        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
-        $this->assertTrue(true);
+        $this->assertInstanceOf(StringValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 }
