@@ -4,122 +4,61 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Fields;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\NumericField;
+use PhpValueObject\Validators\NumericValidator;
+use PhpValueObject\Validators\Validatorable;
 
-class NumericFieldValidateTestClass
-{
-    public float $prop;
-}
-
+/**
+ * NumericFieldクラスのテスト
+ *
+ * NumericFieldクラスのgetValidatorメソッドが適切に動作することを確認するためのテスト。
+ * getValidatorメソッドはNumericValidatorインスタンスを返し、これを使用して数値の検証を行えることを確認します。
+ */
 class NumericFieldTest extends TestCase
 {
     /**
-     * @return array<string, array{
-     *   value: mixed,
-     *   expectException: bool,
-     *   gt?: float|int,
-     *   lt?: float|int,
-     *   ge?: float|int,
-     *   le?: float|int
-     * }>
+     * デフォルト設定でのgetValidatorメソッドの動作をテスト
+     *
+     * 検証内容:
+     * - NumericFieldのgetValidatorメソッドがNumericValidatorクラスのインスタンスを返すこと
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
      */
-    public static function validateDataProvider(): array
+    #[Test]
+    public function testGetValidatorReturnsNumericValidator(): void
     {
-        return [
-            '整数の場合は検証が成功する' => [
-                'value' => 123,
-                'expectException' => false,
-            ],
-            '小数の場合は検証が成功する' => [
-                'value' => 123.45,
-                'expectException' => false,
-            ],
-            '文字列として表現された数値の場合は検証が成功する' => [
-                'value' => "123.45",
-                'expectException' => false,
-            ],
-            '数値以外の場合は例外が発生する' => [
-                'value' => 'abc',
-                'expectException' => true,
-            ],
-            'gtで指定した値より大きい場合は検証が成功する' => [
-                'value' => 15,
-                'expectException' => false,
-                'gt' => 10,
-            ],
-            'gtで指定した値以下の場合は例外が発生する' => [
-                'value' => 5,
-                'expectException' => true,
-                'gt' => 10,
-            ],
-            'ltで指定した値より小さい場合は検証が成功する' => [
-                'value' => 15,
-                'expectException' => false,
-                'lt' => 20,
-            ],
-            'ltで指定した値以上の場合は例外が発生する' => [
-                'value' => 25,
-                'expectException' => true,
-                'lt' => 20,
-            ],
-            'geで指定した値以上の場合は検証が成功する' => [
-                'value' => 20,
-                'expectException' => false,
-                'ge' => 20,
-            ],
-            'geで指定した値より小さい場合は例外が発生する' => [
-                'value' => 15,
-                'expectException' => true,
-                'ge' => 20,
-            ],
-            'leで指定した値以下の場合は検証が成功する' => [
-                'value' => 20,
-                'expectException' => false,
-                'le' => 20,
-            ],
-            'leで指定した値より大きい場合は例外が発生する' => [
-                'value' => 25,
-                'expectException' => true,
-                'le' => 20,
-            ],
-            'ゼロ値の場合は検証が成功する' => [
-                'value' => 0,
-                'expectException' => false,
-            ],
-        ];
+        $field = new NumericField();
+        $validator = $field->getValidator();
+
+        $this->assertInstanceOf(NumericValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 
     /**
-     * @param mixed $value
-     * @param bool $expectException
-     * @param float|int|null $gt
-     * @param float|int|null $lt
-     * @param float|int|null $ge
-     * @param float|int|null $le
+     * カスタム設定でのgetValidatorメソッドの動作をテスト
+     *
+     * 検証内容:
+     * - gt, lt, ge, leなどの数値範囲制約を持つNumericFieldから
+     *   getValidatorメソッドを呼び出しても、正しくNumericValidatorクラスのインスタンスが返されること
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *
+     * 設定値:
+     * - gt: 10 (10より大きい値のみ許可)
+     * - lt: 100 (100未満の値のみ許可)
+     * - ge: 20 (20以上の値のみ許可)
+     * - le: 80 (80以下の値のみ許可)
+     *
+     * これらの制約を組み合わせると、実質的に20以上80以下の範囲の値のみが許可されます。
      */
     #[Test]
-    #[DataProvider('validateDataProvider')]
-    public function testValidate(
-        mixed $value,
-        bool $expectException,
-        float|int|null $gt = null,
-        float|int|null $lt = null,
-        float|int|null $ge = null,
-        float|int|null $le = null,
-    ): void {
-        $field = new NumericField(gt: $gt, lt: $lt, ge: $ge, le: $le,);
+    public function testGetValidatorWithCustomConfigurationReturnsNumericValidator(): void
+    {
+        $field = new NumericField(gt: 10, lt: 100, ge: 20, le: 80);
 
-        if ($expectException) {
-            $this->expectException(ValidationException::class);
-        }
+        $validator = $field->getValidator();
 
-        $field->validate($value);
-
-        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
-        $this->assertTrue(true);
+        $this->assertInstanceOf(NumericValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 }
