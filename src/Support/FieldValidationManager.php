@@ -57,7 +57,7 @@ class FieldValidationManager
                 fn(FieldValidator $validator): bool => $validator->field === $property->name,
             ));
 
-        $validators = [...$attributeValidators, ...$thisFieldValdators, ...$coreValidators, $field];
+        $validators = [...$attributeValidators, ...$thisFieldValdators, ...$coreValidators, $field->getValidator()];
 
         // バリデータをモードによってソート
         usort(

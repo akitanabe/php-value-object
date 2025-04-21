@@ -15,6 +15,7 @@ use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Validators\PropertyTypeValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 
 class PropertyTypeValidatorTest extends TestCase
 {
@@ -176,7 +177,7 @@ class PropertyTypeValidatorTest extends TestCase
         $fieldConfig = new FieldConfig();
 
         $validator = new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata);
-        $value = new \stdClass();
+        $value = new stdClass();
 
         $result = $validator->validate($value);
         $this->assertSame($value, $result);
@@ -190,7 +191,7 @@ class PropertyTypeValidatorTest extends TestCase
     {
         $metadata = $this->createPropertyMetadata([
             new TypeHint(TypeHintType::STRING, true, false),
-            new TypeHint(TypeHintType::OBJECT, false, true)
+            new TypeHint(TypeHintType::OBJECT, false, true),
         ]);
         $modelConfig = new ModelConfig();
         $fieldConfig = new FieldConfig();
