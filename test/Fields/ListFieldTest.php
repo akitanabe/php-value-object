@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Fields;
 
-use DateTime;
-use stdClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\ListField;
+use PhpValueObject\Validators\ListValidator;
+use PhpValueObject\Validators\Validatorable;
 
 class ListFieldValidateTestClass
 {
@@ -18,99 +16,51 @@ class ListFieldValidateTestClass
     public array $prop;
 }
 
+/**
+ * ListFieldクラスのテスト
+ *
+ * ListFieldクラスのgetValidatorメソッドが適切に動作することを確認するためのテスト。
+ * getValidatorメソッドはListValidatorインスタンスを返し、これを使用して配列（リスト）の検証を行えることを確認します。
+ */
 class ListFieldTest extends TestCase
 {
     /**
-     * @return array<string, array{
-     *   value: mixed,
-     *   type: ?string,
-     *   expectException: bool
-     * }>
+     * デフォルト設定でのgetValidatorメソッドの動作をテスト
+     *
+     * 検証内容:
+     * - ListFieldのgetValidatorメソッドがListValidatorクラスのインスタンスを返すこと
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *
+     * デフォルト設定では、配列（リスト）の形式のみをチェックし、要素の型については検証しません。
      */
-    public static function validateDataProvider(): array
+    #[Test]
+    public function testGetValidatorReturnsListValidator(): void
     {
-        return [
-            '型指定なしで空の配列の場合は検証が成功する' => [
-                'value' => [],
-                'type' => null,
-                'expectException' => false,
-            ],
-            '型指定なしでリストの場合は検証が成功する' => [
-                'value' => [1, "2", new stdClass()],
-                'type' => null,
-                'expectException' => false,
-            ],
-            '型指定なしで連想配列の場合は例外が発生する' => [
-                'value' => ['a' => 1, 'b' => 2],
-                'type' => null,
-                'expectException' => true,
-            ],
-            '整数のリストの場合は検証が成功する' => [
-                'value' => [1, 2, 3],
-                'type' => 'int',
-                'expectException' => false,
-            ],
-            '整数以外が含まれる場合は例外が発生する' => [
-                'value' => [1, "2", 3],
-                'type' => 'int',
-                'expectException' => true,
-            ],
-            '文字列のリストの場合は検証が成功する' => [
-                'value' => ["a", "b", "c"],
-                'type' => 'string',
-                'expectException' => false,
-            ],
-            'オブジェクトのリストの場合は検証が成功する' => [
-                'value' => [new DateTime(), new DateTime()],
-                'type' => DateTime::class,
-                'expectException' => false,
-            ],
-            '異なるクラスのオブジェクトが含まれる場合は例外が発生する' => [
-                'value' => [new DateTime(), new stdClass()],
-                'type' => DateTime::class,
-                'expectException' => true,
-            ],
-            '配列以外の場合は例外が発生する' => [
-                'value' => 'not an array',
-                'type' => null,
-                'expectException' => true,
-            ],
-            'nullの場合は例外が発生する' => [
-                'value' => null,
-                'type' => null,
-                'expectException' => true,
-            ],
-            '真偽値のリストの場合は検証が成功する' => [
-                'value' => [true, false, true],
-                'type' => 'bool',
-                'expectException' => false,
-            ],
-            '浮動小数点数のリストの場合は検証が成功する' => [
-                'value' => [1.1, 2.2, 3.3],
-                'type' => 'float',
-                'expectException' => false,
-            ],
-        ];
+        $field = new ListField();
+        $validator = $field->getValidator();
+
+        $this->assertInstanceOf(ListValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 
     /**
-     * @param mixed $value
-     * @param ?string $type
-     * @param bool $expectException
+     * 型指定ありの設定でのgetValidatorメソッドの動作をテスト
+     *
+     * 検証内容:
+     * - 要素の型（string）を指定したListFieldからgetValidatorメソッドを呼び出しても、
+     *   正しくListValidatorクラスのインスタンスが返されること
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *
+     * 'string'型の指定ありの場合、配列内の全要素が文字列型であることを検証します。
      */
     #[Test]
-    #[DataProvider('validateDataProvider')]
-    public function testValidate(mixed $value, ?string $type, bool $expectException): void
+    public function testGetValidatorWithTypeConfigurationReturnsListValidator(): void
     {
-        $field = new ListField(type: $type);
+        $field = new ListField(type: 'string');
 
-        if ($expectException) {
-            $this->expectException(ValidationException::class);
-        }
+        $validator = $field->getValidator();
 
-        $field->validate($value);
-
-        // @phpstan-ignore method.alreadyNarrowedType (例外が発生しなければテストは成功)
-        $this->assertTrue(true);
+        $this->assertInstanceOf(ListValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 }
