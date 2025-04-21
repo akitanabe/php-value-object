@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\Fields\Field;
+use PhpValueObject\Validators\IdenticalValidator;
+use PhpValueObject\Validators\Validatorable;
 
 use function strtolower as _strtolower;
 
@@ -198,14 +200,22 @@ class FieldTest extends TestCase
     }
 
     /**
-     * validateメソッドの基本的な動作をテストします。
-     * 値をそのまま返すことを確認します。
+     * getValidatorメソッドがIdenticalValidatorを返すことをテストします。
+     *
+     * 検証内容:
+     * - FieldクラスのgetValidatorメソッドが、値をそのまま返すIdenticalValidatorクラスのインスタンスを返すこと
+     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *
+     * IdenticalValidatorは、入力値に対して特別なバリデーションを行わず、値をそのまま返すシンプルなバリデーターです。
+     * これはFieldクラスが特定の型チェックを必要としない汎用的なフィールドとして設計されているためです。
      */
     #[Test]
-    public function testValidateMethodWorks(): void
+    public function testGetValidatorReturnsIdenticalValidator(): void
     {
         $field = new Field();
-        $result = $field->validate('test');
-        $this->assertEquals('test', $result);
+        $validator = $field->getValidator();
+
+        $this->assertInstanceOf(IdenticalValidator::class, $validator);
+        $this->assertInstanceOf(Validatorable::class, $validator);
     }
 }
