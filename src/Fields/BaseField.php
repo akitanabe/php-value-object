@@ -6,15 +6,13 @@ namespace PhpValueObject\Fields;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * フィールドの基底クラス
  * @phpstan-type default_factory callable-string|class-string|array{string|object, string}|Closure
  */
-abstract class BaseField implements Validatorable
+abstract class BaseField
 {
     /**
      *
@@ -48,24 +46,10 @@ abstract class BaseField implements Validatorable
     }
 
     /**
-     * バリデーション
+     * バリデーターを取得する
+     * 各フィールドタイプに対応したValidatorableを実装したValidatorを返す
      *
-     * @param mixed $value バリデーション対象の値
-     * @param ValidatorFunctionWrapHandler|null $handler バリデーションハンドラー
-     * @return mixed バリデーション後の値
+     * @return Validatorable
      */
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
-    {
-        return $value;
-    }
-
-    /**
-     * バリデーション処理の実行順序を取得する
-     *
-     * @return ValidatorMode
-     */
-    public function getMode(): ValidatorMode
-    {
-        return ValidatorMode::INTERNAL;
-    }
+    abstract public function getValidator(): Validatorable;
 }
