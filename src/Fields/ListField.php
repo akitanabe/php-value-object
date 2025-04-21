@@ -6,10 +6,8 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
-use Override;
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ListValidator;
+use PhpValueObject\Validators\Validatorable;
 
 /**
  * ListField
@@ -19,8 +17,6 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class ListField extends BaseField
 {
-    private readonly ?PropertyValueType $valueType;
-
     /**
      * @param ?string $type リストの要素の型名（"int", "float", "string", "object"など）またはクラス名
      * @param ?default_factory $defaultFactory
@@ -32,54 +28,15 @@ final class ListField extends BaseField
         ?string $alias = null,
     ) {
         parent::__construct($defaultFactory, $alias);
-
-        if ($type === null) {
-            $this->valueType = null;
-            return;
-        }
-
-        $this->valueType = (class_exists($type)
-            ? PropertyValueType::OBJECT
-            : PropertyValueType::fromShorthand($type));
     }
 
     /**
-     * 配列のバリデーションを実行
+     * ListValidatorを取得
      *
-     * @param mixed $value バリデーション対象の値
-     * @throws ValidationException バリデーションエラーが発生した場合
+     * @return Validatorable
      */
-    #[Override]
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getValidator(): Validatorable
     {
-        if (!is_array($value)) {
-            throw new ValidationException("Invalid Field Value. Must be array");
-        }
-
-        if (!array_is_list($value)) {
-            throw new ValidationException("Invalid Field Value. Must be list");
-        }
-
-        // 型の指定がない場合は配列とリストの検証のみ
-        if ($this->type === null || $this->valueType === null) {
-            return $value;
-        }
-
-        $listValidation = match (true) {
-            // クラスが指定されている場合
-            ($this->valueType === PropertyValueType::OBJECT && class_exists($this->type))
-            => fn(mixed $element): bool => is_object($element) && $element instanceof $this->type,
-
-            // プリミティブ型 or $typeがobjectの場合
-            default => fn(mixed $element): bool => gettype($element) === $this->valueType->value,
-        };
-
-        $isValid = array_all($value, $listValidation);
-
-        if (!$isValid) {
-            throw new ValidationException("Invalid element type");
-        }
-
-        return $value;
+        return new ListValidator($this->type);
     }
 }

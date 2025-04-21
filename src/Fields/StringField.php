@@ -6,9 +6,8 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
-use Override;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\StringValidator;
+use PhpValueObject\Validators\Validatorable;
 
 /**
  * StringField
@@ -38,43 +37,12 @@ final class StringField extends BaseField
     }
 
     /**
-     * 文字列のバリデーションを実行
+     * StringValidatorを取得
      *
-     * @param mixed $value バリデーション対象の値
-     * @throws ValidationException バリデーションエラーが発生した場合
+     * @return Validatorable
      */
-    #[Override]
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getValidator(): Validatorable
     {
-        $invalidMessage = 'Invalid Field Value';
-        if (is_string($value) === false) {
-            throw new ValidationException("{$invalidMessage}. Must be string");
-        }
-
-        if ($this->allowEmpty === false && $value === '') {
-            throw new ValidationException("{$invalidMessage}. Field Value cannot be empty");
-        }
-
-        if ($value === '') {
-            return $value;
-        }
-
-        $valueLength = mb_strlen($value);
-
-        if ($valueLength <= $this->minLength) {
-            throw new ValidationException(
-                "{$invalidMessage}. Too short. Must be at least {$this->minLength}characters",
-            );
-        }
-
-        if ($valueLength >= $this->maxLength) {
-            throw new ValidationException("{$invalidMessage}. Too long. Must be at most {$this->maxLength}characters");
-        }
-
-        if ($this->pattern !== '' && preg_match($this->pattern, $value) === 0) {
-            throw new ValidationException("{$invalidMessage}. Invalid format");
-        }
-
-        return $value;
+        return new StringValidator($this->allowEmpty, $this->minLength, $this->maxLength, $this->pattern);
     }
 }

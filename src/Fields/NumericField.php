@@ -6,9 +6,8 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
-use Override;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\NumericValidator;
+use PhpValueObject\Validators\Validatorable;
 
 /**
  * NumericField
@@ -38,41 +37,12 @@ final class NumericField extends BaseField
     }
 
     /**
-     * 数値のバリデーションを実行
+     * NumericValidatorを取得
      *
-     * @param mixed $value バリデーション対象の値
-     * @throws ValidationException バリデーションエラーが発生した場合
+     * @return Validatorable
      */
-    #[Override]
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getValidator(): Validatorable
     {
-        $invalidMessage = 'Invalid Field Value';
-        if (!is_numeric($value)) {
-            throw new ValidationException("{$invalidMessage}. Must be numeric");
-        }
-
-        $numericValue = (float) $value;
-
-        // gt (>) の検証
-        if ($this->gt !== null && $numericValue <= $this->gt) {
-            throw new ValidationException("{$invalidMessage}. Must be greater than {$this->gt}");
-        }
-
-        // lt (<) の検証
-        if ($this->lt !== null && $numericValue >= $this->lt) {
-            throw new ValidationException("{$invalidMessage}. Must be less than {$this->lt}");
-        }
-
-        // ge (>=) の検証
-        if ($this->ge !== null && $numericValue < $this->ge) {
-            throw new ValidationException("{$invalidMessage}. Must be greater than or equal to {$this->ge}");
-        }
-
-        // le (<=) の検証
-        if ($this->le !== null && $numericValue > $this->le) {
-            throw new ValidationException("{$invalidMessage}. Must be less than or equal to {$this->le}");
-        }
-
-        return $value;
+        return new NumericValidator($this->gt, $this->lt, $this->ge, $this->le);
     }
 }
