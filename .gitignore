@@ -1,2 +1,6 @@
 /vendor/
 /.build/
+/.cache/
+.clinerules
+.copilot-instructions.md
+.vscode/settings.json
