@@ -56,7 +56,7 @@ class ListValidator implements Validatorable
         }
 
         $listValidation = match (true) {
-                // クラスが指定されている場合
+            // クラスが指定されている場合
             ($this->valueType === PropertyValueType::OBJECT && class_exists($this->type))
             => fn(mixed $element): bool => is_object($element) && $element instanceof $this->type,
 

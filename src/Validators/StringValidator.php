@@ -23,8 +23,7 @@ class StringValidator implements Validatorable
         private int $minLength = 1,
         private int $maxLength = PHP_INT_MAX,
         private string $pattern = '',
-    ) {
-    }
+    ) {}
 
     /**
      * 文字列のバリデーションを実行

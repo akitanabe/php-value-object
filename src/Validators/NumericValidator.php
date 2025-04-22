@@ -23,8 +23,7 @@ class NumericValidator implements Validatorable
         private float|int|null $lt = null,
         private float|int|null $ge = null,
         private float|int|null $le = null,
-    ) {
-    }
+    ) {}
 
     /**
      * 数値のバリデーションを実行
