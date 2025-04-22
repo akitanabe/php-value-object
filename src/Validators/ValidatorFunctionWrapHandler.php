@@ -41,18 +41,13 @@ final class ValidatorFunctionWrapHandler
         $validator = $this->validators->current();
         $validatorMode = $validator->getMode();
 
-        // PLAINモードのバリデーターは常に先頭（currentIndex = 0）でなければならない
-        if ($validatorMode === ValidatorMode::PLAIN && $this->currentIndex !== 0) {
-            throw new LogicException('ValidatorMode::PLAIN must be at the first position (currentIndex = 0)');
-        }
-
         // 次のハンドラーを準備
         $this->validators->next();
         $nextHandler = new self($this->validators);
 
         // モードに応じて処理を分岐
         return match ($validatorMode) {
-            // PLAINは常に先頭なので自身のバリデーション以外を実行しない
+            // PLAINは自身のバリデーションのみを実行
             ValidatorMode::PLAIN => $validator->validate($value),
             // WRAPはvalidator内で次のハンドラを実行するか委ねる
             ValidatorMode::WRAP => $validator->validate($value, $nextHandler),

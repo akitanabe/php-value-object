@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use ArrayIterator;
-use LogicException;
 use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
@@ -82,34 +81,38 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     }
 
     /**
-     * PLAINモードのバリデータが先頭（インデックス0）以外の位置にある場合、LogicExceptionが投げられることを確認
+     * PLAINモードのバリデータが途中に配置されても正常に動作することを確認
      */
     #[Test]
-    public function testPlainValidatorNotAtFirstPositionThrowsLogicException(): void
+    public function testPlainValidatorWorksInAnyPosition(): void
     {
         // 先頭のバリデータ
         $firstValidator = Mockery::mock(Validatorable::class);
         $firstValidator->shouldReceive('getMode')
             ->andReturn(ValidatorMode::BEFORE);
+        $firstValidator->shouldReceive('validate')
+            ->once()
+            ->with('test')
+            ->andReturn('first validated');
 
-        // PLAINモードのバリデータを2番目に配置（誤った配置）
+        // PLAINモードのバリデータを2番目に配置
         $plainValidator = Mockery::mock(Validatorable::class);
         $plainValidator->shouldReceive('getMode')
             ->andReturn(ValidatorMode::PLAIN);
+        $plainValidator->shouldReceive('validate')
+            ->once()
+            ->with('first validated')
+            ->andReturn('plain validated');
 
-        // バリデータの配列を作成（PLAINモードが2番目に配置されている不正な状態）
+        // バリデータの配列を作成（PLAINモードが2番目に配置されている）
         $validators = new ArrayIterator([$firstValidator, $plainValidator]);
-        $validators->next(); // 2番目の要素（PLAINモード）を現在位置に設定
 
         // @phpstan-ignore argument.type
         $handler = new ValidatorFunctionWrapHandler($validators);
 
-        // LogicExceptionが発生することを期待
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('ValidatorMode::PLAIN must be at the first position (currentIndex = 0)');
-
-        // 実行時にLogicExceptionが投げられるはず
-        $handler('test');
+        // 実行して結果を検証
+        $result = $handler('test');
+        $this->assertEquals('plain validated', $result);
     }
 
     protected function tearDown(): void
