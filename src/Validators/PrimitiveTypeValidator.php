@@ -24,15 +24,12 @@ class PrimitiveTypeValidator extends CorePropertyValidator
      */
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
+        // $handlerがnullかどうかで処理を分岐するアロー関数
+        $processValue = fn(mixed $v) => $handler !== null ? $handler($v) : $v;
+
         // 未初期化プロパティの場合は型チェックをスキップ
         if ($this->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED && $value === null) {
-            $validatedValue = $value;
-
-            if ($handler !== null) {
-                return $handler($validatedValue);
-            }
-
-            return $validatedValue;
+            return $processValue($value);
         }
 
         $propertyValue = PropertyValue::fromValue($value);
@@ -44,13 +41,7 @@ class PrimitiveTypeValidator extends CorePropertyValidator
 
         // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
         if ($isIntsersectionTypeAndObjectValue) {
-            $validatedValue = $value;
-
-            if ($handler !== null) {
-                return $handler($validatedValue);
-            }
-
-            return $validatedValue;
+            return $processValue($value);
         }
 
         $onlyPrimitiveTypes = array_filter(
@@ -60,13 +51,7 @@ class PrimitiveTypeValidator extends CorePropertyValidator
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
         if (empty($onlyPrimitiveTypes)) {
-            $validatedValue = $value;
-
-            if ($handler !== null) {
-                return $handler($validatedValue);
-            }
-
-            return $validatedValue;
+            return $processValue($value);
         }
 
         $hasPrimitiveTypeAndValue = array_any(
@@ -76,13 +61,7 @@ class PrimitiveTypeValidator extends CorePropertyValidator
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
         if ($hasPrimitiveTypeAndValue) {
-            $validatedValue = $value;
-
-            if ($handler !== null) {
-                return $handler($validatedValue);
-            }
-
-            return $validatedValue;
+            return $processValue($value);
         }
 
         $errorTypeName = join(
