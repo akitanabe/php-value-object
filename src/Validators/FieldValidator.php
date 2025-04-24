@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Closure;
-use PhpValueObject\Helpers\FieldsHelper;
 use Attribute;
 use PhpValueObject\Enums\ValidatorMode;
 use InvalidArgumentException;
@@ -56,10 +55,17 @@ final class FieldValidator implements Validatorable
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
-        $validator = FieldsHelper::createFactory($this->validator);
-        $args = ($handler !== null) ? [$value, $handler] : [$value];
+        // モードに応じた適切なFunctionValidatorを生成
+        /** @phpstan-ignore match.unhandled */
+        $functionValidator = match ($this->mode) {
+            ValidatorMode::PLAIN => new PlainValidator($this->validator),
+            ValidatorMode::WRAP => new WrapValidator($this->validator),
+            ValidatorMode::BEFORE => new BeforeValidator($this->validator),
+            ValidatorMode::AFTER => new AfterValidator($this->validator),
+        };
 
-        return $validator(...$args);
+        // 生成したFunctionValidatorのvalidateメソッドを呼び出す
+        return $functionValidator->validate($value, $handler);
     }
 
     /**
