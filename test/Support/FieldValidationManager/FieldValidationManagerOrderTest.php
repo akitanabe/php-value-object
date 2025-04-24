@@ -143,11 +143,11 @@ class FieldValidationManagerOrderTest extends TestCase
 
         $result = $manager->processValidation($original);
 
-        // 実行順: attr_before -> field_before -> field_after -> attr_after
-        // attr_before: addAttrBefore (+ '_attr_before')
+        // 実行順: field_before -> attr_before -> attr_after -> field_after
         // field_before: + '_field_before'
-        // field_after: + '_field_after'
+        // attr_before: addAttrBefore (+ '_attr_before')
         // attr_after: addAttrAfter (+ '_attr_after')
-        $this->assertEquals('base_attr_before_field_before_field_after_attr_after', $result->value->value);
+        // field_after: + '_field_after'
+        $this->assertEquals('base_field_before_attr_before_attr_after_field_after', $result->value->value);
     }
 }

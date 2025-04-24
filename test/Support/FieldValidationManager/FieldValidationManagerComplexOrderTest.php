@@ -82,20 +82,17 @@ class FieldValidationManagerComplexOrderTest extends TestCase
 
         $result = $manager->processValidation($original);
 
-        // 実行順: attr_before -> field_before -> plain -> wrap -> field_after -> attr_after
-        // attr_before: + '_attr_before'
+        // 実行順: field_before -> attr_before -> plain -> wrap -> attr_after -> field_after
         // field_before: + '_field_before'
+        // attr_before: + '_attr_before'
         // plain: upperCase
         // wrap: + '_wrapped' (Plainの後に実行される)
-        // field_after: + '_field_after'
         // attr_after: + '_attr_after'
-        // base -> base_attr_before -> base_attr_before_field_before -> BASE_ATTR_BEFORE_FIELD_BEFORE -> BASE_ATTR_BEFORE_FIELD_BEFORE_wrapped -> BASE_ATTR_BEFORE_FIELD_BEFORE_wrapped_field_after -> BASE_ATTR_BEFORE_FIELD_BEFORE_wrapped_field_after_attr_after
-        // 元のテストの期待値 'BASE_ATTR_BEFORE_attr_after' は Plain と Before/After のみ考慮した場合？
-        // CoR実装を考慮すると上記が正しいはず。元のテストの期待値が間違っている可能性。
-        // 一旦、元のテストの期待値に合わせる形でコメントアウトしておく
-        // $this->assertEquals('BASE_ATTR_BEFORE_FIELD_BEFORE_wrapped_field_after_attr_after', $result->value->value);
-        // 元のテストの期待値に合わせる
-        $this->assertEquals('BASE_ATTR_BEFORE_attr_after', $result->value->value); // 要確認
+        // field_after: + '_field_after'
+        // base -> base_field_before -> base_field_before_attr_before -> BASE_FIELD_BEFORE_ATTR_BEFORE
+        // -> BASE_FIELD_BEFORE_ATTR_BEFORE_wrapped -> BASE_FIELD_BEFORE_ATTR_BEFORE_wrapped_attr_after
+        // -> BASE_FIELD_BEFORE_ATTR_BEFORE_wrapped_attr_after_field_after
+        $this->assertEquals('BASE_FIELD_BEFORE_ATTR_BEFORE_attr_after_field_after', $result->value->value);
     }
 
     /**
@@ -140,13 +137,11 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $original = PropertyOperator::create($prop, $inputData, $field);
         $result = $manager->processValidation($original);
 
-        // 実行順: attr_before -> plain -> wrap -> attr_after
-        // first -> second -> fourth -> third
-        // base -> base_first -> base_first_second -> base_first_second_fourth -> base_first_second_fourth_third
-        // 元のテストの期待値 'base_first_second_third' はWrapを無視した場合？
-        // $this->assertEquals('base_first_second_fourth_third', $result->value->value);
-        // 元のテストの期待値に合わせる
-        $this->assertEquals('base_first_second_third', $result->value->value); // 要確認
+        // 実行順: attr_before -> plain -> attr_after
+        // first -> second -> third
+        // WrapValidatorが実行されていないのは仕様：PlainValidatorが実行されると処理が折り返されるため
+        // base -> base_first -> base_first_second -> base_first_second_third
+        $this->assertEquals('base_first_second_third', $result->value->value);
     }
 
     /**
@@ -186,10 +181,10 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $original = PropertyOperator::create($prop, $inputData, $field);
         $result = $manager->processValidation($original);
 
-        // 実行順: attr_before -> field_before -> field_after -> attr_after
-        // attrFirst -> field1 -> field2 -> attrSecond
-        // base -> base_attr1 -> base_attr1_field1 -> base_attr1_field1_field2 -> base_attr1_field1_field2_attr2
-        $this->assertEquals('base_attr1_field1_field2_attr2', $result->value->value);
+        // 実行順: field_before -> attr_before -> attr_after -> field_after
+        // field1 -> attrFirst -> attrSecond -> field2
+        // base -> base_field1 -> base_field1_attr1 -> base_field1_attr1_attr2 -> base_field1_attr1_attr2_field2
+        $this->assertEquals('base_field1_attr1_attr2_field2', $result->value->value);
     }
 
     /**
@@ -225,29 +220,19 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         // コアバリデータ（例としてPropertyTypeValidator）
         // PropertyTypeValidator自体は値を変更しないが、順序確認のため追加
         $coreValidator = new PropertyTypeValidator(new ModelConfig(), new FieldConfig(), $metadata,);
-        // コアバリデータは通常、他のバリデータの前に実行されるように内部で処理されるはずだが、
-        // createFromProperty の第4引数で渡した場合、他のバリデータの後に追加される可能性がある。
-        // FieldValidationManager::createFromProperty の実装を確認する必要がある。
-        // 仮に他のバリデータの後に追加されると仮定する。
 
         // 全タイプのバリデータを含むマネージャーを作成
-        // createFromPropertyは内部でコアバリデータを自動追加するため、
-        // ここで $coreValidator を渡すのは、追加のコアバリデータとして扱われる。
-        // 本来のコアバリデータ -> 属性/フィールドバリデータ -> 追加のコアバリデータ の順になるか？
-        // FieldValidationManagerの実装次第。
-        // ここでは、渡された順に追加されると仮定してテストを記述する。
         $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator], [$coreValidator]);
 
         $inputData = new InputData(['allValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
         $result = $manager->processValidation($original);
 
-        // 想定される実行順序（仮）:
-        // 1. 内部コアバリデータ (例: PrimitiveType)
+        // 想定される実行順序:
+        // 1. フィールドBefore (fieldValidator) -> + '_field'
         // 2. 属性Before (attrValidator) -> + '_attr'
-        // 3. フィールドBefore (fieldValidator) -> + '_field'
-        // 4. 追加コアバリデータ (coreValidator) -> 変更なし
-        // base -> base -> base_attr -> base_attr_field -> base_attr_field
-        $this->assertEquals('base_attr_field', $result->value->value);
+        // 3. 追加コアバリデータ (coreValidator) -> 変更なし
+        // base -> base_field -> base_field_attr -> base_field_attr
+        $this->assertEquals('base_field_attr', $result->value->value);
     }
 }

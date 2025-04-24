@@ -57,7 +57,8 @@ class FieldValidationManager
                 fn(FieldValidator $validator): bool => $validator->field === $property->name,
             ));
 
-        $validators = [...$attributeValidators, ...$thisFieldValdators, ...$coreValidators, $field->getValidator()];
+        // バリデータの順序を変更: フィールドバリデータ → 属性バリデータ → コアバリデータ → フィールドバリデータ
+        $validators = [...$thisFieldValdators, ...$attributeValidators, ...$coreValidators, $field->getValidator()];
 
         return new self(validators: $validators);
     }
