@@ -56,6 +56,12 @@ class PropertyTypeValidator extends CorePropertyValidator
             }
         }
 
-        return $value;
+        $validatedValue = $value;
+
+        if ($handler !== null) {
+            return $handler($validatedValue);
+        }
+
+        return $validatedValue;
     }
 }

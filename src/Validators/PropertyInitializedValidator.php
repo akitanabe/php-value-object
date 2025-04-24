@@ -41,7 +41,13 @@ class PropertyInitializedValidator extends CorePropertyValidator
         if ($this->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
             // 未初期化プロパティが許可されている場合はそのまま返す
             if ($this->modelConfig->uninitializedProperty->allow() || $this->fieldConfig->uninitializedProperty->allow()) {
-                return $value;
+                $validatedValue = $value;
+
+                if ($handler !== null) {
+                    return $handler($validatedValue);
+                }
+
+                return $validatedValue;
             }
 
             throw new InvalidPropertyStateException(
@@ -49,6 +55,12 @@ class PropertyInitializedValidator extends CorePropertyValidator
             );
         }
 
-        return $value;
+        $validatedValue = $value;
+
+        if ($handler !== null) {
+            return $handler($validatedValue);
+        }
+
+        return $validatedValue;
     }
 }

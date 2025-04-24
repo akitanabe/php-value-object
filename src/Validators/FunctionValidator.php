@@ -27,8 +27,7 @@ abstract class FunctionValidator implements Validatorable
      */
     public function __construct(
         protected readonly string|array|Closure $validator,
-    ) {
-    }
+    ) {}
 
     abstract public function getMode(): ValidatorMode;
 
@@ -40,7 +39,7 @@ abstract class FunctionValidator implements Validatorable
 
     /**
      * バリデータのcallableを解決して返す
-     * 
+     *
      * @return callable バリデーション処理を行うcallable
      */
     protected function resolveValidator(): callable

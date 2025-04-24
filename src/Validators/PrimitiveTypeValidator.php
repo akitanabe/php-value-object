@@ -26,7 +26,13 @@ class PrimitiveTypeValidator extends CorePropertyValidator
     {
         // 未初期化プロパティの場合は型チェックをスキップ
         if ($this->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED && $value === null) {
-            return $value;
+            $validatedValue = $value;
+
+            if ($handler !== null) {
+                return $handler($validatedValue);
+            }
+
+            return $validatedValue;
         }
 
         $propertyValue = PropertyValue::fromValue($value);
@@ -38,7 +44,13 @@ class PrimitiveTypeValidator extends CorePropertyValidator
 
         // プロパティ型がIntersectionTypeで入力値がobjectの時はPHPの型検査に任せる
         if ($isIntsersectionTypeAndObjectValue) {
-            return $value;
+            $validatedValue = $value;
+
+            if ($handler !== null) {
+                return $handler($validatedValue);
+            }
+
+            return $validatedValue;
         }
 
         $onlyPrimitiveTypes = array_filter(
@@ -48,7 +60,13 @@ class PrimitiveTypeValidator extends CorePropertyValidator
 
         // プリミティブ型が存在しない場合はPHPの型検査に任せる
         if (empty($onlyPrimitiveTypes)) {
-            return $value;
+            $validatedValue = $value;
+
+            if ($handler !== null) {
+                return $handler($validatedValue);
+            }
+
+            return $validatedValue;
         }
 
         $hasPrimitiveTypeAndValue = array_any(
@@ -58,7 +76,13 @@ class PrimitiveTypeValidator extends CorePropertyValidator
 
         // プリミティブ型が存在する場合、プロパティの型と入力値の型がひとつでも一致したらOK
         if ($hasPrimitiveTypeAndValue) {
-            return $value;
+            $validatedValue = $value;
+
+            if ($handler !== null) {
+                return $handler($validatedValue);
+            }
+
+            return $validatedValue;
         }
 
         $errorTypeName = join(
