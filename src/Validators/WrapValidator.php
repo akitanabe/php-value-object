@@ -29,6 +29,9 @@ final class WrapValidator extends FunctionValidator
     }
 
     /**
+     * バリデーション処理を実行する
+     * バリデータ関数に次のハンドラーを渡して実行する
+     *
      * @param mixed $value 検証する値
      * @param ValidatorFunctionWrapHandler|null $handler 後続の処理を制御するハンドラー
      * @return mixed
@@ -40,6 +43,8 @@ final class WrapValidator extends FunctionValidator
             throw new LogicException('WrapValidator must be executed with a handler.');
         }
 
-        return parent::validate($value, $handler);
+        // バリデータ関数を解決し、バリデータに次のハンドラーを渡す
+        $validator = $this->resolveValidator();
+        return $validator($value, $handler);
     }
 }

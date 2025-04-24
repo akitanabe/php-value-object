@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use ArrayIterator;
 use LogicException;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\ValidationException;
 
 final class ValidatorFunctionWrapHandler
@@ -31,28 +30,21 @@ final class ValidatorFunctionWrapHandler
      */
     public function __invoke(mixed $value): mixed
     {
-        // currentIndexが-1の場合は、バリデーションを行わない。
-        // $this->validators->valid() === falseと同じ意味
+        // バリデータがない場合は、値をそのまま返す
         if ($this->currentIndex < 0) {
             return $value;
         }
 
+        // 現在のバリデータを取得
         $this->validators->seek($this->currentIndex);
         $validator = $this->validators->current();
-        $validatorMode = $validator->getMode();
 
         // 次のハンドラーを準備
         $this->validators->next();
         $nextHandler = new self($this->validators);
 
-        // モードに応じて処理を分岐
-        return match ($validatorMode) {
-            // PLAINは自身のバリデーションのみを実行
-            ValidatorMode::PLAIN => $validator->validate($value),
-            // WRAPはvalidator内で次のハンドラを実行するか委ねる
-            ValidatorMode::WRAP => $validator->validate($value, $nextHandler),
-            // BEFORE,AFTERは次のハンドラを実行する
-            default => $nextHandler($validator->validate($value)),
-        };
+        // バリデータに次のハンドラーを含めて実行を委譲
+        // 各バリデータ内部で次のハンドラーを呼び出すかどうかを決定する
+        return $validator->validate($value, $nextHandler);
     }
 }
