@@ -59,13 +59,6 @@ class FieldValidationManager
 
         $validators = [...$attributeValidators, ...$thisFieldValdators, ...$coreValidators, $field->getValidator()];
 
-        // バリデータをモードによってソート
-        usort(
-            array: $validators,
-            callback: fn(Validatorable $a, Validatorable $b): int => $a->getMode()->getPriority() <=> $b->getMode()->getPriority(),
-        );
-
-
         return new self(validators: $validators);
     }
 
