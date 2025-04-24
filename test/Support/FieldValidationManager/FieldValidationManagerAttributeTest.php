@@ -1,0 +1,170 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhpValueObject\Test\Support\FieldValidationManager;
+
+use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Fields\StringField;
+use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\InputData;
+use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Validators\AfterValidator;
+use PhpValueObject\Validators\BeforeValidator;
+use PhpValueObject\Validators\PlainValidator;
+use PhpValueObject\Validators\WrapValidator;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
+
+// テスト用のバリデータクラス
+class TestValidatorForAttribute
+{
+    public static function validateLength(string $value): string
+    {
+        if (strlen($value) < 3) {
+            throw new ValidationException('3文字以上必要です');
+        }
+        return $value;
+    }
+
+    public static function formatName(string $value): string
+    {
+        return ucfirst($value);
+    }
+
+    public static function validateAndFormat(string $value): string
+    {
+        if (strlen($value) < 4) {
+            throw new ValidationException('4文字以上必要です');
+        }
+        return strtoupper($value);
+    }
+
+    public static function toLowerCase(string $value): string
+    {
+        return strtolower($value);
+    }
+}
+
+// テスト対象の属性を持つクラス
+class TestClassForAttribute
+{
+    #[BeforeValidator([TestValidatorForAttribute::class, 'validateLength'])]
+    #[AfterValidator([TestValidatorForAttribute::class, 'formatName'])]
+    public string $name;
+
+    #[PlainValidator([TestValidatorForAttribute::class, 'validateAndFormat'])]
+    public string $plainValidated;
+
+    #[WrapValidator([TestValidatorForAttribute::class, 'toLowerCase'])]
+    public string $wrappedValue;
+}
+
+class FieldValidationManagerAttributeTest extends TestCase
+{
+    private FieldValidationManager $managerWithAttributes;
+    private FieldValidationManager $managerWithPlain;
+    private FieldValidationManager $managerWithWrap;
+    private ReflectionProperty $property;
+    private ReflectionProperty $plainProperty;
+    private ReflectionProperty $wrapProperty;
+    private StringField $field;
+
+    protected function setUp(): void
+    {
+        $class = new TestClassForAttribute();
+        $this->property = new ReflectionProperty($class, 'name');
+        $this->plainProperty = new ReflectionProperty($class, 'plainValidated');
+        $this->wrapProperty = new ReflectionProperty($class, 'wrappedValue');
+        $this->field = new StringField();
+
+        // 属性のみを使用したマネージャー
+        $this->managerWithAttributes = FieldValidationManager::createFromProperty($this->property, $this->field);
+        // PlainValidator用のマネージャー
+        $this->managerWithPlain = FieldValidationManager::createFromProperty($this->plainProperty, $this->field);
+        // WrapValidator用のマネージャー
+        $this->managerWithWrap = FieldValidationManager::createFromProperty($this->wrapProperty, $this->field);
+    }
+
+    /**
+     * PropertyOperatorを使用したバリデーション失敗のテスト
+     * 3文字未満の入力を検証した場合、ValidationExceptionが発生する
+     */
+    #[Test]
+    public function testValidationThrowsException(): void
+    {
+        $inputData = new InputData(['name' => 'ab']);
+        $operator = PropertyOperator::create($this->property, $inputData, $this->field);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('3文字以上必要です');
+        $this->managerWithAttributes->processValidation($operator);
+    }
+
+    /**
+     * PropertyOperatorを使用したバリデーション成功のテスト
+     * 値が変更された場合は新しいPropertyOperatorが返される
+     */
+    #[Test]
+    public function testValidationSuccess(): void
+    {
+        $inputData = new InputData(['name' => 'abc']);
+        $original = PropertyOperator::create($this->property, $inputData, $this->field);
+
+        $result = $this->managerWithAttributes->processValidation($original);
+
+        $this->assertNotSame($original, $result);
+        $this->assertEquals('abc', $original->value->value);
+        $this->assertEquals('Abc', $result->value->value);
+        $this->assertEquals($original->metadata->class, $result->metadata->class);
+        $this->assertEquals($original->metadata->name, $result->metadata->name);
+    }
+
+    /**
+     * PlainValidatorを使用したバリデーションのテスト
+     * 検証と変換の両方を行う
+     */
+    #[Test]
+    public function testPlainValidation(): void
+    {
+        $inputData = new InputData(['plainValidated' => 'abc']);
+        $operator = PropertyOperator::create($this->plainProperty, $inputData, $this->field);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('4文字以上必要です');
+        $this->managerWithPlain->processValidation($operator);
+    }
+
+    /**
+     * PlainValidatorを使用したバリデーション成功のテスト
+     */
+    #[Test]
+    public function testPlainValidationSuccess(): void
+    {
+        $inputData = new InputData(['plainValidated' => 'test']);
+        $original = PropertyOperator::create($this->plainProperty, $inputData, $this->field);
+
+        $result = $this->managerWithPlain->processValidation($original);
+
+        $this->assertNotSame($original, $result);
+        $this->assertEquals('test', $original->value->value);
+        $this->assertEquals('TEST', $result->value->value);
+    }
+
+    /**
+     * WrapValidatorを使用したバリデーションのテスト
+     */
+    #[Test]
+    public function testWrapValidation(): void
+    {
+        $inputData = new InputData(['wrappedValue' => 'TEST']);
+        $original = PropertyOperator::create($this->wrapProperty, $inputData, $this->field);
+
+        $result = $this->managerWithWrap->processValidation($original);
+
+        $this->assertNotSame($original, $result);
+        $this->assertEquals('TEST', $original->value->value);
+        $this->assertEquals('test', $result->value->value);
+    }
+}
