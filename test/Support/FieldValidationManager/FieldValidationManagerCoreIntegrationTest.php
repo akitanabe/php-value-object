@@ -15,6 +15,7 @@ use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\TypeHint;
+use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Validators\PropertyInitializedValidator;
 use PhpValueObject\Validators\PropertyTypeValidator;
@@ -49,13 +50,14 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig();
         $fieldConfig = new FieldConfig();
 
-        $coreValidators = [
+        // 標準システムバリデータを使用
+        $systemValidators = new SystemValidatorFactory([
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
             new PrimitiveTypeValidator($metadata),
-        ];
+        ]);
 
-        $manager = FieldValidationManager::createFromProperty($prop, $field, coreValidators: $coreValidators);
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $systemValidators);
 
         // 正常値でのテスト
         $inputData = new InputData(['testProp' => 'valid_string']);
@@ -96,13 +98,14 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig(allowUninitializedProperty: false);
         $fieldConfig = new FieldConfig(allowUninitializedProperty: false);
 
-        $coreValidators = [
+        // 未初期化プロパティのテスト用のシステムバリデータ
+        $systemValidators = new SystemValidatorFactory([
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
             new PrimitiveTypeValidator($metadata),
-        ];
+        ]);
 
-        $manager = FieldValidationManager::createFromProperty($prop, $field, coreValidators: $coreValidators);
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $systemValidators);
 
         $inputData = new InputData(['testProp' => 'some_value']);
         $original = PropertyOperator::create($prop, $inputData, $field);
@@ -136,13 +139,14 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig(allowNoneTypeProperty: false);
         $fieldConfig = new FieldConfig(allowNoneTypeProperty: false);
 
-        $coreValidators = [
+        // None型プロパティのテスト用のシステムバリデータ
+        $systemValidators = new SystemValidatorFactory([
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
             new PrimitiveTypeValidator($metadata),
-        ];
+        ]);
 
-        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $coreValidators);
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [], $systemValidators);
 
         $inputData = new InputData(['testProp' => 'some_value']);
         $original = PropertyOperator::create($prop, $inputData, $field);

@@ -32,13 +32,13 @@ class FieldValidationManager
      * @param ReflectionProperty $property
      * @param BaseField $field
      * @param array<FieldValidator> $fieldValidators
-     * @param array<Validatorable> $coreValidators
+     * @param SystemValidatorFactory|null $systemValidators
      */
     public static function createFromProperty(
         ReflectionProperty $property,
         BaseField $field,
         array $fieldValidators = [],
-        array $coreValidators = [],
+        ?SystemValidatorFactory $systemValidators = null,
     ): self {
 
         // 属性から取得したバリデータを追加
@@ -57,8 +57,16 @@ class FieldValidationManager
                 fn(FieldValidator $validator): bool => $validator->field === $property->name,
             ));
 
-        // バリデータの順序を変更: フィールドバリデータ → 属性バリデータ → コアバリデータ → フィールドバリデータ
-        $validators = [...$thisFieldValdators, ...$attributeValidators, ...$coreValidators, $field->getValidator()];
+        // システムバリデータを配列として取得
+        $systemValidatorList = $systemValidators ? $systemValidators->getValidators() : [];
+
+        // バリデータの順序を変更: フィールドバリデータ → 属性バリデータ → システムバリデータ → フィールドバリデータ
+        $validators = [
+            ...$thisFieldValdators,
+            ...$attributeValidators,
+            ...$systemValidatorList,
+            $field->getValidator(),
+        ];
 
         return new self(validators: $validators);
     }

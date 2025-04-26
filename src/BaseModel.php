@@ -12,12 +12,10 @@ use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
+use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\FieldValidationManager;
-use PhpValueObject\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\PropertyInitializedValidator;
-use PhpValueObject\Validators\PropertyTypeValidator;
 use ReflectionClass;
 use stdClass;
 use TypeError;
@@ -44,7 +42,6 @@ abstract class BaseModel
 
         foreach ($refClass->getProperties() as $property) {
             $field = FieldsHelper::createField($property);
-            $fieldConfig = FieldConfig::factory($property);
 
             $propertyOperator = PropertyOperator::create(
                 refProperty: $property,
@@ -52,21 +49,23 @@ abstract class BaseModel
                 field: $field,
             );
 
-            // プロパティの検証を行うバリデータを追加
-            $coreValidators = [
-                new PropertyInitializedValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
-                new PropertyTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
-                new PrimitiveTypeValidator($propertyOperator->metadata),
-            ];
+            // フィールド設定を取得
+            $fieldConfig = FieldConfig::factory($property);
 
-            // フィールドバリデーションマネージャーの作成（コアバリデータも含める）
+            // SystemValidatorFactoryを使用してシステムバリデータを構築
+            $systemValidators = SystemValidatorFactory::createForProperty(
+                propertyOperator: $propertyOperator,
+                modelConfig: $modelConfig,
+                fieldConfig: $fieldConfig,
+            );
+
+            // フィールドバリデーションマネージャーの作成（システムバリデータも含める）
             $fieldValidationManager = FieldValidationManager::createFromProperty(
                 $property,
                 $field,
                 $fieldValidators,
-                $coreValidators,
+                $systemValidators,
             );
-
 
             // すべてのバリデーションを実行
             $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
@@ -81,7 +80,6 @@ abstract class BaseModel
 
             // PropertyValueオブジェクトからactualValueを取得して設定
             $property->setValue($this, $validatedPropertyOperator->value->value);
-
         }
     }
 

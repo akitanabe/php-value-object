@@ -14,6 +14,7 @@ use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\TypeHint;
+use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\PlainValidator;
@@ -219,10 +220,12 @@ class FieldValidationManagerComplexOrderTest extends TestCase
 
         // コアバリデータ（例としてPropertyTypeValidator）
         // PropertyTypeValidator自体は値を変更しないが、順序確認のため追加
-        $coreValidator = new PropertyTypeValidator(new ModelConfig(), new FieldConfig(), $metadata,);
+        $coreValidator = new PropertyTypeValidator(new ModelConfig(), new FieldConfig(), $metadata);
 
-        // 全タイプのバリデータを含むマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator], [$coreValidator]);
+        // テスト用にカスタムバリデータを持つSystemValidatorFactoryを直接作成
+        $systemValidators = new SystemValidatorFactory([$coreValidator]);
+
+        $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator], $systemValidators);
 
         $inputData = new InputData(['allValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
