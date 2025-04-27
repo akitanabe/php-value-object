@@ -32,7 +32,7 @@ final class FieldValidator implements Validatorable
     ) {
 
         $normalizedMode = strtolower($mode);
-        if (!in_array($normalizedMode, ['plain', 'wrap', 'before', 'after'], true)) {
+        if (in_array($normalizedMode, ['plain', 'wrap', 'before', 'after'], true) === false) {
             throw new InvalidArgumentException(
                 "Invalid validator mode: {$mode}. Expected \"plain\", \"wrap\", \"before\" or \"after\"",
             );
