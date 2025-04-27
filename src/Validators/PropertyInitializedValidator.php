@@ -38,15 +38,9 @@ class PropertyInitializedValidator implements Validatorable
     {
         // プロパティが未初期化の場合
         if ($this->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
-            // 未初期化プロパティが許可されている場合はそのまま返す
+            // 未初期化プロパティが許可されている場合はそのまま返す（後続のハンドラーは実行しない）
             if ($this->modelConfig->uninitializedProperty->allow() || $this->fieldConfig->uninitializedProperty->allow()) {
-                $validatedValue = $value;
-
-                if ($handler !== null) {
-                    return $handler($validatedValue);
-                }
-
-                return $validatedValue;
+                return $value;
             }
 
             throw new InvalidPropertyStateException(
