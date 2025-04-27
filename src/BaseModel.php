@@ -62,11 +62,11 @@ abstract class BaseModel
                 field: $field,
             );
 
-            // フィールドバリデーションマネージャーの作成（システムバリデータも含める）
+            // フィールドバリデーションマネージャーの作成
             $fieldValidationManager = FieldValidationManager::createFromProperty(
                 $property,
                 $field,
-                $fieldValidatorFactory, // ファクトリを渡す
+                $fieldValidatorFactory,
                 $systemValidators,
             );
 

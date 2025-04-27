@@ -18,11 +18,12 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 class FieldValidationManager
 {
     /**
-     * @param array<int, Validatorable> $validators // FunctionValidator から Validatorable に戻す
+     * @param array<int, Validatorable> $validators
      */
     private function __construct(
         private readonly array $validators,
-    ) {}
+    ) {
+    }
 
     /**
      * プロパティからFieldValidationManagerを生成する
