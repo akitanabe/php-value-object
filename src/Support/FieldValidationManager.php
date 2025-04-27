@@ -58,7 +58,7 @@ class FieldValidationManager
             ));
 
         // システムバリデータを配列として取得
-        $systemValidatorList = $systemValidators ? $systemValidators->getValidators() : [];
+        $systemValidatorList = $systemValidators?->getValidators() ?? [];
 
         // バリデータの順序を変更: フィールドバリデータ → 属性バリデータ → システムバリデータ → フィールドバリデータ
         $validators = [
