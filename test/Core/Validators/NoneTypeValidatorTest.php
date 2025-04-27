@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhpValueObject\Test\Core\Validators;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
@@ -11,7 +11,7 @@ use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Validators\NoneTypeValidator;
+use PhpValueObject\Core\Validators\NoneTypeValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 

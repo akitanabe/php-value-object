@@ -16,7 +16,7 @@ use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
-use PhpValueObject\Validators\NoneTypeValidator;
+use PhpValueObject\Core\Validators\NoneTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;

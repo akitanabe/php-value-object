@@ -14,7 +14,7 @@ use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
-use PhpValueObject\Validators\NoneTypeValidator;
+use PhpValueObject\Core\Validators\NoneTypeValidator;
 use PhpValueObject\Validators\MixedTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;

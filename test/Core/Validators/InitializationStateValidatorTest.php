@@ -184,8 +184,7 @@ class ValueChangingValidator implements Validatorable
 {
     public function __construct(
         private string $newValue,
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
