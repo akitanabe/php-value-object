@@ -9,6 +9,7 @@ use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\PropertyValue;
+use PhpValueObject\Fields\Field;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
@@ -19,6 +20,7 @@ use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Enums\PropertyValueType;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PhpValueObject\Validators\IdenticalValidator;
 
 /**
  * SystemValidatorFactoryクラスのテスト
@@ -45,11 +47,18 @@ class SystemValidatorFactoryTest extends TestCase
     private PropertyMetadata $metadata;
 
     /**
+     * @var Field
+     */
+    private Field $field;
+
+    /**
      * テスト前の共通セットアップ
      */
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->field = new Field();
 
         $this->modelConfig = new ModelConfig();
         $this->fieldConfig = new FieldConfig();
@@ -77,6 +86,7 @@ class SystemValidatorFactoryTest extends TestCase
             new PropertyInitializedValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PropertyTypeValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PrimitiveTypeValidator($this->metadata),
+            $this->field->getValidator(),
         ];
 
         // テスト対象のインスタンス作成
@@ -85,10 +95,11 @@ class SystemValidatorFactoryTest extends TestCase
         // 内部で保持されているバリデータの検証
         $storedValidators = $builder->getValidators();
 
-        $this->assertCount(3, $storedValidators);
+        $this->assertCount(4, $storedValidators);
         $this->assertInstanceOf(PropertyInitializedValidator::class, $storedValidators[0]);
         $this->assertInstanceOf(PropertyTypeValidator::class, $storedValidators[1]);
         $this->assertInstanceOf(PrimitiveTypeValidator::class, $storedValidators[2]);
+        $this->assertInstanceOf(IdenticalValidator::class, $storedValidators[3]);
     }
 
     /**
@@ -110,6 +121,7 @@ class SystemValidatorFactoryTest extends TestCase
             $propertyOperator,
             $this->modelConfig,
             $this->fieldConfig,
+            $this->field,
         );
 
         // 返り値の検証
@@ -118,16 +130,17 @@ class SystemValidatorFactoryTest extends TestCase
         // 内部で作成されたバリデータの検証
         $validators = $builder->getValidators();
 
-        $this->assertCount(3, $validators);
+        $this->assertCount(4, $validators);
         $this->assertInstanceOf(PropertyInitializedValidator::class, $validators[0]);
         $this->assertInstanceOf(PropertyTypeValidator::class, $validators[1]);
         $this->assertInstanceOf(PrimitiveTypeValidator::class, $validators[2]);
+        $this->assertInstanceOf(IdenticalValidator::class, $validators[3]);
     }
 
     /**
      * getValidatorsメソッドが正しいバリデータ配列を返すことを確認します
      *
-     * このテストでは、getValidatorsメソッドが3つの標準バリデータを含む
+     * このテストでは、getValidatorsメソッドが4つの標準バリデータを含む
      * 配列を正しい順序で返すことを検証します。
      */
     #[Test]
@@ -138,6 +151,7 @@ class SystemValidatorFactoryTest extends TestCase
             new PropertyInitializedValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PropertyTypeValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PrimitiveTypeValidator($this->metadata),
+            $this->field->getValidator(),
         ];
 
         // テスト対象のインスタンス作成
@@ -146,9 +160,10 @@ class SystemValidatorFactoryTest extends TestCase
         // 返り値の検証
         $storedValidators = $builder->getValidators();
 
-        $this->assertCount(3, $storedValidators);
+        $this->assertCount(4, $storedValidators);
         $this->assertInstanceOf(PropertyInitializedValidator::class, $storedValidators[0]);
         $this->assertInstanceOf(PropertyTypeValidator::class, $storedValidators[1]);
         $this->assertInstanceOf(PrimitiveTypeValidator::class, $storedValidators[2]);
+        $this->assertInstanceOf(IdenticalValidator::class, $storedValidators[3]);
     }
 }

@@ -57,6 +57,7 @@ abstract class BaseModel
                 propertyOperator: $propertyOperator,
                 modelConfig: $modelConfig,
                 fieldConfig: $fieldConfig,
+                field: $field,
             );
 
             // フィールドバリデーションマネージャーの作成（システムバリデータも含める）

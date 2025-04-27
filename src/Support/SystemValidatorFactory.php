@@ -6,6 +6,7 @@ namespace PhpValueObject\Support;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Validators\PropertyInitializedValidator;
 use PhpValueObject\Validators\PropertyTypeValidator;
@@ -41,11 +42,13 @@ class SystemValidatorFactory
         PropertyOperator $propertyOperator,
         ModelConfig $modelConfig,
         FieldConfig $fieldConfig,
+        BaseField $field,
     ): self {
         $standardValidators = [
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
             new PrimitiveTypeValidator($propertyOperator->metadata),
+            $field->getValidator(),
         ];
 
         return new self($standardValidators);
