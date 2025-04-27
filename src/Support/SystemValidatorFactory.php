@@ -9,7 +9,8 @@ use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Validators\InitializationStateValidator;
-use PhpValueObject\Validators\PropertyTypeValidator;
+use PhpValueObject\Validators\MixedTypeValidator;
+use PhpValueObject\Validators\NoneTypeValidator;
 use PhpValueObject\Validators\Validatorable;
 
 /**
@@ -52,10 +53,11 @@ class SystemValidatorFactory
         FieldConfig $fieldConfig,
         BaseField $field,
     ): self {
-        // preValidator として PropertyInitializedValidator と PropertyTypeValidator を指定
+        // preValidator として PropertyInitializedValidator、NoneTypeValidator、MixedTypeValidatorを指定
         $preValidators = [
             new InitializationStateValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
-            new PropertyTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
+            new NoneTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
+            new MixedTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
         ];
 
         // standardValidator として PrimitiveTypeValidator と BaseField のバリデータを指定
