@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Support;
+namespace PhpValueObject\Test\Support;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Support;
+namespace PhpValueObject\Test\Support;
 
 use InvalidArgumentException;
 use PhpValueObject\Support\FieldValidatorFactory;
@@ -181,7 +181,7 @@ final class FieldValidatorFactoryTest extends TestCase
             }
         };
         PHP;
-        $class = eval ($classDefinition);
+        $class = eval($classDefinition);
 
         $refClass = new ReflectionClass($class);
 
