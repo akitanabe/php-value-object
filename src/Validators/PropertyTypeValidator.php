@@ -15,19 +15,11 @@ use PhpValueObject\Support\PropertyMetadata;
  */
 class PropertyTypeValidator implements Validatorable
 {
-    private readonly ModelConfig $modelConfig;
-    private readonly FieldConfig $fieldConfig;
-    private readonly PropertyMetadata $metadata;
-
     public function __construct(
-        ModelConfig $modelConfig,
-        FieldConfig $fieldConfig,
-        PropertyMetadata $metadata,
-    ) {
-        $this->modelConfig = $modelConfig;
-        $this->fieldConfig = $fieldConfig;
-        $this->metadata = $metadata;
-    }
+        private readonly ModelConfig $modelConfig,
+        private readonly FieldConfig $fieldConfig,
+        private readonly PropertyMetadata $metadata,
+    ) {}
 
     /**
      * プロパティの型定義を検証

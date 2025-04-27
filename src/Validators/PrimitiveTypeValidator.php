@@ -15,12 +15,9 @@ use TypeError;
  */
 class PrimitiveTypeValidator implements Validatorable
 {
-    private readonly PropertyMetadata $metadata;
-
-    public function __construct(PropertyMetadata $metadata)
-    {
-        $this->metadata = $metadata;
-    }
+    public function __construct(
+        private readonly PropertyMetadata $metadata,
+    ) {}
 
     /**
      * プリミティブ型の型チェック
