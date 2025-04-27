@@ -5,10 +5,20 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Validators\PlainValidator;
+use PhpValueObject\Validators\WrapValidator;
+use PhpValueObject\Validators\BeforeValidator;
+use PhpValueObject\Validators\AfterValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PhpValueObject\Validators\FunctionValidator;
+use ReflectionClass;
 
+/**
+ * @phpstan-import-type field_validator_mode from \PhpValueObject\Validators\FieldValidator
+ * @phpstan-import-type validator_callable from \PhpValueObject\Validators\Validatorable
+ */
 final class FieldValidatorTest extends TestCase
 {
     /**
@@ -17,73 +27,61 @@ final class FieldValidatorTest extends TestCase
     #[Test]
     public function constructorShouldSetFieldName(): void
     {
-        $validator = new FieldValidator('test_field');
-
-        $this->assertSame('test_field', $validator->field);
+        $fieldValidator = new FieldValidator('test_field');
+        $this->assertSame('test_field', $fieldValidator->field);
     }
 
     /**
-     * setValidatorでクロージャが正しく保存されることを確認する
+     * コンストラクタでモードが正しく設定されることを確認する
+     * @param field_validator_mode $mode
+     * @param field_validator_mode $expectedMode
      */
     #[Test]
-    public function setValidatorShouldStoreClosure(): void
+    #[DataProvider('modeProvider')]
+    public function constructorShouldSetMode(string $mode, string $expectedMode): void
     {
-        $validator = new FieldValidator('test_field');
-        $closure = fn(mixed $value): mixed => $value;
+        $fieldValidator = new FieldValidator('test_field', $mode);
 
-        $validator->setValidator($closure);
+        // private プロパティ 'mode' をリフレクションで取得して検証
+        $reflection = new ReflectionClass($fieldValidator);
+        $modeProperty = $reflection->getProperty('mode');
+        $modeProperty->setAccessible(true); // private プロパティにアクセス可能にする
 
-        // クロージャが正しく設定されたかをvalidateメソッドの動作で確認
-        $result = $validator->validate('test');
-        $this->assertSame('test', $result);
+        $this->assertSame($expectedMode, $modeProperty->getValue($fieldValidator));
     }
 
     /**
-     * validateメソッドでバリデーション関数が正しく実行されることを確認する
+     * getValidatorが正しいFunctionValidatorインスタンスを返すことを確認する
+     * @param field_validator_mode $mode
+     * @param field_validator_mode $expectedMode
+     * @param class-string<FunctionValidator> $expectedClass
      */
     #[Test]
-    public function validateShouldExecuteValidationFunction(): void
-    {
-        $validator = new FieldValidator('test_field');
-        $validator->setValidator(fn(mixed $value): string => strtoupper($value));
+    #[DataProvider('modeProvider')]
+    public function getValidatorShouldReturnCorrectInstance(
+        string $mode,
+        string $expectedMode,
+        string $expectedClass,
+    ): void {
+        $fieldValidator = new FieldValidator('test_field', $mode);
+        $dummyCallable = fn($v) => $v;
 
-        $result = $validator->validate('test');
+        $functionValidator = $fieldValidator->getValidator($dummyCallable);
 
-        $this->assertSame('TEST', $result);
+        $this->assertInstanceOf($expectedClass, $functionValidator);
     }
 
     /**
-     * validateメソッドで値の変換が正しく処理されることを確認する
+     * モードと期待されるクラス名のデータプロバイダ
+     * @return array<string, array{field_validator_mode, field_validator_mode, class-string<FunctionValidator>}>
      */
-    #[Test]
-    public function validateShouldHandleValueTransformation(): void
+    public static function modeProvider(): array
     {
-        $validator = new FieldValidator('test_field');
-        $validator->setValidator(fn(mixed $value): int => (int) $value + 1);
-
-        $result = $validator->validate('123');
-
-        $this->assertSame(124, $result);
+        return [
+            'plain mode' => ['plain', 'plain', PlainValidator::class],
+            'wrap mode' => ['wrap', 'wrap', WrapValidator::class],
+            'before mode' => ['before', 'before', BeforeValidator::class],
+            'after mode (default)' => ['after', 'after', AfterValidator::class],
+        ];
     }
-
-    /**
-     * validateメソッドでバリデーション失敗時に例外が投げられることを確認する
-     */
-    #[Test]
-    public function validateShouldThrowExceptionOnValidationFailure(): void
-    {
-        $validator = new FieldValidator('test_field');
-        $validator->setValidator(function (mixed $value): mixed {
-            if (!is_string($value)) {
-                throw new ValidationException('Value must be string');
-            }
-            return $value;
-        });
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Value must be string');
-
-        $validator->validate(123);
-    }
-
 }

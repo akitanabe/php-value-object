@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace Test\Support;
 
+namespace Test\Support;
+
 use InvalidArgumentException;
 use PhpValueObject\Support\FieldValidatorFactory;
-use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FieldValidator; // Keep for attribute usage
+use PhpValueObject\Validators\FunctionValidator; // Add FunctionValidator and subclasses
+use PhpValueObject\Validators\AfterValidator;
+use PhpValueObject\Validators\BeforeValidator;
+use PhpValueObject\Validators\PlainValidator;
+use PhpValueObject\Validators\WrapValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -50,13 +57,11 @@ final class FieldValidatorFactoryTest extends TestCase
 
         // バリデータが1つ存在することを確認
         $this->assertCount(1, $validators);
-        $validator = $validators[0];
+        $functionValidator = $validators[0];
 
-        // バリデータのプロパティを確認
-        $this->assertInstanceOf(FieldValidator::class, $validator);
-        $this->assertSame('name', $validator->field);
-        // mode は private なので直接アクセスできないが、validate メソッドの挙動で間接的に確認可能
-        // validator callable が正しく設定されているか（リフレクション等で確認も可能だが、ここでは省略）
+        // バリデータの型を確認 (mode: 'after' なので AfterValidator)
+        $this->assertInstanceOf(AfterValidator::class, $functionValidator);
+        // FunctionValidator には field プロパティはない
     }
 
     #[Test]
@@ -89,10 +94,10 @@ final class FieldValidatorFactoryTest extends TestCase
 
         // バリデータが2つ存在することを確認
         $this->assertCount(2, $validators);
-        $this->assertInstanceOf(FieldValidator::class, $validators[0]);
-        $this->assertInstanceOf(FieldValidator::class, $validators[1]);
-        $this->assertSame('age', $validators[0]->field);
-        $this->assertSame('age', $validators[1]->field);
+        // モードに応じた正しい FunctionValidator 型か確認
+        $this->assertInstanceOf(BeforeValidator::class, $validators[0]); // mode: 'before'
+        $this->assertInstanceOf(AfterValidator::class, $validators[1]); // mode: 'after'
+        // FunctionValidator には field プロパティはない
     }
 
     #[Test]
@@ -122,12 +127,12 @@ final class FieldValidatorFactoryTest extends TestCase
         // 'email' フィールドのバリデータを取得
         $emailValidators = $factory->getValidatorsForField('email');
         $this->assertCount(1, $emailValidators);
-        $this->assertSame('email', $emailValidators[0]->field);
+        $this->assertInstanceOf(PlainValidator::class, $emailValidators[0]); // mode: 'plain'
 
         // 'password' フィールドのバリデータを取得
         $passwordValidators = $factory->getValidatorsForField('password');
         $this->assertCount(1, $passwordValidators);
-        $this->assertSame('password', $passwordValidators[0]->field);
+        $this->assertInstanceOf(WrapValidator::class, $passwordValidators[0]); // mode: 'wrap'
 
         // 存在しないフィールドのバリデータを取得
         $this->assertEmpty($factory->getValidatorsForField('nonExistentField'));
@@ -158,12 +163,14 @@ final class FieldValidatorFactoryTest extends TestCase
 
     /**
      * @param string $mode テスト対象のモード
+     * @param class-string<FunctionValidator> $expectedClass 期待される FunctionValidator のクラス名
      */
     #[DataProvider('modeProvider')]
     #[Test]
-    public function testCreateFromClassWithDifferentModes(string $mode): void
+    public function testCreateFromClassWithDifferentModes(string $mode, string $expectedClass): void
     {
         // 動的にモードを設定するクラス定義 (クロージャを使用)
+        // FieldValidator の namespace を修正
         $classDefinition = <<<PHP
         return new class ('{$mode}') {
             private string \$mode;
@@ -188,25 +195,23 @@ final class FieldValidatorFactoryTest extends TestCase
 
         // バリデータが1つ存在することを確認
         $this->assertCount(1, $validators);
-        $validator = $validators[0];
+        $functionValidator = $validators[0];
 
-        // バリデータのプロパティを確認
-        $this->assertInstanceOf(FieldValidator::class, $validator);
-        $this->assertSame('data', $validator->field);
-        // mode の検証は FieldValidator 自身のテストで行われるべきだが、
-        // ここでは異なるモードでファクトリがエラーなく生成できることを確認
+        // 正しい FunctionValidator 型が生成されているか確認
+        $this->assertInstanceOf($expectedClass, $functionValidator);
+        // FunctionValidator には field プロパティはない
     }
 
     /**
-     * @return array<string, array{string}>
+     * @return array<string, array{string, class-string<FunctionValidator>}>
      */
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => ['plain'],
-            'wrap mode' => ['wrap'],
-            'before mode' => ['before'],
-            'after mode' => ['after'],
+            'plain mode' => ['plain', PlainValidator::class],
+            'wrap mode' => ['wrap', WrapValidator::class],
+            'before mode' => ['before', BeforeValidator::class],
+            'after mode' => ['after', AfterValidator::class],
         ];
     }
 }

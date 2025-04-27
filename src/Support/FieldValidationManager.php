@@ -9,7 +9,7 @@ use ReflectionProperty;
 use ArrayIterator;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\Validatorable; // FunctionValidator から Validatorable に戻す
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
@@ -18,7 +18,7 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 class FieldValidationManager
 {
     /**
-     * @param array<int, Validatorable> $validators
+     * @param array<int, Validatorable> $validators // FunctionValidator から Validatorable に戻す
      */
     private function __construct(
         private readonly array $validators,
@@ -47,7 +47,7 @@ class FieldValidationManager
             ReflectionAttribute::IS_INSTANCEOF,
         );
 
-        // ファクトリからこのプロパティに対応するフィールドバリデータを取得
+        // ファクトリからこのプロパティに対応する FunctionValidator を取得
         $methodValdators = $fieldValidatorFactory?->getValidatorsForField($property->name) ?? [];
 
         // システムバリデータを pre と standard に分けて取得

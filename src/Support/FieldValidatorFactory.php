@@ -7,26 +7,18 @@ namespace PhpValueObject\Support;
 use InvalidArgumentException;
 use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FunctionValidator;
 use ReflectionClass;
-use ReflectionMethod;
 
 /**
- * FieldValidator インスタンスを生成・管理するファクトリクラス
+ * FieldValidatorからFunctionValidator インスタンスを生成・管理するファクトリクラス
  */
 final class FieldValidatorFactory
 {
     /**
-     * @var array<string, FieldValidator[]> フィールド名をキーとした FieldValidator の配列
+     * @param array<string, FunctionValidator[]> $validatorsByField
      */
-    private readonly array $validatorsByField;
-
-    /**
-     * @param array<string, FieldValidator[]> $validatorsByField
-     */
-    private function __construct(array $validatorsByField)
-    {
-        $this->validatorsByField = $validatorsByField;
-    }
+    private function __construct(private readonly array $validatorsByField) {}
 
     /**
      * ReflectionClass から FieldValidatorFactory インスタンスを生成する
@@ -41,37 +33,30 @@ final class FieldValidatorFactory
         $className = $refClass->name;
         $validatorsByField = [];
 
-        // バリデーションメソッドをFieldValidatorに入力する内部関数
-        $setValidator = function (FieldValidator $fieldValidator, ReflectionMethod $refMethod) use (
-            $className
-        ): FieldValidator {
-            $methodName = $refMethod->getName();
-
-            // staticメソッドであることを確認
-            if ($refMethod->isStatic() === false) {
-                throw new InvalidArgumentException(
-                    "Method {$className}::{$methodName} must be static for use with FieldValidator",
-                );
-            }
-
-            $validator = [$className, $methodName];
-            $fieldValidator->setValidator($validator);
-
-            return $fieldValidator;
-        };
-
         foreach ($refClass->getMethods() as $refMethod) {
-            $fieldValidators = AttributeHelper::getAttributeInstances($refMethod, FieldValidator::class);
+            $fieldValidatorAttrs = AttributeHelper::getAttributeInstances($refMethod, FieldValidator::class);
 
-            foreach ($fieldValidators as $fieldValidator) {
-                $initializedValidator = $setValidator($fieldValidator, $refMethod);
-                $fieldName = $initializedValidator->field;
+            foreach ($fieldValidatorAttrs as $fieldValidatorAttr) {
+                $methodName = $refMethod->getName();
 
-                // フィールド名ごとにバリデータをグループ化
+                // staticメソッドであることを確認
+                if ($refMethod->isStatic() === false) {
+                    throw new InvalidArgumentException(
+                        "Method {$className}::{$methodName} must be static for use with FieldValidator",
+                    );
+                }
+
+                $validatorCallable = [$className, $methodName];
+
+                // FieldValidator Attribute から FunctionValidator を生成
+                $functionValidator = $fieldValidatorAttr->getValidator($validatorCallable);
+
+                // フィールド名ごとに FunctionValidator をグループ化
+                $fieldName = $fieldValidatorAttr->field;
                 if (isset($validatorsByField[$fieldName]) === false) {
                     $validatorsByField[$fieldName] = [];
                 }
-                $validatorsByField[$fieldName][] = $initializedValidator;
+                $validatorsByField[$fieldName][] = $functionValidator;
             }
         }
 
@@ -79,10 +64,10 @@ final class FieldValidatorFactory
     }
 
     /**
-     * 指定されたフィールド名の FieldValidator 配列を取得する
+     * 指定されたフィールド名の FunctionValidator 配列を取得する
      *
      * @param string $fieldName フィールド名
-     * @return FieldValidator[] 対応する FieldValidator の配列 (存在しない場合は空配列)
+     * @return FunctionValidator[] 対応する FunctionValidator の配列 (存在しない場合は空配列)
      */
     public function getValidatorsForField(string $fieldName): array
     {
