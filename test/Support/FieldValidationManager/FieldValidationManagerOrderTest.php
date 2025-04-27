@@ -8,12 +8,18 @@ use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\SystemValidatorFactory; // 追加
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\Validatorable; // 追加
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler; // 追加
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+
+// 追加 (SystemValidatorFactoryで必要になる場合があるため)
+ // 追加 (SystemValidatorFactoryで必要になる場合があるため)
 
 // テスト用のバリデータクラス
 class TestValidatorForOrder
@@ -57,6 +63,12 @@ class FieldValidationManagerOrderTest extends TestCase
     private ReflectionProperty $nameProperty;
     private ReflectionProperty $testPropProperty;
     private StringField $field;
+    private SystemValidatorFactory $systemValidatorFactory; // SystemValidatorFactoryのインスタンス
+
+    // テスト用の Pre System Validator
+    private Validatorable $preSystemValidator;
+    // テスト用の Standard System Validator
+    private Validatorable $standardSystemValidator;
 
     protected function setUp(): void
     {
@@ -64,6 +76,31 @@ class FieldValidationManagerOrderTest extends TestCase
         $this->nameProperty = new ReflectionProperty($class, 'name');
         $this->testPropProperty = new ReflectionProperty($class, 'testProp');
         $this->field = new StringField();
+
+        // テスト用のシステムバリデータを作成
+        $this->preSystemValidator = new class implements Validatorable {
+            public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+            {
+                // 処理を行い、次のハンドラーを呼び出す
+                $processedValue = $value . '_preSys';
+                return $handler ? ($handler)($processedValue) : $processedValue;
+            }
+        };
+        $this->standardSystemValidator = new class implements Validatorable {
+            public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+            {
+                // 処理を行い、次のハンドラーを呼び出す (このバリデータは最後なのでハンドラ呼び出しは不要だが、念のため)
+                $processedValue = $value . '_stdSys';
+                // 最後のバリデータは通常ハンドラを呼び出さないため、そのまま値を返す
+                return $processedValue;
+            }
+        };
+
+        // テスト用のSystemValidatorFactoryを作成
+        $this->systemValidatorFactory = new SystemValidatorFactory(
+            [$this->preSystemValidator],
+            [$this->standardSystemValidator],
+        );
     }
 
     /**
@@ -73,15 +110,25 @@ class FieldValidationManagerOrderTest extends TestCase
     #[Test]
     public function testValidationOrder(): void
     {
-        $manager = FieldValidationManager::createFromProperty($this->nameProperty, $this->field);
+        // SystemValidatorFactory を渡して Manager を作成
+        $manager = FieldValidationManager::createFromProperty(
+            $this->nameProperty,
+            $this->field,
+            [], // FieldValidator はなし
+            $this->systemValidatorFactory, // SystemValidator を渡す
+        );
         $inputData = new InputData(['name' => 'john']);
         $operator = PropertyOperator::create($this->nameProperty, $inputData, $this->field);
 
         $result = $manager->processValidation($operator);
 
         $this->assertEquals('john', $operator->value->value);
-        // Before(validateLength) -> After(formatName)
-        $this->assertEquals('John', $result->value->value);
+        // 実行順: preSys -> attr_before(validateLength) -> attr_after(formatName) -> stdSys
+        // preSys: + '_preSys'
+        // attr_before: validateLength (変更なし)
+        // attr_after: formatName (先頭大文字化)
+        // stdSys: + '_stdSys'
+        $this->assertEquals('John_preSys_stdSys', $result->value->value);
     }
 
     /**
@@ -99,11 +146,12 @@ class FieldValidationManagerOrderTest extends TestCase
         $afterValidator = new FieldValidator('name', 'after');
         $afterValidator->setValidator(fn(string $value) => $value . '_after');
 
-        // TestClassForOrderには属性があるが、このテストではFieldValidatorのみの順序を確認
+        // SystemValidatorFactory を渡して Manager を作成
         $manager = FieldValidationManager::createFromProperty(
             $this->nameProperty, // nameプロパティを使用
             $this->field,
-            [$firstBeforeValidator, $secondBeforeValidator, $afterValidator],
+            [$firstBeforeValidator, $secondBeforeValidator, $afterValidator], // FieldValidator を渡す
+            $this->systemValidatorFactory, // SystemValidator を渡す
         );
 
         $inputData = new InputData(['name' => 'test']);
@@ -111,13 +159,16 @@ class FieldValidationManagerOrderTest extends TestCase
 
         $result = $manager->processValidation($original);
 
-        // 実行順: attr_before -> field_before1 -> field_before2 -> field_after -> attr_after
-        // attr_before: validateLength (変更なし)
+        // 実行順: preSys -> field_before1 -> field_before2 -> attr_before -> attr_after -> field_after -> stdSys
+        // preSys: + '_preSys'
         // field_before1: + '_before1'
         // field_before2: + '_before2'
-        // field_after: + '_after'
+        // attr_before: validateLength (変更なし)
         // attr_after: formatName (先頭大文字化)
-        $this->assertEquals('Test_before1_before2_after', $result->value->value);
+        // field_after: + '_after'
+        // stdSys: + '_stdSys'
+        // 修正: stdSys は after より前に実行される
+        $this->assertEquals('Test_preSys_before1_before2_stdSys_after', $result->value->value);
     }
 
     /**
@@ -132,10 +183,12 @@ class FieldValidationManagerOrderTest extends TestCase
         $afterFieldValidator = new FieldValidator('testProp', 'after');
         $afterFieldValidator->setValidator(fn(string $value) => $value . '_field_after');
 
+        // SystemValidatorFactory を渡して Manager を作成
         $manager = FieldValidationManager::createFromProperty(
             $this->testPropProperty,
             $this->field,
-            [$beforeFieldValidator, $afterFieldValidator],
+            [$beforeFieldValidator, $afterFieldValidator], // FieldValidator を渡す
+            $this->systemValidatorFactory, // SystemValidator を渡す
         );
 
         $inputData = new InputData(['testProp' => 'base']);
@@ -143,11 +196,17 @@ class FieldValidationManagerOrderTest extends TestCase
 
         $result = $manager->processValidation($original);
 
-        // 実行順: field_before -> attr_before -> attr_after -> field_after
+        // 実行順: preSys -> field_before -> attr_before -> attr_after -> field_after -> stdSys
+        // preSys: + '_preSys'
         // field_before: + '_field_before'
         // attr_before: addAttrBefore (+ '_attr_before')
         // attr_after: addAttrAfter (+ '_attr_after')
         // field_after: + '_field_after'
-        $this->assertEquals('base_field_before_attr_before_attr_after_field_after', $result->value->value);
+        // stdSys: + '_stdSys'
+        // 修正: stdSys は after より前に実行される
+        $this->assertEquals(
+            'base_preSys_field_before_attr_before_stdSys_attr_after_field_after',
+            $result->value->value,
+        );
     }
 }

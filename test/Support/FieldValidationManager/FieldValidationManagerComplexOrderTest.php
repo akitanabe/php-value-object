@@ -223,7 +223,8 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $coreValidator = new PropertyTypeValidator(new ModelConfig(), new FieldConfig(), $metadata);
 
         // テスト用にカスタムバリデータを持つSystemValidatorFactoryを直接作成
-        $systemValidators = new SystemValidatorFactory([$coreValidator]);
+        // PropertyTypeValidator は preValidator として扱われる
+        $systemValidators = new SystemValidatorFactory([$coreValidator], []); // 第2引数に空配列を追加
 
         $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator], $systemValidators);
 

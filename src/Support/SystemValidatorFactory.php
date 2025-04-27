@@ -14,20 +14,28 @@ use PhpValueObject\Validators\Validatorable;
 
 /**
  * システムバリデータを生成するファクトリークラス
+ * preValidator (ユーザー定義バリデータより前) と standardValidator (ユーザー定義バリデータより後) を管理する
  */
 class SystemValidatorFactory
 {
     /**
-     * @var array<Validatorable>
+     * @var array<Validatorable> ユーザー定義バリデータより前に実行されるシステムバリデータ
      */
-    private array $validators;
+    private array $preValidators;
 
     /**
-     * @param array<Validatorable> $validators
+     * @var array<Validatorable> ユーザー定義バリデータより後に実行されるシステムバリデータ
      */
-    public function __construct(array $validators)
+    private array $standardValidators;
+
+    /**
+     * @param array<Validatorable> $preValidators
+     * @param array<Validatorable> $standardValidators
+     */
+    public function __construct(array $preValidators, array $standardValidators)
     {
-        $this->validators = $validators;
+        $this->preValidators = $preValidators;
+        $this->standardValidators = $standardValidators;
     }
 
     /**
@@ -44,23 +52,35 @@ class SystemValidatorFactory
         FieldConfig $fieldConfig,
         BaseField $field,
     ): self {
-        $standardValidators = [
+        // preValidator として PropertyInitializedValidator と PropertyTypeValidator を指定
+        $preValidators = [
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
-            new PrimitiveTypeValidator($propertyOperator->metadata),
-            $field->getValidator(),
         ];
 
-        return new self($standardValidators);
+        // standardValidator として PrimitiveTypeValidator と BaseField のバリデータを指定
+        $standardValidators = [new PrimitiveTypeValidator($propertyOperator->metadata), $field->getValidator(),];
+
+        return new self($preValidators, $standardValidators);
     }
 
     /**
-     * バリデータ配列を取得する
+     * preValidator の配列を取得する
      *
      * @return array<Validatorable>
      */
-    public function getValidators(): array
+    public function getPreValidators(): array
     {
-        return $this->validators;
+        return $this->preValidators;
+    }
+
+    /**
+     * standardValidator の配列を取得する
+     *
+     * @return array<Validatorable>
+     */
+    public function getStandardValidators(): array
+    {
+        return $this->standardValidators;
     }
 }

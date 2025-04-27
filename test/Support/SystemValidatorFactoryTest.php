@@ -81,25 +81,30 @@ class SystemValidatorFactoryTest extends TestCase
     #[Test]
     public function constructorCreatesValidators(): void
     {
-        // 標準バリデータの配列を作成
-        $validators = [
+        // preValidator と standardValidator の配列を作成
+        $preValidators = [
             new PropertyInitializedValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PropertyTypeValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
-            new PrimitiveTypeValidator($this->metadata),
-            $this->field->getValidator(),
         ];
+        $standardValidators = [new PrimitiveTypeValidator($this->metadata), $this->field->getValidator(),];
 
         // テスト対象のインスタンス作成
-        $builder = new SystemValidatorFactory($validators);
+        $builder = new SystemValidatorFactory($preValidators, $standardValidators);
 
         // 内部で保持されているバリデータの検証
-        $storedValidators = $builder->getValidators();
+        $storedPreValidators = $builder->getPreValidators();
+        $storedStandardValidators = $builder->getStandardValidators();
 
-        $this->assertCount(4, $storedValidators);
-        $this->assertInstanceOf(PropertyInitializedValidator::class, $storedValidators[0]);
-        $this->assertInstanceOf(PropertyTypeValidator::class, $storedValidators[1]);
-        $this->assertInstanceOf(PrimitiveTypeValidator::class, $storedValidators[2]);
-        $this->assertInstanceOf(IdenticalValidator::class, $storedValidators[3]);
+        $this->assertCount(2, $storedPreValidators);
+        $this->assertInstanceOf(PropertyInitializedValidator::class, $storedPreValidators[0]);
+        $this->assertInstanceOf(PropertyTypeValidator::class, $storedPreValidators[1]);
+
+        $this->assertCount(2, $storedStandardValidators);
+        $this->assertInstanceOf(PrimitiveTypeValidator::class, $storedStandardValidators[0]);
+        $this->assertInstanceOf(
+            IdenticalValidator::class,
+            $storedStandardValidators[1],
+        ); // Field->getValidator() は IdenticalValidator を返す
     }
 
     /**
@@ -127,43 +132,61 @@ class SystemValidatorFactoryTest extends TestCase
         // 返り値の検証
         $this->assertInstanceOf(SystemValidatorFactory::class, $builder);
 
-        // 内部で作成されたバリデータの検証
-        $validators = $builder->getValidators();
+        // 内部で作成されたバリデータの検証 (preValidators)
+        $preValidators = $builder->getPreValidators();
+        $this->assertCount(2, $preValidators);
+        $this->assertInstanceOf(PropertyInitializedValidator::class, $preValidators[0]);
+        $this->assertInstanceOf(PropertyTypeValidator::class, $preValidators[1]);
 
-        $this->assertCount(4, $validators);
-        $this->assertInstanceOf(PropertyInitializedValidator::class, $validators[0]);
-        $this->assertInstanceOf(PropertyTypeValidator::class, $validators[1]);
-        $this->assertInstanceOf(PrimitiveTypeValidator::class, $validators[2]);
-        $this->assertInstanceOf(IdenticalValidator::class, $validators[3]);
+        // 内部で作成されたバリデータの検証 (standardValidators)
+        $standardValidators = $builder->getStandardValidators();
+        $this->assertCount(2, $standardValidators);
+        $this->assertInstanceOf(PrimitiveTypeValidator::class, $standardValidators[0]);
+        $this->assertInstanceOf(
+            IdenticalValidator::class,
+            $standardValidators[1],
+        ); // Field->getValidator() は IdenticalValidator を返す
     }
 
     /**
-     * getValidatorsメソッドが正しいバリデータ配列を返すことを確認します
+     * getterメソッドが正しいバリデータ配列を返すことを確認します
      *
-     * このテストでは、getValidatorsメソッドが4つの標準バリデータを含む
-     * 配列を正しい順序で返すことを検証します。
+     * このテストでは、getPreValidators と getStandardValidators メソッドが
+     * それぞれ正しいバリデータを含む配列を返すことを検証します。
      */
     #[Test]
-    public function getValidatorsReturnsCorrectArray(): void
+    public function gettersReturnCorrectArrays(): void
     {
-        // 標準バリデータの配列を作成
-        $validators = [
+        // preValidator と standardValidator の配列を作成
+        $preValidators = [
             new PropertyInitializedValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PropertyTypeValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
-            new PrimitiveTypeValidator($this->metadata),
-            $this->field->getValidator(),
         ];
+        $standardValidators = [new PrimitiveTypeValidator($this->metadata), $this->field->getValidator(),];
 
         // テスト対象のインスタンス作成
-        $builder = new SystemValidatorFactory($validators);
+        $builder = new SystemValidatorFactory($preValidators, $standardValidators);
 
-        // 返り値の検証
-        $storedValidators = $builder->getValidators();
+        // getPreValidators の返り値検証
+        $storedPreValidators = $builder->getPreValidators();
+        $this->assertCount(2, $storedPreValidators);
+        $this->assertInstanceOf(PropertyInitializedValidator::class, $storedPreValidators[0]);
+        $this->assertInstanceOf(PropertyTypeValidator::class, $storedPreValidators[1]);
+        $this->assertSame(
+            $preValidators,
+            $storedPreValidators,
+            'getPreValidators should return the exact preValidators array',
+        );
 
-        $this->assertCount(4, $storedValidators);
-        $this->assertInstanceOf(PropertyInitializedValidator::class, $storedValidators[0]);
-        $this->assertInstanceOf(PropertyTypeValidator::class, $storedValidators[1]);
-        $this->assertInstanceOf(PrimitiveTypeValidator::class, $storedValidators[2]);
-        $this->assertInstanceOf(IdenticalValidator::class, $storedValidators[3]);
+        // getStandardValidators の返り値検証
+        $storedStandardValidators = $builder->getStandardValidators();
+        $this->assertCount(2, $storedStandardValidators);
+        $this->assertInstanceOf(PrimitiveTypeValidator::class, $storedStandardValidators[0]);
+        $this->assertInstanceOf(IdenticalValidator::class, $storedStandardValidators[1]);
+        $this->assertSame(
+            $standardValidators,
+            $storedStandardValidators,
+            'getStandardValidators should return the exact standardValidators array',
+        );
     }
 }

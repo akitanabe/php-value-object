@@ -50,12 +50,13 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig();
         $fieldConfig = new FieldConfig();
 
-        // 標準システムバリデータを使用
-        $systemValidators = new SystemValidatorFactory([
+        // 標準システムバリデータを使用 (pre と standard に分類)
+        $preValidators = [
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
-            new PrimitiveTypeValidator($metadata),
-        ]);
+        ];
+        $standardValidators = [new PrimitiveTypeValidator($metadata),];
+        $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
 
         $manager = FieldValidationManager::createFromProperty($prop, $field, [], $systemValidators);
 
@@ -98,12 +99,13 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig(allowUninitializedProperty: false);
         $fieldConfig = new FieldConfig(allowUninitializedProperty: false);
 
-        // 未初期化プロパティのテスト用のシステムバリデータ
-        $systemValidators = new SystemValidatorFactory([
+        // 未初期化プロパティのテスト用のシステムバリデータ (pre と standard に分類)
+        $preValidators = [
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
-            new PrimitiveTypeValidator($metadata),
-        ]);
+        ];
+        $standardValidators = [new PrimitiveTypeValidator($metadata),];
+        $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
 
         $manager = FieldValidationManager::createFromProperty($prop, $field, [], $systemValidators);
 
@@ -139,12 +141,13 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig(allowNoneTypeProperty: false);
         $fieldConfig = new FieldConfig(allowNoneTypeProperty: false);
 
-        // None型プロパティのテスト用のシステムバリデータ
-        $systemValidators = new SystemValidatorFactory([
+        // None型プロパティのテスト用のシステムバリデータ (pre と standard に分類)
+        $preValidators = [
             new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
-            new PrimitiveTypeValidator($metadata),
-        ]);
+        ];
+        $standardValidators = [new PrimitiveTypeValidator($metadata),];
+        $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
 
         $manager = FieldValidationManager::createFromProperty($prop, $field, [], $systemValidators);
 
