@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Validators;
 
-use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyValue;
@@ -34,11 +33,6 @@ class PrimitiveTypeValidator implements Validatorable
     {
         // $handlerがnullかどうかで処理を分岐するアロー関数
         $processValue = fn(mixed $v) => $handler !== null ? $handler($v) : $v;
-
-        // 未初期化プロパティの場合は型チェックをスキップ
-        if ($this->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED && $value === null) {
-            return $processValue($value);
-        }
 
         $propertyValue = PropertyValue::fromValue($value);
 

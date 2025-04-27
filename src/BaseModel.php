@@ -71,11 +71,8 @@ abstract class BaseModel
             // すべてのバリデーションを実行
             $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
 
-            // 未初期化プロパティのままならスルー
-            if (
-                $validatedPropertyOperator->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED
-                && $validatedPropertyOperator->value->value === null
-            ) {
+            // 未初期化プロパティが許可されているのならスルー
+            if ($validatedPropertyOperator->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {
                 continue;
             }
 
