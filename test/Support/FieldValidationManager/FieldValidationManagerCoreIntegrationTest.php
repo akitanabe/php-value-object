@@ -18,7 +18,7 @@ use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Validators\InitializationStateValidator;
-use PhpValueObject\Validators\PropertyTypeValidator;
+use PhpValueObject\Validators\NoneTypeValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
@@ -27,7 +27,7 @@ use TypeError;
 class FieldValidationManagerCoreIntegrationTest extends TestCase
 {
     /**
-     * コアバリデータ（PropertyInitializedValidator、PropertyTypeValidator、PrimitiveTypeValidator）を
+     * コアバリデータ（PropertyInitializedValidator、PrimitiveTypeValidator）を
      * 使用した統合テスト
      */
     #[Test]
@@ -51,10 +51,7 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $fieldConfig = new FieldConfig();
 
         // 標準システムバリデータを使用 (pre と standard に分類)
-        $preValidators = [
-            new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
-            new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
-        ];
+        $preValidators = [new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),];
         $standardValidators = [new PrimitiveTypeValidator($metadata),];
         $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
 
@@ -100,10 +97,7 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $fieldConfig = new FieldConfig(allowUninitializedProperty: false);
 
         // 未初期化プロパティのテスト用のシステムバリデータ (pre と standard に分類)
-        $preValidators = [
-            new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
-            new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
-        ];
+        $preValidators = [new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),];
         $standardValidators = [new PrimitiveTypeValidator($metadata),];
         $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
 
@@ -141,10 +135,11 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
         $modelConfig = new ModelConfig(allowNoneTypeProperty: false);
         $fieldConfig = new FieldConfig(allowNoneTypeProperty: false);
 
-        // None型プロパティのテスト用のシステムバリデータ (pre と standard に分類)
+        // None型プロパティのテスト用のシステムバリデータ
+        // NoneTypeValidatorを明示的に含める
         $preValidators = [
             new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
-            new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
+            new NoneTypeValidator($modelConfig, $fieldConfig, $metadata),
         ];
         $standardValidators = [new PrimitiveTypeValidator($metadata),];
         $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);

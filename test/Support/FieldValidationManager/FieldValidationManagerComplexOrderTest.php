@@ -20,7 +20,7 @@ use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\PlainValidator;
 use PhpValueObject\Validators\WrapValidator;
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\PropertyTypeValidator;
+use PhpValueObject\Validators\InitializationStateValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
@@ -218,12 +218,12 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             PropertyInitializedStatus::BY_DEFAULT,
         );
 
-        // コアバリデータ（例としてPropertyTypeValidator）
-        // PropertyTypeValidator自体は値を変更しないが、順序確認のため追加
-        $coreValidator = new PropertyTypeValidator(new ModelConfig(), new FieldConfig(), $metadata);
+        // InitializationStateValidatorなどのコアバリデータを使用する場合はここで設定
+        $modelConfig = new ModelConfig();
+        $fieldConfig = new FieldConfig();
+        $coreValidator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
 
         // テスト用にカスタムバリデータを持つSystemValidatorFactoryを直接作成
-        // PropertyTypeValidator は preValidator として扱われる
         $systemValidators = new SystemValidatorFactory([$coreValidator], []); // 第2引数に空配列を追加
 
         $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator], $systemValidators);
