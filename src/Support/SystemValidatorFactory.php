@@ -8,7 +8,7 @@ use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\PropertyInitializedValidator;
+use PhpValueObject\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\PropertyTypeValidator;
 use PhpValueObject\Validators\Validatorable;
 
@@ -54,7 +54,7 @@ class SystemValidatorFactory
     ): self {
         // preValidator として PropertyInitializedValidator と PropertyTypeValidator を指定
         $preValidators = [
-            new PropertyInitializedValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
+            new InitializationStateValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $propertyOperator->metadata),
         ];
 

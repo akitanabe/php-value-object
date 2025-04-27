@@ -9,7 +9,7 @@ use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Validators\PropertyInitializedValidator;
+use PhpValueObject\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,7 +28,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
 
         $result = $validator->validate($value);
@@ -45,7 +45,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(true); // 未初期化プロパティを許可
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
 
         $result = $validator->validate($value);
@@ -62,7 +62,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(true); // 未初期化プロパティを許可
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
 
         $result = $validator->validate($value);
@@ -79,7 +79,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
 
         $this->expectException(InvalidPropertyStateException::class);
@@ -96,7 +96,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(true); // 未初期化プロパティを許可
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
 
         // 値を変更する実際のバリデータを作成
@@ -121,7 +121,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(true); // 未初期化プロパティを許可
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
 
         // 値を変更する実際のバリデータを作成
@@ -146,7 +146,7 @@ class PropertyInitializedValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
         $value = 'test_value';
         $changedValue = 'changed_value';
 

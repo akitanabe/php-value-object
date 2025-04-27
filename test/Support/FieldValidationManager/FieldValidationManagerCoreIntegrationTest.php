@@ -17,7 +17,7 @@ use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\PropertyInitializedValidator;
+use PhpValueObject\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\PropertyTypeValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +52,7 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
 
         // 標準システムバリデータを使用 (pre と standard に分類)
         $preValidators = [
-            new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
+            new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
         ];
         $standardValidators = [new PrimitiveTypeValidator($metadata),];
@@ -101,7 +101,7 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
 
         // 未初期化プロパティのテスト用のシステムバリデータ (pre と standard に分類)
         $preValidators = [
-            new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
+            new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
         ];
         $standardValidators = [new PrimitiveTypeValidator($metadata),];
@@ -143,7 +143,7 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
 
         // None型プロパティのテスト用のシステムバリデータ (pre と standard に分類)
         $preValidators = [
-            new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata),
+            new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
             new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata),
         ];
         $standardValidators = [new PrimitiveTypeValidator($metadata),];

@@ -13,7 +13,7 @@ use PhpValueObject\Fields\Field;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\PropertyInitializedValidator;
+use PhpValueObject\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\PropertyTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
@@ -83,7 +83,7 @@ class SystemValidatorFactoryTest extends TestCase
     {
         // preValidator と standardValidator の配列を作成
         $preValidators = [
-            new PropertyInitializedValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
+            new InitializationStateValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PropertyTypeValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
         ];
         $standardValidators = [new PrimitiveTypeValidator($this->metadata), $this->field->getValidator(),];
@@ -96,7 +96,7 @@ class SystemValidatorFactoryTest extends TestCase
         $storedStandardValidators = $builder->getStandardValidators();
 
         $this->assertCount(2, $storedPreValidators);
-        $this->assertInstanceOf(PropertyInitializedValidator::class, $storedPreValidators[0]);
+        $this->assertInstanceOf(InitializationStateValidator::class, $storedPreValidators[0]);
         $this->assertInstanceOf(PropertyTypeValidator::class, $storedPreValidators[1]);
 
         $this->assertCount(2, $storedStandardValidators);
@@ -135,7 +135,7 @@ class SystemValidatorFactoryTest extends TestCase
         // 内部で作成されたバリデータの検証 (preValidators)
         $preValidators = $builder->getPreValidators();
         $this->assertCount(2, $preValidators);
-        $this->assertInstanceOf(PropertyInitializedValidator::class, $preValidators[0]);
+        $this->assertInstanceOf(InitializationStateValidator::class, $preValidators[0]);
         $this->assertInstanceOf(PropertyTypeValidator::class, $preValidators[1]);
 
         // 内部で作成されたバリデータの検証 (standardValidators)
@@ -159,7 +159,7 @@ class SystemValidatorFactoryTest extends TestCase
     {
         // preValidator と standardValidator の配列を作成
         $preValidators = [
-            new PropertyInitializedValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
+            new InitializationStateValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
             new PropertyTypeValidator($this->modelConfig, $this->fieldConfig, $this->metadata),
         ];
         $standardValidators = [new PrimitiveTypeValidator($this->metadata), $this->field->getValidator(),];
@@ -170,7 +170,7 @@ class SystemValidatorFactoryTest extends TestCase
         // getPreValidators の返り値検証
         $storedPreValidators = $builder->getPreValidators();
         $this->assertCount(2, $storedPreValidators);
-        $this->assertInstanceOf(PropertyInitializedValidator::class, $storedPreValidators[0]);
+        $this->assertInstanceOf(InitializationStateValidator::class, $storedPreValidators[0]);
         $this->assertInstanceOf(PropertyTypeValidator::class, $storedPreValidators[1]);
         $this->assertSame(
             $preValidators,

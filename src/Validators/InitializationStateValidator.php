@@ -13,7 +13,7 @@ use PhpValueObject\Support\PropertyMetadata;
 /**
  * プロパティの初期化状態を検証するValidator
  */
-class PropertyInitializedValidator implements Validatorable
+class InitializationStateValidator implements Validatorable
 {
     public function __construct(
         private readonly ModelConfig $modelConfig,

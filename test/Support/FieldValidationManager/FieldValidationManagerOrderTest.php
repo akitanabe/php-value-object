@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 
 // 追加 (SystemValidatorFactoryで必要になる場合があるため)
- // 追加 (SystemValidatorFactoryで必要になる場合があるため)
+// 追加 (SystemValidatorFactoryで必要になる場合があるため)
 
 // テスト用のバリデータクラス
 class TestValidatorForOrder
