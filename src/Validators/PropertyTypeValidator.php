@@ -7,27 +7,26 @@ namespace PhpValueObject\Validators;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 
 /**
  * プロパティの型定義を検証するバリデータ
  */
-class PropertyTypeValidator extends CorePropertyValidator
+class PropertyTypeValidator implements Validatorable
 {
     private readonly ModelConfig $modelConfig;
     private readonly FieldConfig $fieldConfig;
+    private readonly PropertyMetadata $metadata;
 
     public function __construct(
         ModelConfig $modelConfig,
         FieldConfig $fieldConfig,
         PropertyMetadata $metadata,
-        ValidatorMode $mode = ValidatorMode::INTERNAL,
     ) {
-        parent::__construct($metadata, $mode);
         $this->modelConfig = $modelConfig;
         $this->fieldConfig = $fieldConfig;
+        $this->metadata = $metadata;
     }
 
     /**

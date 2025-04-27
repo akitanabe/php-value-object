@@ -6,6 +6,7 @@ namespace PhpValueObject\Validators;
 
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
+use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyValue;
 use PhpValueObject\Support\TypeHint;
 use TypeError;
@@ -13,8 +14,15 @@ use TypeError;
 /**
  * プリミティブ型の型チェックを行うバリデータ
  */
-class PrimitiveTypeValidator extends CorePropertyValidator
+class PrimitiveTypeValidator implements Validatorable
 {
+    private readonly PropertyMetadata $metadata;
+
+    public function __construct(PropertyMetadata $metadata)
+    {
+        $this->metadata = $metadata;
+    }
+
     /**
      * プリミティブ型の型チェック
      * RelectionProperty::setValueにプリミティブ型を渡すとTypeErrorにならずにキャストされるためバリデーション
