@@ -20,9 +20,10 @@ abstract class BaseField
      * @param string|null $alias フィールド名のエイリアス。指定された場合、エイリアス名で入力値を取得します
      */
     public function __construct(
-        protected string|array|Closure|null $defaultFactory = null,
+        private readonly string|array|Closure|null $defaultFactory = null,
         public readonly ?string $alias = null,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string|int, mixed> $data
@@ -35,9 +36,9 @@ abstract class BaseField
             return null;
         }
 
-        $factoryFn = FieldsHelper::createFactory($this->defaultFactory);
+        $factoryCallable = FieldsHelper::createFactory($this->defaultFactory);
 
-        return $factoryFn($data);
+        return $factoryCallable($data);
     }
 
     public function hasDefaultFactory(): bool
