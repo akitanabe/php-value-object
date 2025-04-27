@@ -8,10 +8,7 @@ use Closure;
 use InvalidArgumentException;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Fields\Field;
-use PhpValueObject\Validators\FieldValidator;
 use ReflectionAttribute;
-use ReflectionClass;
-use ReflectionMethod;
 use ReflectionProperty;
 
 class FieldsHelper
@@ -64,52 +61,5 @@ class FieldsHelper
             BaseField::class,
             ReflectionAttribute::IS_INSTANCEOF,
         )?->newInstance() ?? new Field();
-    }
-
-    /**
-     * FieldValidatorのリストを取得する
-     *
-     * @template T of object
-     * @param ReflectionClass<T> $refClass 対象クラスのReflection
-     *
-     * @return FieldValidator[]
-     */
-    public static function getFieldValidators(ReflectionClass $refClass): array
-    {
-        $className = $refClass->name;
-
-        // バリデーションメソッドをFieldValidatorに入力する
-        $setValidator = function (FieldValidator $fieldValidator, ReflectionMethod $refMethod) use (
-            $className
-        ): FieldValidator {
-            $methodName = $refMethod->getName();
-
-            // staticメソッドであることを確認
-            if ($refMethod->isStatic() === false) {
-                throw new InvalidArgumentException("Method {$methodName} must be static for use with FieldValidator");
-            }
-
-            $validator = [$className, $methodName];
-            $fieldValidator->setValidator($validator);
-
-            return $fieldValidator;
-        };
-
-        return array_reduce(
-            $refClass->getMethods(),
-            function (array $carry, ReflectionMethod $refMethod) use ($setValidator): array {
-                $fieldValidators = AttributeHelper::getAttributeInstances($refMethod, FieldValidator::class);
-
-                return [
-                    ...$carry,
-                    ...array_map(
-                        fn(FieldValidator $fieldValidator): FieldValidator
-                        => $setValidator($fieldValidator, $refMethod),
-                        $fieldValidators,
-                    ),
-                ];
-            },
-            [],
-        );
     }
 }

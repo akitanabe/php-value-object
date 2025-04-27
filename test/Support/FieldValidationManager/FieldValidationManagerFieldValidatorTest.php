@@ -7,16 +7,21 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\FieldValidatorFactory; // 追加
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\FieldValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass; // 追加
 use ReflectionProperty;
 
-// テスト用のバリデータクラス
-class TestValidatorForFieldValidator
+// テスト用のバリデータメソッドを持つクラス
+class TestClassWithFieldValidators
 {
+    public string $name;
+
+    #[FieldValidator('name', 'before')]
     public static function validateLength(string $value): string
     {
         if (strlen($value) < 3) {
@@ -25,16 +30,11 @@ class TestValidatorForFieldValidator
         return $value;
     }
 
+    #[FieldValidator('name', 'after')]
     public static function formatName(string $value): string
     {
         return ucfirst($value);
     }
-}
-
-// テスト対象のクラス（属性なし）
-class TestClassForFieldValidator
-{
-    public string $name;
 }
 
 class FieldValidationManagerFieldValidatorTest extends TestCase
@@ -45,19 +45,19 @@ class FieldValidationManagerFieldValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $class = new TestClassForFieldValidator();
-        $this->property = new ReflectionProperty($class, 'name');
+        // バリデータを持つクラスの Reflection を使用
+        $refClass = new ReflectionClass(TestClassWithFieldValidators::class);
+        $this->property = $refClass->getProperty('name');
         $this->field = new StringField();
 
-        // FieldValidatorのみを使用したマネージャー
-        $beforeValidator = new FieldValidator('name', 'before');
-        $beforeValidator->setValidator(fn(string $value) => TestValidatorForFieldValidator::validateLength($value));
-        $afterValidator = new FieldValidator('name', 'after');
-        $afterValidator->setValidator(fn(string $value) => TestValidatorForFieldValidator::formatName($value));
+        // FieldValidatorFactory を生成
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
+
+        // FieldValidatorFactory を使用してマネージャーを作成
         $this->managerWithFieldValidators = FieldValidationManager::createFromProperty(
             $this->property,
             $this->field,
-            [$beforeValidator, $afterValidator],
+            $fieldValidatorFactory, // ファクトリを渡す
         );
     }
 

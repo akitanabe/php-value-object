@@ -10,6 +10,7 @@ use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\FieldValidatorFactory; // 追加
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyOperator;
@@ -23,7 +24,9 @@ use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Validators\InitializationStateValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
+use ReflectionClass;
+
+// 追加
 
 class FieldValidationManagerComplexOrderTest extends TestCase
 {
@@ -61,21 +64,33 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             #[PlainValidator([self::class, 'upperCase'])]
             #[WrapValidator([self::class, 'addWrapped'])]
             public string $allValidatorsProp;
+
+            // FieldValidator 用メソッド
+            #[FieldValidator('allValidatorsProp', 'before')]
+            public static function addFieldBefore(string $value): string
+            {
+                return $value . '_field_before';
+            }
+
+            #[FieldValidator('allValidatorsProp', 'after')]
+            public static function addFieldAfter(string $value): string
+            {
+                return $value . '_field_after';
+            }
         };
 
-        $prop = new ReflectionProperty($testClass, 'allValidatorsProp');
+        $refClass = new ReflectionClass($testClass); // ReflectionClass を使用
+        $prop = $refClass->getProperty('allValidatorsProp');
         $field = new StringField();
 
-        $beforeFieldValidator = new FieldValidator('allValidatorsProp', 'before');
-        $beforeFieldValidator->setValidator(fn(string $value) => $value . '_field_before');
+        // FieldValidatorFactory を生成
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
 
-        $afterFieldValidator = new FieldValidator('allValidatorsProp', 'after');
-        $afterFieldValidator->setValidator(fn(string $value) => $value . '_field_after');
-
+        // FieldValidatorFactory を使用してマネージャーを作成
         $manager = FieldValidationManager::createFromProperty(
             $prop,
             $field,
-            [$beforeFieldValidator, $afterFieldValidator],
+            $fieldValidatorFactory, // ファクトリを渡す
         );
 
         $inputData = new InputData(['allValidatorsProp' => 'base']);
@@ -131,9 +146,19 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             public string $mixedValidators;
         };
 
-        $prop = new ReflectionProperty($testClass, 'mixedValidators');
+        $refClass = new ReflectionClass($testClass); // ReflectionClass を使用
+        $prop = $refClass->getProperty('mixedValidators');
         $field = new StringField();
-        $manager = FieldValidationManager::createFromProperty($prop, $field);
+
+        // FieldValidatorFactory を生成 (このテストでは FieldValidator は使わないが、引数として必要)
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
+
+        // FieldValidatorFactory を使用してマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty(
+            $prop,
+            $field,
+            $fieldValidatorFactory, // ファクトリを渡す
+        );
         $inputData = new InputData(['mixedValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
         $result = $manager->processValidation($original);
@@ -166,18 +191,34 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             #[BeforeValidator([self::class, 'attrFirst'])]
             #[AfterValidator([self::class, 'attrSecond'])]
             public string $mixedValidators;
+
+            // FieldValidator 用メソッド
+            #[FieldValidator('mixedValidators', 'before')]
+            public static function addField1(string $value): string
+            {
+                return $value . '_field1';
+            }
+
+            #[FieldValidator('mixedValidators', 'after')]
+            public static function addField2(string $value): string
+            {
+                return $value . '_field2';
+            }
         };
 
-        $prop = new ReflectionProperty($testClass, 'mixedValidators');
+        $refClass = new ReflectionClass($testClass); // ReflectionClass を使用
+        $prop = $refClass->getProperty('mixedValidators');
         $field = new StringField();
 
-        $fieldValidator1 = new FieldValidator('mixedValidators', 'before');
-        $fieldValidator1->setValidator(fn(string $value) => $value . '_field1');
+        // FieldValidatorFactory を生成
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
 
-        $fieldValidator2 = new FieldValidator('mixedValidators', 'after');
-        $fieldValidator2->setValidator(fn(string $value) => $value . '_field2');
-
-        $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator1, $fieldValidator2]);
+        // FieldValidatorFactory を使用してマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty(
+            $prop,
+            $field,
+            $fieldValidatorFactory, // ファクトリを渡す
+        );
         $inputData = new InputData(['mixedValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
         $result = $manager->processValidation($original);
@@ -203,16 +244,24 @@ class FieldValidationManagerComplexOrderTest extends TestCase
 
             #[BeforeValidator([self::class, 'attrValidator'])]
             public string $allValidators;
+
+            // FieldValidator 用メソッド
+            #[FieldValidator('allValidators', 'before')]
+            public static function addField(string $value): string
+            {
+                return $value . '_field';
+            }
         };
 
-        $prop = new ReflectionProperty($testClass, 'allValidators');
+        $refClass = new ReflectionClass($testClass); // ReflectionClass を使用
+        $prop = $refClass->getProperty('allValidators');
         $field = new StringField();
 
-        $fieldValidator = new FieldValidator('allValidators', 'before');
-        $fieldValidator->setValidator(fn(string $value) => $value . '_field');
+        // FieldValidatorFactory を生成
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
 
         $metadata = new PropertyMetadata(
-            get_class($testClass),
+            $refClass->getName(), // get_class($testClass) から変更
             'allValidators',
             [new TypeHint(TypeHintType::STRING, true, false)],
             PropertyInitializedStatus::BY_DEFAULT,
@@ -226,7 +275,13 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         // テスト用にカスタムバリデータを持つSystemValidatorFactoryを直接作成
         $systemValidators = new SystemValidatorFactory([$coreValidator], []); // 第2引数に空配列を追加
 
-        $manager = FieldValidationManager::createFromProperty($prop, $field, [$fieldValidator], $systemValidators);
+        // FieldValidatorFactory を使用してマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty(
+            $prop,
+            $field,
+            $fieldValidatorFactory, // ファクトリを渡す
+            $systemValidators,
+        );
 
         $inputData = new InputData(['allValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);

@@ -6,9 +6,10 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\FieldValidatorFactory; // 追加
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Support\SystemValidatorFactory; // 追加
+use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\FieldValidator;
@@ -16,6 +17,7 @@ use PhpValueObject\Validators\Validatorable; // 追加
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler; // 追加
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass; // 追加
 use ReflectionProperty;
 
 // 追加 (SystemValidatorFactoryで必要になる場合があるため)
@@ -114,8 +116,7 @@ class FieldValidationManagerOrderTest extends TestCase
         $manager = FieldValidationManager::createFromProperty(
             $this->nameProperty,
             $this->field,
-            [], // FieldValidator はなし
-            $this->systemValidatorFactory, // SystemValidator を渡す
+            systemValidators: $this->systemValidatorFactory, // SystemValidator を渡す
         );
         $inputData = new InputData(['name' => 'john']);
         $operator = PropertyOperator::create($this->nameProperty, $inputData, $this->field);
@@ -146,12 +147,22 @@ class FieldValidationManagerOrderTest extends TestCase
         $afterValidator = new FieldValidator('name', 'after');
         $afterValidator->setValidator(fn(string $value) => $value . '_after');
 
-        // SystemValidatorFactory を渡して Manager を作成
+        // リフレクションを使用して FieldValidatorFactory インスタンスを生成・設定
+        $validatorsForField = ['name' => [$firstBeforeValidator, $secondBeforeValidator, $afterValidator]];
+        $refClass = new ReflectionClass(FieldValidatorFactory::class);
+        $instance = $refClass->newInstanceWithoutConstructor();
+        $refProperty = $refClass->getProperty('validatorsByField');
+        $refProperty->setAccessible(true); // private プロパティにアクセス可能にする
+        $refProperty->setValue($instance, $validatorsForField);
+        $fieldValidatorFactory = $instance;
+
+
+        // SystemValidatorFactory と FieldValidatorFactory を渡して Manager を作成
         $manager = FieldValidationManager::createFromProperty(
-            $this->nameProperty, // nameプロパティを使用
-            $this->field,
-            [$firstBeforeValidator, $secondBeforeValidator, $afterValidator], // FieldValidator を渡す
-            $this->systemValidatorFactory, // SystemValidator を渡す
+            property: $this->nameProperty, // nameプロパティを使用
+            field: $this->field,
+            fieldValidatorFactory: $fieldValidatorFactory, // 生成したファクトリを渡す
+            systemValidators: $this->systemValidatorFactory, // SystemValidator を渡す
         );
 
         $inputData = new InputData(['name' => 'test']);
@@ -183,12 +194,21 @@ class FieldValidationManagerOrderTest extends TestCase
         $afterFieldValidator = new FieldValidator('testProp', 'after');
         $afterFieldValidator->setValidator(fn(string $value) => $value . '_field_after');
 
-        // SystemValidatorFactory を渡して Manager を作成
+        // リフレクションを使用して FieldValidatorFactory インスタンスを生成・設定
+        $validatorsForField = ['testProp' => [$beforeFieldValidator, $afterFieldValidator]];
+        $refClass = new ReflectionClass(FieldValidatorFactory::class);
+        $instance = $refClass->newInstanceWithoutConstructor();
+        $refProperty = $refClass->getProperty('validatorsByField');
+        $refProperty->setAccessible(true); // private プロパティにアクセス可能にする
+        $refProperty->setValue($instance, $validatorsForField);
+        $fieldValidatorFactory = $instance;
+
+        // SystemValidatorFactory と FieldValidatorFactory を渡して Manager を作成
         $manager = FieldValidationManager::createFromProperty(
-            $this->testPropProperty,
-            $this->field,
-            [$beforeFieldValidator, $afterFieldValidator], // FieldValidator を渡す
-            $this->systemValidatorFactory, // SystemValidator を渡す
+            property: $this->testPropProperty,
+            field: $this->field,
+            fieldValidatorFactory: $fieldValidatorFactory, // 生成したファクトリを渡す
+            systemValidators: $this->systemValidatorFactory, // SystemValidator を渡す
         );
 
         $inputData = new InputData(['testProp' => 'base']);

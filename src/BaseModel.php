@@ -8,17 +8,18 @@ use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Support\SystemValidatorFactory;
+use PhpValueObject\Support\FieldValidatorFactory;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
+use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Support\FieldValidationManager;
 use ReflectionClass;
 use stdClass;
 use TypeError;
+use PhpValueObject\Exceptions\InvalidPropertyStateException;
 
 abstract class BaseModel
 {
@@ -38,7 +39,8 @@ abstract class BaseModel
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
-        $fieldValidators = FieldsHelper::getFieldValidators($refClass);
+        // FieldValidatorFactory を生成
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
 
         foreach ($refClass->getProperties() as $property) {
             $field = FieldsHelper::createField($property);
@@ -64,7 +66,7 @@ abstract class BaseModel
             $fieldValidationManager = FieldValidationManager::createFromProperty(
                 $property,
                 $field,
-                $fieldValidators,
+                $fieldValidatorFactory, // ファクトリを渡す
                 $systemValidators,
             );
 

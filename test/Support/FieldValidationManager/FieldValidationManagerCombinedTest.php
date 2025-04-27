@@ -7,6 +7,7 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\FieldValidatorFactory; // 追加
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\AfterValidator;
@@ -14,11 +15,17 @@ use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\FieldValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass; // 追加
 use ReflectionProperty;
 
-// テスト用のバリデータクラス
-class TestValidatorForCombined
+// テスト用のバリデータクラス (属性とFieldValidatorの両方で使用)
+class TestClassForCombined
 {
+    #[BeforeValidator([self::class, 'validateLength'])] // 属性バリデータ
+    #[AfterValidator([self::class, 'formatName'])]   // 属性バリデータ
+    public string $name;
+
+    // 属性バリデータ用メソッド
     public static function validateLength(string $value): string
     {
         if (strlen($value) < 3) {
@@ -27,18 +34,21 @@ class TestValidatorForCombined
         return $value;
     }
 
+    // 属性バリデータ用メソッド
     public static function formatName(string $value): string
     {
         return ucfirst($value);
     }
-}
 
-// テスト対象の属性を持つクラス
-class TestClassForCombined
-{
-    #[BeforeValidator([TestValidatorForCombined::class, 'validateLength'])]
-    #[AfterValidator([TestValidatorForCombined::class, 'formatName'])]
-    public string $name;
+    // FieldValidator用メソッド
+    #[FieldValidator('name', 'before')]
+    public static function validateLengthStrict(string $value): string
+    {
+        if (strlen($value) <= 5) {
+            throw new ValidationException('6文字以上必要です');
+        }
+        return $value;
+    }
 }
 
 class FieldValidationManagerCombinedTest extends TestCase
@@ -49,21 +59,19 @@ class FieldValidationManagerCombinedTest extends TestCase
 
     protected function setUp(): void
     {
-        $class = new TestClassForCombined();
-        $this->property = new ReflectionProperty($class, 'name');
+        // バリデータを持つクラスの Reflection を使用
+        $refClass = new ReflectionClass(TestClassForCombined::class);
+        $this->property = $refClass->getProperty('name');
         $this->field = new StringField();
 
-        // 属性とFieldValidatorを組み合わせたマネージャー
-        $additionalBeforeValidator = new FieldValidator('name', 'before');
-        $additionalBeforeValidator->setValidator(
-            fn(string $value) => strlen($value) > 5 ? $value : throw new ValidationException(
-                '6文字以上必要です',
-            ),
-        );
+        // FieldValidatorFactory を生成
+        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
+
+        // FieldValidatorFactory を使用してマネージャーを作成
         $this->managerWithBoth = FieldValidationManager::createFromProperty(
             $this->property,
             $this->field,
-            [$additionalBeforeValidator],
+            $fieldValidatorFactory, // ファクトリを渡す
         );
     }
 

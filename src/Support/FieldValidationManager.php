@@ -6,12 +6,11 @@ namespace PhpValueObject\Support;
 
 use ReflectionAttribute;
 use ReflectionProperty;
-use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Validators\Validatorable;
-use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use ArrayIterator;
+use PhpValueObject\Fields\BaseField;
+use PhpValueObject\Helpers\AttributeHelper;
+use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 単一のプロパティに対するバリデーション処理を管理するクラス
@@ -31,13 +30,13 @@ class FieldValidationManager
      *
      * @param ReflectionProperty $property
      * @param BaseField $field
-     * @param array<FieldValidator> $fieldValidators
+     * @param FieldValidatorFactory $fieldValidatorFactory FieldValidator を提供するファクトリ
      * @param SystemValidatorFactory|null $systemValidators
      */
     public static function createFromProperty(
         ReflectionProperty $property,
         BaseField $field,
-        array $fieldValidators = [],
+        ?FieldValidatorFactory $fieldValidatorFactory = null,
         ?SystemValidatorFactory $systemValidators = null,
     ): self {
 
@@ -48,14 +47,8 @@ class FieldValidationManager
             ReflectionAttribute::IS_INSTANCEOF,
         );
 
-        // フィールドバリデータを追加
-        $thisFieldValdators =
-            empty($fieldValidators)
-            ? []
-            : array_values(array_filter(
-                $fieldValidators,
-                fn(FieldValidator $validator): bool => $validator->field === $property->name,
-            ));
+        // ファクトリからこのプロパティに対応するフィールドバリデータを取得
+        $methodValdators = $fieldValidatorFactory?->getValidatorsForField($property->name) ?? [];
 
         // システムバリデータを pre と standard に分けて取得
         $preSystemValidators = $systemValidators?->getPreValidators() ?? [];
@@ -63,8 +56,8 @@ class FieldValidationManager
 
         // バリデータの順序を変更: preシステム → フィールド → 属性 → standardシステム
         $validators = [
-            ...$preSystemValidators,         // 1. Pre System Validators
-            ...$thisFieldValdators,        // 2. Field Validators (User Defined)
+            ...$preSystemValidators,       // 1. Pre System Validators
+            ...$methodValdators,           // 2. Field Validators (User Defined)
             ...$attributeValidators,       // 3. Attribute Validators (User Defined)
             ...$standardSystemValidators,  // 4. Standard System Validators
         ];
