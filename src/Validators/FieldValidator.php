@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use Closure;
 use Attribute;
-use PhpValueObject\Enums\ValidatorMode;
 use InvalidArgumentException;
 
 /**
@@ -21,7 +20,7 @@ final class FieldValidator implements Validatorable
      */
     private string|array|Closure $validator;
 
-    private ValidatorMode $mode;
+    private readonly string $mode;
 
     /**
      * @param field_validator_mode $mode "plain", "wrap", "before" または "after" を指定
@@ -32,16 +31,13 @@ final class FieldValidator implements Validatorable
         string $mode = 'after',
     ) {
 
-        $this->mode = match (strtolower($mode)) {
-            'plain' => ValidatorMode::PLAIN,
-            'wrap' => ValidatorMode::WRAP,
-            'before' => ValidatorMode::BEFORE,
-            // @phpstan-ignore match.alwaysTrue (afterはデフォルトだが入力値が不正な場合に例外を投げるため常にtrueではない)
-            'after' => ValidatorMode::AFTER,
-            default => throw new InvalidArgumentException(
+        $normalizedMode = strtolower($mode);
+        if (!in_array($normalizedMode, ['plain', 'wrap', 'before', 'after'], true)) {
+            throw new InvalidArgumentException(
                 "Invalid validator mode: {$mode}. Expected \"plain\", \"wrap\", \"before\" or \"after\"",
-            ),
-        };
+            );
+        }
+        $this->mode = $normalizedMode;
     }
 
     /**
@@ -56,12 +52,12 @@ final class FieldValidator implements Validatorable
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         // モードに応じた適切なFunctionValidatorを生成
-        /** @phpstan-ignore match.unhandled */
+        // @phpstan-ignore match.unhandled (コンストラクタでmodeを検証済み)
         $functionValidator = match ($this->mode) {
-            ValidatorMode::PLAIN => new PlainValidator($this->validator),
-            ValidatorMode::WRAP => new WrapValidator($this->validator),
-            ValidatorMode::BEFORE => new BeforeValidator($this->validator),
-            ValidatorMode::AFTER => new AfterValidator($this->validator),
+            'plain' => new PlainValidator($this->validator),
+            'wrap' => new WrapValidator($this->validator),
+            'before' => new BeforeValidator($this->validator),
+            'after' => new AfterValidator($this->validator),
         };
 
         // 生成したFunctionValidatorのvalidateメソッドを呼び出す
