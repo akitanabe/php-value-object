@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Test\Support;
 
-namespace Test\Support;
-
 use InvalidArgumentException;
 use PhpValueObject\Support\FieldValidatorFactory;
-use PhpValueObject\Validators\FieldValidator; // Keep for attribute usage
-use PhpValueObject\Validators\FunctionValidator; // Add FunctionValidator and subclasses
+use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FunctionValidator;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\PlainValidator;
@@ -183,7 +181,7 @@ final class FieldValidatorFactoryTest extends TestCase
             }
         };
         PHP;
-        $class = eval($classDefinition);
+        $class = eval ($classDefinition);
 
         $refClass = new ReflectionClass($class);
 
