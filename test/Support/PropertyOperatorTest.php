@@ -21,7 +21,6 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Validators\IdenticalValidator;
 use PhpValueObject\Validators\Validatorable;
 
@@ -187,11 +186,6 @@ class ValidationErrorField extends BaseField
             public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
             {
                 throw new ValidationException('Validation failed');
-            }
-
-            public function getMode(): ValidatorMode
-            {
-                return ValidatorMode::INTERNAL;
             }
         };
 
