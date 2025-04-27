@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhpValueObject\Test\Core\Validators;
 
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Validators\PrimitiveTypeValidator;
+use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TypeError;

@@ -22,8 +22,7 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する

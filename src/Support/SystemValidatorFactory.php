@@ -7,7 +7,7 @@ namespace PhpValueObject\Support;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Validators\PrimitiveTypeValidator;
+use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\MixedTypeValidator;
 use PhpValueObject\Validators\NoneTypeValidator;

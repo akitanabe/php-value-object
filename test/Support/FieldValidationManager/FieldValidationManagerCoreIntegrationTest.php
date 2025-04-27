@@ -14,7 +14,7 @@ use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Fields\StringField;
-use PhpValueObject\Validators\PrimitiveTypeValidator;
+use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\NoneTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
