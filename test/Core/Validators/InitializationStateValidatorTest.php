@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\Test;
 use ArrayIterator;
 use PhpValueObject\Validators\Validatorable;
 
-class PropertyInitializedValidatorTest extends TestCase
+class InitializationStateValidatorTest extends TestCase
 {
     /**
      * 初期化済みプロパティの場合、値をそのまま返すことを確認
@@ -184,7 +184,8 @@ class ValueChangingValidator implements Validatorable
 {
     public function __construct(
         private string $newValue,
-    ) {}
+    ) {
+    }
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
