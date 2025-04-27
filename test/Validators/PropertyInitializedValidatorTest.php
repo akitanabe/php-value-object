@@ -6,10 +6,10 @@ namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;

@@ -13,7 +13,7 @@ use PhpValueObject\Fields\Field;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\InitializationStateValidator;
+use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\NoneTypeValidator;
 use PhpValueObject\Validators\MixedTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;

@@ -8,7 +8,7 @@ use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\InitializationStateValidator;
+use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Validators\MixedTypeValidator;
 use PhpValueObject\Validators\NoneTypeValidator;
 use PhpValueObject\Validators\Validatorable;
