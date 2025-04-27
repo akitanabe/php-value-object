@@ -7,7 +7,6 @@ namespace PhpValueObject\Test\Validators;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Validators\PropertyInitializedValidator;
@@ -16,34 +15,6 @@ use PHPUnit\Framework\Attributes\Test;
 
 class PropertyInitializedValidatorTest extends TestCase
 {
-    /**
-     * INTERNALモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsInternalMode(): void
-    {
-        $metadata = $this->createPropertyMetadata(PropertyInitializedStatus::BY_DEFAULT);
-        $modelConfig = new ModelConfig(false); // 未初期化プロパティを許可しない
-        $fieldConfig = new FieldConfig(false); // 未初期化プロパティを許可しない
-
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata);
-        $this->assertEquals(ValidatorMode::INTERNAL, $validator->getMode());
-    }
-
-    /**
-     * 指定したモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsSpecifiedMode(): void
-    {
-        $metadata = $this->createPropertyMetadata(PropertyInitializedStatus::BY_DEFAULT);
-        $modelConfig = new ModelConfig(false);
-        $fieldConfig = new FieldConfig(false);
-
-        $validator = new PropertyInitializedValidator($modelConfig, $fieldConfig, $metadata, ValidatorMode::AFTER);
-        $this->assertEquals(ValidatorMode::AFTER, $validator->getMode());
-    }
-
     /**
      * 初期化済みプロパティの場合、値をそのまま返すことを確認
      */

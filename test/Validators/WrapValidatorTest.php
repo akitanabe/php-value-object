@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use LogicException;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\WrapValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
@@ -32,17 +31,6 @@ use PhpValueObject\Validators\Validatorable;
 #[CoversClass(WrapValidator::class)]
 class WrapValidatorTest extends TestCase
 {
-    /**
-     * getMode()メソッドのテスト
-     * WRAPモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsWrapMode(): void
-    {
-        $validator = new WrapValidator(fn($value, $handler) => $value);
-        $this->assertSame(ValidatorMode::WRAP, $validator->getMode());
-    }
-
     /**
      * validate()メソッドのテスト
      * handlerがnullの場合にLogicExceptionが発生することを確認

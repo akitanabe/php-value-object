@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * リスト（配列）のバリデーターを実装するクラス
@@ -79,13 +78,4 @@ class ListValidator implements Validatorable
         return $validatedValue;
     }
 
-    /**
-     * バリデーション処理の実行順序を取得する
-     *
-     * @return ValidatorMode
-     */
-    public function getMode(): ValidatorMode
-    {
-        return ValidatorMode::INTERNAL;
-    }
 }

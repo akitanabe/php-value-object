@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * バリデーション処理のインターフェース
@@ -23,11 +22,5 @@ interface Validatorable
      * @throws ValidationException バリデーションに失敗した場合
      */
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed;
-
-    /**
-     * バリデーション処理の実行順序を取得する
-     * @return ValidatorMode バリデーション処理の実行順序
-     */
-    public function getMode(): ValidatorMode;
 
 }

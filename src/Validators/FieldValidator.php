@@ -67,12 +67,4 @@ final class FieldValidator implements Validatorable
         // 生成したFunctionValidatorのvalidateメソッドを呼び出す
         return $functionValidator->validate($value, $handler);
     }
-
-    /**
-     * @return ValidatorMode
-     */
-    public function getMode(): ValidatorMode
-    {
-        return $this->mode;
-    }
 }

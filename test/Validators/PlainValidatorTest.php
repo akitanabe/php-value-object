@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Validators;
 
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Validators\PlainValidator;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
@@ -23,16 +22,6 @@ use ArrayIterator;
 #[CoversClass(PlainValidator::class)]
 class PlainValidatorTest extends TestCase
 {
-    /**
-     * PLAINモードを返すことを確認
-     */
-    #[Test]
-    public function shouldReturnPlainMode(): void
-    {
-        $validator = new PlainValidator(fn($value) => $value);
-        $this->assertEquals(ValidatorMode::PLAIN, $validator->getMode());
-    }
-
     /**
      * バリデーション処理が正しく実行されることを確認
      */

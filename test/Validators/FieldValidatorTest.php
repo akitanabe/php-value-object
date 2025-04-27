@@ -6,33 +6,20 @@ namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Enums\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 final class FieldValidatorTest extends TestCase
 {
     /**
-     * コンストラクタでフィールド名とデフォルトモードが正しく設定されることを確認する
+     * コンストラクタでフィールド名が正しく設定されることを確認する
      */
     #[Test]
-    public function constructorShouldSetFieldNameAndDefaultMode(): void
+    public function constructorShouldSetFieldName(): void
     {
         $validator = new FieldValidator('test_field');
 
         $this->assertSame('test_field', $validator->field);
-        $this->assertSame(ValidatorMode::AFTER, $validator->getMode());
-    }
-
-    /**
-     * コンストラクタで明示的に指定したモードが正しく設定されることを確認する
-     */
-    #[Test]
-    public function constructorShouldSetCustomModeWhenSpecified(): void
-    {
-        $validator = new FieldValidator('test_field', 'before');
-
-        $this->assertSame(ValidatorMode::BEFORE, $validator->getMode());
     }
 
     /**
@@ -99,14 +86,4 @@ final class FieldValidatorTest extends TestCase
         $validator->validate(123);
     }
 
-    /**
-     * getModeで設定されたバリデーションモードが正しく取得できることを確認する
-     */
-    #[Test]
-    public function getModeShouldReturnValidationMode(): void
-    {
-        $validator = new FieldValidator('test_field', 'before');
-
-        $this->assertSame(ValidatorMode::BEFORE, $validator->getMode());
-    }
 }

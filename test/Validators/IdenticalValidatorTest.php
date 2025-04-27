@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Validators\IdenticalValidator;
 use stdClass;
 
@@ -33,12 +32,5 @@ class IdenticalValidatorTest extends TestCase
 
         // nullのテスト
         $this->assertNull($validator->validate(null));
-    }
-
-    public function testGetModeReturnsInternal(): void
-    {
-        $validator = new IdenticalValidator();
-
-        $this->assertSame(ValidatorMode::INTERNAL, $validator->getMode());
     }
 }

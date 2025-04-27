@@ -6,7 +6,6 @@ namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Validators\PrimitiveTypeValidator;
@@ -17,28 +16,6 @@ use stdClass;
 
 class PrimitiveTypeValidatorTest extends TestCase
 {
-    /**
-     * INTERNALモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsInternalMode(): void
-    {
-        $metadata = $this->createPropertyMetadata();
-        $validator = new PrimitiveTypeValidator($metadata);
-        $this->assertEquals(ValidatorMode::INTERNAL, $validator->getMode());
-    }
-
-    /**
-     * 指定したモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsSpecifiedMode(): void
-    {
-        $metadata = $this->createPropertyMetadata();
-        $validator = new PrimitiveTypeValidator($metadata, ValidatorMode::AFTER);
-        $this->assertEquals(ValidatorMode::AFTER, $validator->getMode());
-    }
-
     /**
      * インターセクション型かつオブジェクト値の場合、値をそのまま返すことを確認
      */

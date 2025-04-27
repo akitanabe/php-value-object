@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * バリデーション処理の基底クラス
@@ -28,8 +27,6 @@ abstract class FunctionValidator implements Validatorable
     public function __construct(
         protected readonly string|array|Closure $validator,
     ) {}
-
-    abstract public function getMode(): ValidatorMode;
 
     /**
      * バリデーション処理を実行する

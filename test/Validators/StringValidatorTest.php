@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\StringValidator;
 
@@ -85,10 +84,4 @@ class StringValidatorTest extends TestCase
         $this->assertSame('abc', $result);
     }
 
-    public function testGetModeReturnsInternal(): void
-    {
-        $validator = new StringValidator();
-
-        $this->assertSame(ValidatorMode::INTERNAL, $validator->getMode());
-    }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\NumericValidator;
 
@@ -75,12 +74,5 @@ class NumericValidatorTest extends TestCase
         $result = $validator->validate('123');
 
         $this->assertSame('123', $result);
-    }
-
-    public function testGetModeReturnsInternal(): void
-    {
-        $validator = new NumericValidator();
-
-        $this->assertSame(ValidatorMode::INTERNAL, $validator->getMode());
     }
 }

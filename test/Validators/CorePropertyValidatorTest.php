@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Validators\CorePropertyValidator;
 use PHPUnit\Framework\TestCase;
@@ -26,30 +25,6 @@ class TestCorePropertyValidator extends CorePropertyValidator
 
 class CorePropertyValidatorTest extends TestCase
 {
-    /**
-     * デフォルトでINTERNALモードを使用することを確認
-     */
-    #[Test]
-    public function testUsesInternalModeByDefault(): void
-    {
-        $metadata = $this->createPropertyMetadata();
-        $validator = new TestCorePropertyValidator($metadata);
-
-        $this->assertEquals(ValidatorMode::INTERNAL, $validator->getMode());
-    }
-
-    /**
-     * コンストラクタで指定したモードを使用することを確認
-     */
-    #[Test]
-    public function testUsesSpecifiedMode(): void
-    {
-        $metadata = $this->createPropertyMetadata();
-        $validator = new TestCorePropertyValidator($metadata, ValidatorMode::AFTER);
-
-        $this->assertEquals(ValidatorMode::AFTER, $validator->getMode());
-    }
-
     /**
      * getMetadataメソッドが設定したメタデータを返すことを確認
      */

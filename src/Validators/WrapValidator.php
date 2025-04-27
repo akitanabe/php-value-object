@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use Attribute;
 use LogicException;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * 値をラップしてバリデーションを実行するAttribute
@@ -20,14 +19,6 @@ use PhpValueObject\Enums\ValidatorMode;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class WrapValidator extends FunctionValidator
 {
-    /**
-     * @return ValidatorMode
-     */
-    public function getMode(): ValidatorMode
-    {
-        return ValidatorMode::WRAP;
-    }
-
     /**
      * バリデーション処理を実行する
      * バリデータ関数に次のハンドラーを渡して実行する

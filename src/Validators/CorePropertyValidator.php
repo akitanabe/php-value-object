@@ -21,11 +21,6 @@ abstract class CorePropertyValidator implements Validatorable
         $this->mode = $mode;
     }
 
-    public function getMode(): ValidatorMode
-    {
-        return $this->mode;
-    }
-
     /**
      * プロパティメタデータを取得する
      */

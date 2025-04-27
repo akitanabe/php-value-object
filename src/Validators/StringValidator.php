@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * 文字列のバリデーターを実装するクラス
@@ -73,13 +72,4 @@ class StringValidator implements Validatorable
         return $validatedValue;
     }
 
-    /**
-     * バリデーション処理の実行順序を取得する
-     *
-     * @return ValidatorMode
-     */
-    public function getMode(): ValidatorMode
-    {
-        return ValidatorMode::INTERNAL;
-    }
 }

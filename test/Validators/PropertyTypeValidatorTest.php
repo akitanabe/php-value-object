@@ -8,7 +8,6 @@ use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Enums\ValidatorMode;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\TypeHint;
@@ -19,34 +18,6 @@ use stdClass;
 
 class PropertyTypeValidatorTest extends TestCase
 {
-    /**
-     * INTERNALモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsInternalMode(): void
-    {
-        $metadata = $this->createPropertyMetadata();
-        $modelConfig = new ModelConfig();
-        $fieldConfig = new FieldConfig();
-
-        $validator = new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata);
-        $this->assertEquals(ValidatorMode::INTERNAL, $validator->getMode());
-    }
-
-    /**
-     * 指定したモードを返すことを確認
-     */
-    #[Test]
-    public function testGetModeReturnsSpecifiedMode(): void
-    {
-        $metadata = $this->createPropertyMetadata();
-        $modelConfig = new ModelConfig();
-        $fieldConfig = new FieldConfig();
-
-        $validator = new PropertyTypeValidator($modelConfig, $fieldConfig, $metadata, ValidatorMode::AFTER);
-        $this->assertEquals(ValidatorMode::AFTER, $validator->getMode());
-    }
-
     /**
      * 有効な型のプロパティの場合、値をそのまま返すことを確認
      */

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
-use PhpValueObject\Enums\ValidatorMode;
 
 /**
  * 通常のバリデーション処理より先に実行され、他のバリデーション処理をスキップするバリデータ
@@ -21,11 +20,6 @@ use PhpValueObject\Enums\ValidatorMode;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class PlainValidator extends FunctionValidator
 {
-    public function getMode(): ValidatorMode
-    {
-        return ValidatorMode::PLAIN;
-    }
-
     /**
      * バリデーション処理を実行する
      * 自身のバリデーションのみを実行し、次のハンドラーは呼び出さない
