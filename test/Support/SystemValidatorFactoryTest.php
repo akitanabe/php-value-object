@@ -15,13 +15,13 @@ use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Core\Validators\NoneTypeValidator;
+use PhpValueObject\Core\Validators\IdenticalValidator;
 use PhpValueObject\Validators\MixedTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Enums\PropertyValueType;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use PhpValueObject\Validators\IdenticalValidator;
 
 /**
  * SystemValidatorFactoryクラスのテスト

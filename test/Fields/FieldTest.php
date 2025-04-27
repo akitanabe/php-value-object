@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\Fields\Field;
-use PhpValueObject\Validators\IdenticalValidator;
+use PhpValueObject\Core\Validators\IdenticalValidator;
 use PhpValueObject\Validators\Validatorable;
 
 use function strtolower as _strtolower;

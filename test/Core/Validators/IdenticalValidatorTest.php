@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhpValueObject\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Validators\IdenticalValidator;
+use PhpValueObject\Core\Validators\IdenticalValidator;
 use stdClass;
 
 class IdenticalValidatorTest extends TestCase

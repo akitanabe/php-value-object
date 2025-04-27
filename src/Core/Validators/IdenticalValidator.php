@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhpValueObject\Core\Validators;
+
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\Validatorable;
 
 /**
  * 入力値をそのまま返すバリデーターを実装するクラス
@@ -27,5 +30,4 @@ class IdenticalValidator implements Validatorable
 
         return $validatedValue;
     }
-
 }
