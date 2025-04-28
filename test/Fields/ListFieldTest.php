@@ -7,7 +7,7 @@ namespace PhpValueObject\Test\Fields;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\ListField;
-use PhpValueObject\Validators\ListValidator;
+use PhpValueObject\Core\Validators\ListValidator;
 use PhpValueObject\Validators\Validatorable;
 
 class ListFieldValidateTestClass

@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Enums\PropertyValueType;
+use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * リスト（配列）のバリデーターを実装するクラス
