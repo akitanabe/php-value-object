@@ -7,7 +7,7 @@ namespace PhpValueObject\Test\Fields;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\NumericField;
-use PhpValueObject\Validators\NumericValidator;
+use PhpValueObject\Core\Validators\NumericValidator;
 use PhpValueObject\Validators\Validatorable;
 
 /**
