@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 文字列のバリデーターを実装するクラス

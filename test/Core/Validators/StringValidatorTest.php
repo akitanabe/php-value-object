@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhpValueObject\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\StringValidator;
+use PhpValueObject\Core\Validators\StringValidator;
 
 class StringValidatorTest extends TestCase
 {

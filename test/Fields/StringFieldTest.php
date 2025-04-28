@@ -7,7 +7,7 @@ namespace PhpValueObject\Test\Fields;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\StringField;
-use PhpValueObject\Validators\StringValidator;
+use PhpValueObject\Core\Validators\StringValidator;
 use PhpValueObject\Validators\Validatorable;
 
 class StringFieldValidateTestClass

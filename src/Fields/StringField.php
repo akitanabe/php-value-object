@@ -6,7 +6,7 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
-use PhpValueObject\Validators\StringValidator;
+use PhpValueObject\Core\Validators\StringValidator;
 use PhpValueObject\Validators\Validatorable;
 
 /**
