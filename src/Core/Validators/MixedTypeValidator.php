@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
+use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * mixed型プロパティを検証するバリデータ
@@ -19,7 +21,8 @@ class MixedTypeValidator implements Validatorable
         private readonly ModelConfig $modelConfig,
         private readonly FieldConfig $fieldConfig,
         private readonly PropertyMetadata $metadata,
-    ) {}
+    ) {
+    }
 
     /**
      * mixed型プロパティを検証
