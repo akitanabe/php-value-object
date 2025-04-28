@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Core\Validators;
 
-use PhpValueObject\Core\Validators\NumericValidator;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;

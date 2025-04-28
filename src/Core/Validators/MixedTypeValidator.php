@@ -21,8 +21,7 @@ class MixedTypeValidator implements Validatorable
         private readonly ModelConfig $modelConfig,
         private readonly FieldConfig $fieldConfig,
         private readonly PropertyMetadata $metadata,
-    ) {
-    }
+    ) {}
 
     /**
      * mixed型プロパティを検証
