@@ -13,6 +13,7 @@ use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass; // 追加
@@ -41,7 +42,7 @@ class TestClassForCombined
     }
 
     // FieldValidator用メソッド
-    #[FieldValidator('name', 'before')]
+    #[FieldValidator('name', FunctionalValidatorMode::BEFORE)]
     public static function validateLengthStrict(string $value): string
     {
         if (strlen($value) <= 5) {

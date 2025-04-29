@@ -12,6 +12,7 @@ use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +40,7 @@ final class FieldValidatorFactoryTest extends TestCase
     {
         // 1つのフィールドに1つのバリデータを持つクラス
         $class = new class {
-            #[FieldValidator(field: 'name', mode: 'after')]
+            #[FieldValidator(field: 'name', mode: FunctionalValidatorMode::AFTER)]
             public static function validateName(string $value): string
             {
                 return $value . '_validated';
@@ -67,13 +68,13 @@ final class FieldValidatorFactoryTest extends TestCase
     {
         // 1つのフィールドに複数のバリデータを持つクラス
         $class = new class {
-            #[FieldValidator(field: 'age', mode: 'before')]
+            #[FieldValidator(field: 'age', mode: FunctionalValidatorMode::BEFORE)]
             public static function validateAgeType(mixed $value): int
             {
                 return (int) $value;
             }
 
-            #[FieldValidator(field: 'age', mode: 'after')]
+            #[FieldValidator(field: 'age', mode: FunctionalValidatorMode::AFTER)]
             public static function validateAgeRange(int $value): int
             {
                 if ($value < 0) {
@@ -103,14 +104,14 @@ final class FieldValidatorFactoryTest extends TestCase
     {
         // 複数のフィールドにバリデータを持つクラス
         $class = new class {
-            #[FieldValidator(field: 'email', mode: 'plain')]
+            #[FieldValidator(field: 'email', mode: FunctionalValidatorMode::PLAIN)]
             public static function validateEmailFormat(string $value): string
             {
                 // dummy validation
                 return $value;
             }
 
-            #[FieldValidator(field: 'password', mode: 'wrap')]
+            #[FieldValidator(field: 'password', mode: FunctionalValidatorMode::WRAP)]
             public static function hashPassword(string $value, callable $next): string
             {
                 // dummy validation
@@ -160,21 +161,22 @@ final class FieldValidatorFactoryTest extends TestCase
     }
 
     /**
-     * @param string $mode テスト対象のモード
+     * @param FunctionalValidatorMode $mode テスト対象のモード
      * @param class-string<FunctionValidator> $expectedClass 期待される FunctionValidator のクラス名
      */
     #[DataProvider('modeProvider')]
     #[Test]
-    public function testCreateFromClassWithDifferentModes(string $mode, string $expectedClass): void
+    public function testCreateFromClassWithDifferentModes(FunctionalValidatorMode $mode, string $expectedClass): void
     {
         // 動的にモードを設定するクラス定義 (クロージャを使用)
         // FieldValidator の namespace を修正
+        $modeString = $mode->name;
         $classDefinition = <<<PHP
-        return new class ('{$mode}') {
+        return new class ('{$modeString}') {
             private string \$mode;
             public function __construct(string \$mode) { \$this->mode = \$mode; }
 
-            #[\\PhpValueObject\\Validators\\FieldValidator(field: 'data', mode: '{$mode}')]
+            #[\\PhpValueObject\\Validators\\FieldValidator(field: 'data', mode: \\PhpValueObject\\Validators\\FunctionalValidatorMode::{$modeString})]
             public static function validateData(mixed \$value): mixed
             {
                 return \$value;
@@ -201,15 +203,15 @@ final class FieldValidatorFactoryTest extends TestCase
     }
 
     /**
-     * @return array<string, array{string, class-string<FunctionValidator>}>
+     * @return array<string, array{FunctionalValidatorMode, class-string<FunctionValidator>}>
      */
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => ['plain', FunctionPlainValidator::class],
-            'wrap mode' => ['wrap', FunctionWrapValidator::class],
-            'before mode' => ['before', FunctionBeforeValidator::class],
-            'after mode' => ['after', FunctionAfterValidator::class],
+            'plain mode' => [FunctionalValidatorMode::PLAIN, FunctionPlainValidator::class],
+            'wrap mode' => [FunctionalValidatorMode::WRAP, FunctionWrapValidator::class],
+            'before mode' => [FunctionalValidatorMode::BEFORE, FunctionBeforeValidator::class],
+            'after mode' => [FunctionalValidatorMode::AFTER, FunctionAfterValidator::class],
         ];
     }
 }

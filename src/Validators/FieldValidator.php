@@ -6,7 +6,6 @@ namespace PhpValueObject\Validators;
 
 use Attribute;
 use Closure;
-use InvalidArgumentException;
 use PhpValueObject\Core\Validators\FunctionValidator;
 use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
@@ -14,32 +13,24 @@ use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 
 /**
- * @phpstan-import-type validator_callable from Validatorable
- * @phpstan-type field_validator_mode 'plain'|'wrap'|'before'|'after'
+ * @phpstan-import-type validator_callable from ValidatorCallable
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
 final class FieldValidator
 {
     /**
-     * @var field_validator_mode
+     * バリデーターモード
      */
-    private readonly string $mode;
+    private readonly FunctionalValidatorMode $mode;
 
     /**
-     * @param field_validator_mode $mode "plain", "wrap", "before" または "after" を指定
-     * @throws InvalidArgumentException mode が不正な場合
+     * @param string $field バリデーション対象のフィールド名
      */
     public function __construct(
         public readonly string $field,
-        string $mode = 'after',
+        FunctionalValidatorMode $mode = FunctionalValidatorMode::AFTER,
     ) {
-        $normalizedMode = strtolower($mode);
-        if (in_array($normalizedMode, ['plain', 'wrap', 'before', 'after'], true) === false) {
-            throw new InvalidArgumentException(
-                "Invalid validator mode: {$mode}. Expected \"plain\", \"wrap\", \"before\" or \"after\"",
-            );
-        }
-        $this->mode = $normalizedMode;
+        $this->mode = $mode;
     }
 
     /**
@@ -51,10 +42,10 @@ final class FieldValidator
     public function getValidator(string|array|Closure $validator): FunctionValidator
     {
         return match ($this->mode) {
-            'plain' => new FunctionPlainValidator($validator),
-            'wrap' => new FunctionWrapValidator($validator),
-            'before' => new FunctionBeforeValidator($validator),
-            'after' => new FunctionAfterValidator($validator),
+            FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator),
+            FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator),
+            FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validator),
+            FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validator),
         };
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
@@ -16,7 +17,6 @@ use PhpValueObject\Core\Validators\FunctionValidator;
 use ReflectionClass;
 
 /**
- * @phpstan-import-type field_validator_mode from \PhpValueObject\Validators\FieldValidator
  * @phpstan-import-type validator_callable from \PhpValueObject\Validators\Validatorable
  */
 final class FieldValidatorTest extends TestCase
@@ -33,13 +33,15 @@ final class FieldValidatorTest extends TestCase
 
     /**
      * コンストラクタでモードが正しく設定されることを確認する
-     * @param field_validator_mode $mode
-     * @param field_validator_mode $expectedMode
+     * @param FunctionalValidatorMode $mode
+     * @param FunctionalValidatorMode $expectedMode
      */
     #[Test]
     #[DataProvider('modeProvider')]
-    public function constructorShouldSetMode(string $mode, string $expectedMode): void
-    {
+    public function constructorShouldSetMode(
+        FunctionalValidatorMode $mode,
+        FunctionalValidatorMode $expectedMode,
+    ): void {
         $fieldValidator = new FieldValidator('test_field', $mode);
 
         // private プロパティ 'mode' をリフレクションで取得して検証
@@ -52,15 +54,15 @@ final class FieldValidatorTest extends TestCase
 
     /**
      * getValidatorが正しいFunctionValidatorインスタンスを返すことを確認する
-     * @param field_validator_mode $mode
-     * @param field_validator_mode $expectedMode
+     * @param FunctionalValidatorMode $mode
+     * @param FunctionalValidatorMode $expectedMode
      * @param class-string<FunctionValidator> $expectedClass
      */
     #[Test]
     #[DataProvider('modeProvider')]
     public function getValidatorShouldReturnCorrectInstance(
-        string $mode,
-        string $expectedMode,
+        FunctionalValidatorMode $mode,
+        FunctionalValidatorMode $expectedMode,
         string $expectedClass,
     ): void {
         $fieldValidator = new FieldValidator('test_field', $mode);
@@ -73,15 +75,27 @@ final class FieldValidatorTest extends TestCase
 
     /**
      * モードと期待されるクラス名のデータプロバイダ
-     * @return array<string, array{field_validator_mode, field_validator_mode, class-string<FunctionValidator>}>
+     * @return array<string, array{FunctionalValidatorMode, FunctionalValidatorMode, class-string<FunctionValidator>}>
      */
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => ['plain', 'plain', FunctionPlainValidator::class],
-            'wrap mode' => ['wrap', 'wrap', FunctionWrapValidator::class],
-            'before mode' => ['before', 'before', FunctionBeforeValidator::class],
-            'after mode (default)' => ['after', 'after', FunctionAfterValidator::class],
+            'plain mode' => [
+                FunctionalValidatorMode::PLAIN,
+                FunctionalValidatorMode::PLAIN,
+                FunctionPlainValidator::class,
+            ],
+            'wrap mode' => [FunctionalValidatorMode::WRAP, FunctionalValidatorMode::WRAP, FunctionWrapValidator::class],
+            'before mode' => [
+                FunctionalValidatorMode::BEFORE,
+                FunctionalValidatorMode::BEFORE,
+                FunctionBeforeValidator::class,
+            ],
+            'after mode (default)' => [
+                FunctionalValidatorMode::AFTER,
+                FunctionalValidatorMode::AFTER,
+                FunctionAfterValidator::class,
+            ],
         ];
     }
 }

@@ -20,6 +20,7 @@ use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\PlainValidator;
 use PhpValueObject\Validators\WrapValidator;
 use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 use PhpValueObject\Support\FieldValidatorFactory;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
@@ -65,13 +66,13 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             public string $allValidatorsProp;
 
             // FieldValidator 用メソッド
-            #[FieldValidator('allValidatorsProp', 'before')]
+            #[FieldValidator('allValidatorsProp', FunctionalValidatorMode::BEFORE)]
             public static function addFieldBefore(string $value): string
             {
                 return $value . '_field_before';
             }
 
-            #[FieldValidator('allValidatorsProp', 'after')]
+            #[FieldValidator('allValidatorsProp', FunctionalValidatorMode::AFTER)]
             public static function addFieldAfter(string $value): string
             {
                 return $value . '_field_after';
@@ -192,13 +193,13 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             public string $mixedValidators;
 
             // FieldValidator 用メソッド
-            #[FieldValidator('mixedValidators', 'before')]
+            #[FieldValidator('mixedValidators', FunctionalValidatorMode::BEFORE)]
             public static function addField1(string $value): string
             {
                 return $value . '_field1';
             }
 
-            #[FieldValidator('mixedValidators', 'after')]
+            #[FieldValidator('mixedValidators', FunctionalValidatorMode::AFTER)]
             public static function addField2(string $value): string
             {
                 return $value . '_field2';
@@ -245,7 +246,7 @@ class FieldValidationManagerComplexOrderTest extends TestCase
             public string $allValidators;
 
             // FieldValidator 用メソッド
-            #[FieldValidator('allValidators', 'before')]
+            #[FieldValidator('allValidators', FunctionalValidatorMode::BEFORE)]
             public static function addField(string $value): string
             {
                 return $value . '_field';
