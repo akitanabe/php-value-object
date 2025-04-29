@@ -6,6 +6,7 @@ namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorCallable;
 use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
@@ -17,7 +18,7 @@ use PhpValueObject\Core\Validators\FunctionValidator;
 use ReflectionClass;
 
 /**
- * @phpstan-import-type validator_callable from \PhpValueObject\Validators\Validatorable
+ * @phpstan-import-type validator_callable from ValidatorCallable
  */
 final class FieldValidatorTest extends TestCase
 {

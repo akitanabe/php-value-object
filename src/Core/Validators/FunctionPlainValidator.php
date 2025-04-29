@@ -14,8 +14,6 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  * #[FunctionPlainValidator([ValidationClass::class, 'validate'])]
  * public string $value;
  * ```
- *
- * @phpstan-import-type validator_callable from \PhpValueObject\Validators\Validatorable
  */
 final class FunctionPlainValidator extends FunctionValidator
 {
