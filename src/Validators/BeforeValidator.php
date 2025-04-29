@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * PropertyOperator::valueへの代入前にバリデーションを実行するAttribute
@@ -16,27 +17,15 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class BeforeValidator extends FunctionValidator
+final class BeforeValidator extends FunctionalValidator
 {
     /**
-     * バリデーション処理を実行する
-     * 自身のバリデーションを実行後、次のハンドラーを呼び出す
+     * バリデーションのモードを取得する
      *
-     * @param mixed $value 検証する値
-     * @param ValidatorFunctionWrapHandler|null $handler 内部バリデーション処理をラップするハンドラ
-     * @return mixed バリデーション後の値
+     * @return FunctionalValidatorMode バリデーションモード
      */
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getMode(): FunctionalValidatorMode
     {
-        // バリデーション処理を実行
-        $validator = $this->resolveValidator();
-        $validatedValue = $validator($value);
-
-        // 次のハンドラーが存在する場合は実行
-        if ($handler !== null) {
-            return $handler($validatedValue);
-        }
-
-        return $validatedValue;
+        return FunctionalValidatorMode::BEFORE;
     }
 }

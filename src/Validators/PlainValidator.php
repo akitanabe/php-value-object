@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * 通常のバリデーション処理より先に実行され、他のバリデーション処理をスキップするバリデータ
@@ -15,23 +16,18 @@ use Attribute;
  * public string $value;
  * ```
  *
- * @phpstan-import-type validator_callable from Validatorable
+ * @phpstan-import-type validator_callable from ValidatorCallable
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class PlainValidator extends FunctionValidator
+final class PlainValidator extends FunctionalValidator
 {
     /**
-     * バリデーション処理を実行する
-     * 自身のバリデーションのみを実行し、次のハンドラーは呼び出さない
+     * バリデーションのモードを取得する
      *
-     * @param mixed $value 検証する値
-     * @param ValidatorFunctionWrapHandler|null $handler 内部バリデーション処理をラップするハンドラ（使用しない）
-     * @return mixed バリデーション後の値
+     * @return FunctionalValidatorMode バリデーションモード
      */
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getMode(): FunctionalValidatorMode
     {
-        // バリデーション処理を実行（次のハンドラーは呼び出さない）
-        $validator = $this->resolveValidator();
-        return $validator($value);
+        return FunctionalValidatorMode::PLAIN;
     }
 }

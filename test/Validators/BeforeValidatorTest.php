@@ -5,68 +5,53 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ArrayIterator;
 
 /**
  * BeforeValidatorのテストクラス
  *
- * BeforeValidatorは自身のバリデーション後に次のハンドラーを呼び出す役割を持つ
+ * BeforeValidatorは FunctionalValidator を継承し、
+ * BEFORE モードと callable を提供する
  */
 #[CoversClass(BeforeValidator::class)]
 class BeforeValidatorTest extends TestCase
 {
     /**
-     * ハンドラーなしでバリデーションが正しく実行されることを確認
+     * getModeがFunctionalValidatorMode::BEFOREを返すことを確認
      */
     #[Test]
-    public function shouldExecuteValidationAndReturnValueWhenNoHandlerProvided(): void
+    public function shouldReturnCorrectMode(): void
     {
         // Arrange
-        $validator = new BeforeValidator(fn($value) => $value . '_validated');
-        $value = 'test';
+        $callable = fn($value) => $value;
+        $validator = new BeforeValidator($callable);
 
         // Act
-        $result = $validator->validate($value);
+        $mode = $validator->getMode();
 
         // Assert
-        $this->assertEquals('test_validated', $result);
+        $this->assertSame(FunctionalValidatorMode::BEFORE, $mode);
     }
 
     /**
-     * バリデーション後に次のハンドラーが正しく呼び出されることを確認
+     * getCallableがコンストラクタで渡されたcallableを返すことを確認
      */
     #[Test]
-    public function shouldExecuteValidationAndThenCallNextHandler(): void
+    public function shouldReturnCallablePassedInConstructor(): void
     {
         // Arrange
-        $validator = new BeforeValidator(fn($value) => $value . '_before');
-        $value = 'test';
-
-        // 実際のハンドラーを作成
-        // 次のバリデータとしてAfterValidatorを使用する
-        $nextValidator = new AfterValidator(fn($v) => $v . '_after');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $callable = fn($value) => $value . '_before';
+        $validator = new BeforeValidator($callable);
 
         // Act
-        $result = $validator->validate($value, $handler);
+        $returnedCallable = $validator->getCallable();
 
         // Assert
-        // 処理の流れ:
-        // 1. BeforeValidator: 'test' -> 'test_before'
-        // 2. AfterValidator:  'test_before' -> 'test_before_after'
-        $this->assertEquals('test_before_after', $result);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
+        $this->assertSame($callable, $returnedCallable);
+        // 実際に呼び出して確認
+        $this->assertEquals('test_before', $returnedCallable('test'));
     }
 }

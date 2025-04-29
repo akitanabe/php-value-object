@@ -5,69 +5,53 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\PlainValidator;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ArrayIterator;
 
 /**
  * PlainValidatorのテストクラス
  *
- * PlainValidatorは自身のバリデーションのみを実行し、
- * 後続のバリデータを呼び出さずにバリデーションチェーンを終了させる役割を持つ
+ * PlainValidatorは FunctionalValidator を継承し、
+ * PLAIN モードと callable を提供する
  */
 #[CoversClass(PlainValidator::class)]
 class PlainValidatorTest extends TestCase
 {
     /**
-     * バリデーション処理が正しく実行されることを確認
+     * getModeがFunctionalValidatorMode::PLAINを返すことを確認
      */
     #[Test]
-    public function shouldExecuteValidatorFunction(): void
+    public function shouldReturnCorrectMode(): void
     {
-        $called = false;
-        $validator = new PlainValidator(function ($value) use (&$called) {
-            $called = true;
-            return $value . '_validated';
-        });
+        // Arrange
+        $callable = fn($value) => $value;
+        $validator = new PlainValidator($callable);
 
-        $result = $validator->validate('test');
+        // Act
+        $mode = $validator->getMode();
 
-        $this->assertTrue($called);
-        $this->assertEquals('test_validated', $result);
+        // Assert
+        $this->assertSame(FunctionalValidatorMode::PLAIN, $mode);
     }
 
     /**
-     * ハンドラーが渡された場合でも、次のハンドラーを呼び出さないことを確認
+     * getCallableがコンストラクタで渡されたcallableを返すことを確認
      */
     #[Test]
-    public function shouldNotCallNextHandlerWhenProvided(): void
+    public function shouldReturnCallablePassedInConstructor(): void
     {
         // Arrange
-        $validator = new PlainValidator(fn($value) => $value . '_plain');
-        $value = 'test';
-
-        // 実際のハンドラーを作成
-        // このバリデータは呼び出されないはず
-        $nextValidator = new AfterValidator(fn($v) => $v . '_should_not_execute');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $callable = fn($value) => $value . '_plain';
+        $validator = new PlainValidator($callable);
 
         // Act
-        $result = $validator->validate($value, $handler);
+        $returnedCallable = $validator->getCallable();
 
         // Assert
-        // AfterValidatorが呼び出されていない場合、'_should_not_execute'は付加されない
-        $this->assertEquals('test_plain', $result);
-        $this->assertStringNotContainsString('_should_not_execute', $result);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
+        $this->assertSame($callable, $returnedCallable);
+        // 実際に呼び出して確認
+        $this->assertEquals('test_plain', $returnedCallable('test'));
     }
 }

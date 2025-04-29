@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
-use LogicException;
+use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * 値をラップしてバリデーションを実行するAttribute
@@ -17,25 +17,15 @@ use LogicException;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class WrapValidator extends FunctionValidator
+final class WrapValidator extends FunctionalValidator
 {
     /**
-     * バリデーション処理を実行する
-     * バリデータ関数に次のハンドラーを渡して実行する
+     * バリデーションのモードを取得する
      *
-     * @param mixed $value 検証する値
-     * @param ValidatorFunctionWrapHandler|null $handler 後続の処理を制御するハンドラー
-     * @return mixed
-     * @throws LogicException handlerがnullの場合（プログラムのロジックエラー）
+     * @return FunctionalValidatorMode バリデーションモード
      */
-    public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
+    public function getMode(): FunctionalValidatorMode
     {
-        if ($handler === null) {
-            throw new LogicException('WrapValidator must be executed with a handler.');
-        }
-
-        // バリデータ関数を解決し、バリデータに次のハンドラーを渡す
-        $validator = $this->resolveValidator();
-        return $validator($value, $handler);
+        return FunctionalValidatorMode::WRAP;
     }
 }

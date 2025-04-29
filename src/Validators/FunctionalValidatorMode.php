@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhpValueObject\Validators;
 
 /**
  * バリデーションの実行タイミングや方法を示す Enum
