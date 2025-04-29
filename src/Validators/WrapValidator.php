@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
-use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * 値をラップしてバリデーションを実行するAttribute

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
-use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * setPropertyValueの前にバリデーションを実行するAttribute

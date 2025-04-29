@@ -181,7 +181,7 @@ final class FieldValidatorFactoryTest extends TestCase
             }
         };
         PHP;
-        $class = eval ($classDefinition);
+        $class = eval($classDefinition);
 
         $refClass = new ReflectionClass($class);
 

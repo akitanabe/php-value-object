@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Closure;
-use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * バリデーション処理 (callable) とその実行モード (FunctionalValidatorMode) を提供するインターフェース

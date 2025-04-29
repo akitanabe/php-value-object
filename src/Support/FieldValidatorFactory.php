@@ -18,9 +18,7 @@ final class FieldValidatorFactory
     /**
      * @param array<string, FunctionValidator[]> $validatorsByField
      */
-    private function __construct(private readonly array $validatorsByField)
-    {
-    }
+    private function __construct(private readonly array $validatorsByField) {}
 
     /**
      * ReflectionClass から FieldValidatorFactory インスタンスを生成する

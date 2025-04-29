@@ -28,8 +28,7 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -59,7 +58,7 @@ class FieldValidationManager
                 $property,
                 ValidatorCallable::class,
                 ReflectionAttribute::IS_INSTANCEOF,
-            )
+            ),
         );
 
         // ファクトリからこのプロパティに対応する FunctionValidator を取得

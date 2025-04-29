@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Closure;
-use PhpValueObject\Validators\FunctionalValidatorMode;
-use PhpValueObject\Validators\ValidatorCallable;
 
 /**
  * 関数ベースのバリデーション処理の基底クラス
@@ -23,8 +21,7 @@ abstract class FunctionalValidator implements ValidatorCallable
      */
     public function __construct(
         protected readonly string|array|Closure $validator,
-    ) {
-    }
+    ) {}
 
     /**
      * バリデーション処理を行う callable を返す

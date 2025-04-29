@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Attribute;
-use PhpValueObject\Validators\FunctionalValidatorMode;
 
 /**
  * 通常のバリデーション処理より先に実行され、他のバリデーション処理をスキップするバリデータ
