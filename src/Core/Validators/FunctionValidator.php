@@ -7,6 +7,7 @@ namespace PhpValueObject\Core\Validators;
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorCallable;
 use PhpValueObject\Validators\Validatorable;
 
 /**
@@ -19,7 +20,7 @@ use PhpValueObject\Validators\Validatorable;
  * public string $value;
  * ```
  *
- * @phpstan-import-type validator_callable from Validatorable
+ * @phpstan-import-type validator_callable from ValidatorCallable
  */
 abstract class FunctionValidator implements Validatorable
 {
