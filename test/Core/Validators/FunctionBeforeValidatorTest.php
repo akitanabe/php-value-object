@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Core\Validators;
 
-use PhpValueObject\Core\Validators\BeforeFunctionValidator;
-use PhpValueObject\Core\Validators\AfterFunctionValidator;
+use PhpValueObject\Core\Validators\FunctionBeforeValidator;
+use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
 use PHPUnit\Framework\TestCase;
@@ -14,13 +14,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use ArrayIterator;
 
 /**
- * BeforeFunctionValidatorのテストクラス
+ * FunctionBeforeValidatorのテストクラス
  *
- * BeforeFunctionValidatorは自身のバリデーションを実行した後、
+ * FunctionBeforeValidatorは自身のバリデーションを実行した後、
  * 次のハンドラーに結果を渡す役割を持つ
  */
-#[CoversClass(BeforeFunctionValidator::class)]
-class BeforeFunctionValidatorTest extends TestCase
+#[CoversClass(FunctionBeforeValidator::class)]
+class FunctionBeforeValidatorTest extends TestCase
 {
     /**
      * ハンドラーなしでバリデーションが正しく実行されることを確認
@@ -29,7 +29,7 @@ class BeforeFunctionValidatorTest extends TestCase
     public function shouldExecuteValidationAndReturnValueWhenNoHandlerProvided(): void
     {
         // Arrange
-        $validator = new BeforeFunctionValidator(fn($value) => $value . '_before');
+        $validator = new FunctionBeforeValidator(fn($value) => $value . '_before');
         $value = 'test';
 
         // Act
@@ -46,12 +46,12 @@ class BeforeFunctionValidatorTest extends TestCase
     public function shouldExecuteValidationFirstThenCallHandler(): void
     {
         // Arrange
-        $validator = new BeforeFunctionValidator(fn($value) => $value . '_before');
+        $validator = new FunctionBeforeValidator(fn($value) => $value . '_before');
         $value = 'test';
 
         // 実際のハンドラーを作成
-        // 次のバリデータとしてAfterFunctionValidatorを使用する
-        $nextValidator = new AfterFunctionValidator(fn($v) => $v . '_next');
+        // 次のバリデータとしてFunctionAfterValidatorを使用する
+        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_next');
         /** @var ArrayIterator<int, Validatorable> $validators */
         $validators = new ArrayIterator([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
@@ -61,8 +61,8 @@ class BeforeFunctionValidatorTest extends TestCase
 
         // Assert
         // 処理の流れ:
-        // 1. BeforeFunctionValidator: 'test' -> 'test_before'
-        // 2. AfterFunctionValidator (nextValidator): 'test_before' + '_next' -> 'test_before_next'
+        // 1. FunctionBeforeValidator: 'test' -> 'test_before'
+        // 2. FunctionAfterValidator (nextValidator): 'test_before' + '_next' -> 'test_before_next'
         $this->assertEquals('test_before_next', $result);
     }
 
@@ -81,7 +81,7 @@ class BeforeFunctionValidatorTest extends TestCase
         };
 
         // Arrange
-        $validator = new BeforeFunctionValidator([get_class($validatorClass), 'appendText']);
+        $validator = new FunctionBeforeValidator([get_class($validatorClass), 'appendText']);
         $value = 'test';
 
         // Act
@@ -98,7 +98,7 @@ class BeforeFunctionValidatorTest extends TestCase
     public function shouldResolveStringValidator(): void
     {
         // Arrange
-        $validator = new BeforeFunctionValidator('strtoupper');
+        $validator = new FunctionBeforeValidator('strtoupper');
         $value = 'test';
 
         // Act

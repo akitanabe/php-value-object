@@ -11,11 +11,11 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  *
  * @example
  * ```php
- * #[BeforeFunctionValidator([ValidationClass::class, 'validateLength'])]
+ * #[FunctionBeforeValidator([ValidationClass::class, 'validateLength'])]
  * public string $value;
  * ```
  */
-final class BeforeFunctionValidator extends FunctionValidator
+final class FunctionBeforeValidator extends FunctionValidator
 {
     /**
      * バリデーション処理を実行する

@@ -8,10 +8,10 @@ use InvalidArgumentException;
 use PhpValueObject\Support\FieldValidatorFactory;
 use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Core\Validators\FunctionValidator;
-use PhpValueObject\Core\Validators\PlainFunctionValidator;
-use PhpValueObject\Core\Validators\WrapFunctionValidator;
-use PhpValueObject\Core\Validators\BeforeFunctionValidator;
-use PhpValueObject\Core\Validators\AfterFunctionValidator;
+use PhpValueObject\Core\Validators\FunctionPlainValidator;
+use PhpValueObject\Core\Validators\FunctionWrapValidator;
+use PhpValueObject\Core\Validators\FunctionBeforeValidator;
+use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -58,7 +58,7 @@ final class FieldValidatorFactoryTest extends TestCase
         $functionValidator = $validators[0];
 
         // バリデータの型を確認 (mode: 'after' なので AfterValidator)
-        $this->assertInstanceOf(AfterFunctionValidator::class, $functionValidator);
+        $this->assertInstanceOf(FunctionAfterValidator::class, $functionValidator);
         // FunctionValidator には field プロパティはない
     }
 
@@ -93,8 +93,8 @@ final class FieldValidatorFactoryTest extends TestCase
         // バリデータが2つ存在することを確認
         $this->assertCount(2, $validators);
         // モードに応じた正しい FunctionValidator 型か確認
-        $this->assertInstanceOf(BeforeFunctionValidator::class, $validators[0]); // mode: 'before'
-        $this->assertInstanceOf(AfterFunctionValidator::class, $validators[1]); // mode: 'after'
+        $this->assertInstanceOf(FunctionBeforeValidator::class, $validators[0]); // mode: 'before'
+        $this->assertInstanceOf(FunctionAfterValidator::class, $validators[1]); // mode: 'after'
         // FunctionValidator には field プロパティはない
     }
 
@@ -125,12 +125,12 @@ final class FieldValidatorFactoryTest extends TestCase
         // 'email' フィールドのバリデータを取得
         $emailValidators = $factory->getValidatorsForField('email');
         $this->assertCount(1, $emailValidators);
-        $this->assertInstanceOf(PlainFunctionValidator::class, $emailValidators[0]); // mode: 'plain'
+        $this->assertInstanceOf(FunctionPlainValidator::class, $emailValidators[0]); // mode: 'plain'
 
         // 'password' フィールドのバリデータを取得
         $passwordValidators = $factory->getValidatorsForField('password');
         $this->assertCount(1, $passwordValidators);
-        $this->assertInstanceOf(WrapFunctionValidator::class, $passwordValidators[0]); // mode: 'wrap'
+        $this->assertInstanceOf(FunctionWrapValidator::class, $passwordValidators[0]); // mode: 'wrap'
 
         // 存在しないフィールドのバリデータを取得
         $this->assertEmpty($factory->getValidatorsForField('nonExistentField'));
@@ -206,10 +206,10 @@ final class FieldValidatorFactoryTest extends TestCase
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => ['plain', PlainFunctionValidator::class],
-            'wrap mode' => ['wrap', WrapFunctionValidator::class],
-            'before mode' => ['before', BeforeFunctionValidator::class],
-            'after mode' => ['after', AfterFunctionValidator::class],
+            'plain mode' => ['plain', FunctionPlainValidator::class],
+            'wrap mode' => ['wrap', FunctionWrapValidator::class],
+            'before mode' => ['before', FunctionBeforeValidator::class],
+            'after mode' => ['after', FunctionAfterValidator::class],
         ];
     }
 }

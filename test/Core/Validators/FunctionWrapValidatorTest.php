@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Core\Validators;
 
-use PhpValueObject\Core\Validators\WrapFunctionValidator;
-use PhpValueObject\Core\Validators\AfterFunctionValidator;
+use PhpValueObject\Core\Validators\FunctionWrapValidator;
+use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
 use PHPUnit\Framework\TestCase;
@@ -28,13 +28,13 @@ function testWrapFunction(string $value, callable $next): string
 
 
 /**
- * WrapFunctionValidatorのテストクラス
+ * FunctionWrapValidatorのテストクラス
  *
- * WrapFunctionValidatorは次のハンドラーを包み込み、
+ * FunctionWrapValidatorは次のハンドラーを包み込み、
  * 処理の前後に独自のバリデーション処理を適用する役割を持つ
  */
-#[CoversClass(WrapFunctionValidator::class)]
-class WrapFunctionValidatorTest extends TestCase
+#[CoversClass(FunctionWrapValidator::class)]
+class FunctionWrapValidatorTest extends TestCase
 {
     /**
      * ハンドラーがない場合に例外が発生することを確認
@@ -43,12 +43,12 @@ class WrapFunctionValidatorTest extends TestCase
     public function shouldThrowExceptionWhenNoHandlerProvided(): void
     {
         // Arrange
-        $validator = new WrapFunctionValidator(fn($value, $next) => $value . '_wrapped');
+        $validator = new FunctionWrapValidator(fn($value, $next) => $value . '_wrapped');
         $value = 'test';
 
         // Act & Assert
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('WrapFunctionValidator must be executed with a handler.');
+        $this->expectExceptionMessage('FunctionWrapValidator must be executed with a handler.');
         $validator->validate($value);
     }
 
@@ -59,14 +59,14 @@ class WrapFunctionValidatorTest extends TestCase
     public function shouldWrapHandlerWithValidation(): void
     {
         // Arrange
-        $validator = new WrapFunctionValidator(
+        $validator = new FunctionWrapValidator(
             fn($value, $next) => 'before_' . $next($value) . '_after',
         );
         $value = 'test';
 
         // 実際のハンドラーを作成
-        // 次のバリデータとしてAfterFunctionValidatorを使用する
-        $nextValidator = new AfterFunctionValidator(fn($v) => $v . '_next');
+        // 次のバリデータとしてFunctionAfterValidatorを使用する
+        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_next');
         /** @var ArrayIterator<int, Validatorable> $validators */
         $validators = new ArrayIterator([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
@@ -76,8 +76,8 @@ class WrapFunctionValidatorTest extends TestCase
 
         // Assert
         // 処理の流れ:
-        // 1. WrapFunctionValidator: 'before_' + (次のハンドラーの結果) + '_after'
-        // 2. AfterFunctionValidator (nextValidator): 'test' + '_next' -> 'test_next'
+        // 1. FunctionWrapValidator: 'before_' + (次のハンドラーの結果) + '_after'
+        // 2. FunctionAfterValidator (nextValidator): 'test' + '_next' -> 'test_next'
         // 3. 最終結果: 'before_test_next_after'
         $this->assertEquals('before_test_next_after', $result);
     }
@@ -97,11 +97,11 @@ class WrapFunctionValidatorTest extends TestCase
         };
 
         // Arrange
-        $validator = new WrapFunctionValidator([get_class($validatorClass), 'wrapValue']);
+        $validator = new FunctionWrapValidator([get_class($validatorClass), 'wrapValue']);
         $value = 'test';
 
         // ハンドラーを作成
-        $nextValidator = new AfterFunctionValidator(fn($v) => $v . '_processed');
+        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_processed');
         /** @var ArrayIterator<int, Validatorable> $validators */
         $validators = new ArrayIterator([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
@@ -122,11 +122,11 @@ class WrapFunctionValidatorTest extends TestCase
         // Arrange - カスタム関数を定義
         $functionName = 'testWrapFunction';
 
-        $validator = new WrapFunctionValidator(__NAMESPACE__ . '\\' . $functionName);
+        $validator = new FunctionWrapValidator(__NAMESPACE__ . '\\' . $functionName);
         $value = 'test';
 
         // 実際のハンドラーを作成
-        $nextValidator = new AfterFunctionValidator(fn($v) => $v . '_modified');
+        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_modified');
         /** @var ArrayIterator<int, Validatorable> $validators */
         $validators = new ArrayIterator([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
@@ -135,7 +135,7 @@ class WrapFunctionValidatorTest extends TestCase
         $result = $validator->validate($value, $handler);
 
         // Assert
-        // WrapFunctionValidatorはハンドラーの結果を括弧で囲む
+        // FunctionWrapValidatorはハンドラーの結果を括弧で囲む
         $this->assertEquals('(test_modified)', $result);
     }
 

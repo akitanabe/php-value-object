@@ -12,11 +12,11 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  *
  * @example
  * ```php
- * #[WrapFunctionValidator(fn($value) => strtoupper($value))]
+ * #[FunctionWrapValidator(fn($value) => strtoupper($value))]
  * public string $value;
  * ```
  */
-final class WrapFunctionValidator extends FunctionValidator
+final class FunctionWrapValidator extends FunctionValidator
 {
     /**
      * バリデーション処理を実行する
@@ -30,7 +30,7 @@ final class WrapFunctionValidator extends FunctionValidator
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         if ($handler === null) {
-            throw new LogicException('WrapFunctionValidator must be executed with a handler.');
+            throw new LogicException('FunctionWrapValidator must be executed with a handler.');
         }
 
         // バリデータ関数を解決し、バリデータに次のハンドラーを渡す

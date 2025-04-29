@@ -11,13 +11,13 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  *
  * @example
  * ```php
- * #[PlainFunctionValidator([ValidationClass::class, 'validate'])]
+ * #[FunctionPlainValidator([ValidationClass::class, 'validate'])]
  * public string $value;
  * ```
  *
  * @phpstan-import-type validator_callable from \PhpValueObject\Validators\Validatorable
  */
-final class PlainFunctionValidator extends FunctionValidator
+final class FunctionPlainValidator extends FunctionValidator
 {
     /**
      * バリデーション処理を実行する

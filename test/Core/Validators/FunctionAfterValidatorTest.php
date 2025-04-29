@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Core\Validators;
 
-use PhpValueObject\Core\Validators\AfterFunctionValidator;
-use PhpValueObject\Core\Validators\BeforeFunctionValidator;
+use PhpValueObject\Core\Validators\FunctionAfterValidator;
+use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
 use PHPUnit\Framework\TestCase;
@@ -14,13 +14,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use ArrayIterator;
 
 /**
- * AfterFunctionValidatorのテストクラス
+ * FunctionAfterValidatorのテストクラス
  *
- * AfterFunctionValidatorは次のハンドラーを先に実行し、その結果に対して
+ * FunctionAfterValidatorは次のハンドラーを先に実行し、その結果に対して
  * 自身のバリデーションを適用する役割を持つ
  */
-#[CoversClass(AfterFunctionValidator::class)]
-class AfterFunctionValidatorTest extends TestCase
+#[CoversClass(FunctionAfterValidator::class)]
+class FunctionAfterValidatorTest extends TestCase
 {
     /**
      * ハンドラーなしでバリデーションが正しく実行されることを確認
@@ -29,7 +29,7 @@ class AfterFunctionValidatorTest extends TestCase
     public function shouldExecuteValidationAndReturnValueWhenNoHandlerProvided(): void
     {
         // Arrange
-        $validator = new AfterFunctionValidator(fn($value) => $value . '_after');
+        $validator = new FunctionAfterValidator(fn($value) => $value . '_after');
         $value = 'test';
 
         // Act
@@ -46,12 +46,12 @@ class AfterFunctionValidatorTest extends TestCase
     public function shouldCallHandlerFirstThenExecuteValidation(): void
     {
         // Arrange
-        $validator = new AfterFunctionValidator(fn($value) => $value . '_after');
+        $validator = new FunctionAfterValidator(fn($value) => $value . '_after');
         $value = 'test';
 
         // 実際のハンドラーを作成
-        // 次のバリデータとしてBeforeFunctionValidatorを使用する
-        $nextValidator = new BeforeFunctionValidator(fn($v) => $v . '_next');
+        // 次のバリデータとしてFunctionBeforeValidatorを使用する
+        $nextValidator = new FunctionBeforeValidator(fn($v) => $v . '_next');
         /** @var ArrayIterator<int, Validatorable> $validators */
         $validators = new ArrayIterator([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
@@ -61,9 +61,9 @@ class AfterFunctionValidatorTest extends TestCase
 
         // Assert
         // 処理の流れ:
-        // 1. AfterFunctionValidator: 次のハンドラーを先に実行
-        // 2. BeforeFunctionValidator (nextValidator): 'test' -> 'test_next'
-        // 3. AfterFunctionValidator: 'test_next' + '_after' -> 'test_next_after'
+        // 1. FunctionAfterValidator: 次のハンドラーを先に実行
+        // 2. FunctionBeforeValidator (nextValidator): 'test' -> 'test_next'
+        // 3. FunctionAfterValidator: 'test_next' + '_after' -> 'test_next_after'
         $this->assertEquals('test_next_after', $result);
     }
 
@@ -82,7 +82,7 @@ class AfterFunctionValidatorTest extends TestCase
         };
 
         // Arrange
-        $validator = new AfterFunctionValidator([get_class($validatorClass), 'appendText']);
+        $validator = new FunctionAfterValidator([get_class($validatorClass), 'appendText']);
         $value = 'test';
 
         // Act
@@ -103,7 +103,7 @@ class AfterFunctionValidatorTest extends TestCase
         // または関数をモックすることをお勧めします
 
         // Arrange
-        $validator = new AfterFunctionValidator('strtoupper');
+        $validator = new FunctionAfterValidator('strtoupper');
         $value = 'test';
 
         // Act

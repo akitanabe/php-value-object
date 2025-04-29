@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Core\Validators;
 
-use PhpValueObject\Core\Validators\PlainFunctionValidator;
+use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\Validatorable;
 use PHPUnit\Framework\TestCase;
@@ -13,13 +13,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use ArrayIterator;
 
 /**
- * PlainFunctionValidatorのテストクラス
+ * FunctionPlainValidatorのテストクラス
  *
- * PlainFunctionValidatorは単純に関数を実行するバリデータ
+ * FunctionPlainValidatorは単純に関数を実行するバリデータ
  * ハンドラーが指定された場合でも無視して自身の処理のみを行う
  */
-#[CoversClass(PlainFunctionValidator::class)]
-class PlainFunctionValidatorTest extends TestCase
+#[CoversClass(FunctionPlainValidator::class)]
+class FunctionPlainValidatorTest extends TestCase
 {
     /**
      * バリデーション関数が正しく実行されることを確認
@@ -28,7 +28,7 @@ class PlainFunctionValidatorTest extends TestCase
     public function shouldExecuteValidationFunction(): void
     {
         // Arrange
-        $validator = new PlainFunctionValidator(fn($value) => $value . '_plain');
+        $validator = new FunctionPlainValidator(fn($value) => $value . '_plain');
         $value = 'test';
 
         // Act
@@ -45,7 +45,7 @@ class PlainFunctionValidatorTest extends TestCase
     public function shouldIgnoreHandlerAndOnlyExecuteSelfValidation(): void
     {
         // Arrange
-        $validator = new PlainFunctionValidator(fn($value) => $value . '_plain');
+        $validator = new FunctionPlainValidator(fn($value) => $value . '_plain');
         $value = 'test';
 
         // ダミーのハンドラーを作成（このハンドラーは呼ばれないはず）
@@ -61,7 +61,7 @@ class PlainFunctionValidatorTest extends TestCase
         $result = $validator->validate($value, $handler);
 
         // Assert
-        // ハンドラーが無視され、PlainFunctionValidatorのみが実行される
+        // ハンドラーが無視され、FunctionPlainValidatorのみが実行される
         $this->assertEquals('test_plain', $result);
     }
 
@@ -80,7 +80,7 @@ class PlainFunctionValidatorTest extends TestCase
         };
 
         // Arrange
-        $validator = new PlainFunctionValidator([get_class($validatorClass), 'processValue']);
+        $validator = new FunctionPlainValidator([get_class($validatorClass), 'processValue']);
         $value = 'test';
 
         // Act
@@ -97,7 +97,7 @@ class PlainFunctionValidatorTest extends TestCase
     public function shouldResolveStringValidator(): void
     {
         // Arrange
-        $validator = new PlainFunctionValidator('strtolower');
+        $validator = new FunctionPlainValidator('strtolower');
         $value = 'TEST';
 
         // Act

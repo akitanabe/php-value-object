@@ -14,8 +14,8 @@ use PhpValueObject\Validators\Validatorable;
  *
  * @example
  * ```php
- * #[BeforeFunctionValidator([ValidationClass::class, 'validateLength'])]
- * #[AfterFunctionValidator([ValidationClass::class, 'formatString'])]
+ * #[FunctionBeforeValidator([ValidationClass::class, 'validateLength'])]
+ * #[FunctionAfterValidator([ValidationClass::class, 'formatString'])]
  * public string $value;
  * ```
  *
@@ -28,7 +28,8 @@ abstract class FunctionValidator implements Validatorable
      */
     public function __construct(
         protected readonly string|array|Closure $validator,
-    ) {}
+    ) {
+    }
 
     /**
      * バリデーション処理を実行する
