@@ -16,6 +16,8 @@ use PhpValueObject\Validators\ValidatorCallable;
  */
 abstract class FunctionalValidator implements ValidatorCallable
 {
+    protected FunctionalValidatorMode $mode;
+
     /**
      * @param validator_callable $validator
      */
@@ -29,7 +31,7 @@ abstract class FunctionalValidator implements ValidatorCallable
      *
      * @return validator_callable
      */
-    public function getCallable(): string|array|Closure
+    final public function getCallable(): string|array|Closure
     {
         return $this->validator;
     }
@@ -39,5 +41,8 @@ abstract class FunctionalValidator implements ValidatorCallable
      *
      * @return FunctionalValidatorMode バリデーションモード
      */
-    abstract public function getMode(): FunctionalValidatorMode;
+    final public function getMode(): FunctionalValidatorMode
+    {
+        return $this->mode;
+    }
 }

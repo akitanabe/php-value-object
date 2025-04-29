@@ -21,13 +21,5 @@ use PhpValueObject\Validators\FunctionalValidatorMode;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class PlainValidator extends FunctionalValidator
 {
-    /**
-     * バリデーションのモードを取得する
-     *
-     * @return FunctionalValidatorMode バリデーションモード
-     */
-    public function getMode(): FunctionalValidatorMode
-    {
-        return FunctionalValidatorMode::PLAIN;
-    }
+    protected FunctionalValidatorMode $mode = FunctionalValidatorMode::PLAIN;
 }
