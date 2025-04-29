@@ -7,6 +7,11 @@ namespace PhpValueObject\Validators;
 use Attribute;
 use Closure;
 use InvalidArgumentException;
+use PhpValueObject\Core\Validators\FunctionValidator;
+use PhpValueObject\Core\Validators\PlainFunctionValidator;
+use PhpValueObject\Core\Validators\AfterFunctionValidator;
+use PhpValueObject\Core\Validators\BeforeFunctionValidator;
+use PhpValueObject\Core\Validators\WrapFunctionValidator;
 
 /**
  * @phpstan-import-type validator_callable from Validatorable
@@ -46,10 +51,10 @@ final class FieldValidator
     public function getValidator(string|array|Closure $validator): FunctionValidator
     {
         return match ($this->mode) {
-            'plain' => new PlainValidator($validator),
-            'wrap' => new WrapValidator($validator),
-            'before' => new BeforeValidator($validator),
-            'after' => new AfterValidator($validator),
+            'plain' => new PlainFunctionValidator($validator),
+            'wrap' => new WrapFunctionValidator($validator),
+            'before' => new BeforeFunctionValidator($validator),
+            'after' => new AfterFunctionValidator($validator),
         };
     }
 }

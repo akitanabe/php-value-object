@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\PlainValidator;
-use PhpValueObject\Validators\WrapValidator;
-use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\AfterValidator;
+use PhpValueObject\Core\Validators\PlainFunctionValidator;
+use PhpValueObject\Core\Validators\WrapFunctionValidator;
+use PhpValueObject\Core\Validators\BeforeFunctionValidator;
+use PhpValueObject\Core\Validators\AfterFunctionValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -78,10 +78,10 @@ final class FieldValidatorTest extends TestCase
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => ['plain', 'plain', PlainValidator::class],
-            'wrap mode' => ['wrap', 'wrap', WrapValidator::class],
-            'before mode' => ['before', 'before', BeforeValidator::class],
-            'after mode (default)' => ['after', 'after', AfterValidator::class],
+            'plain mode' => ['plain', 'plain', PlainFunctionValidator::class],
+            'wrap mode' => ['wrap', 'wrap', WrapFunctionValidator::class],
+            'before mode' => ['before', 'before', BeforeFunctionValidator::class],
+            'after mode (default)' => ['after', 'after', AfterFunctionValidator::class],
         ];
     }
 }

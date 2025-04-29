@@ -7,7 +7,7 @@ namespace PhpValueObject\Support;
 use InvalidArgumentException;
 use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\FunctionValidator;
+use PhpValueObject\Core\Validators\FunctionValidator;
 use ReflectionClass;
 
 /**
@@ -18,7 +18,9 @@ final class FieldValidatorFactory
     /**
      * @param array<string, FunctionValidator[]> $validatorsByField
      */
-    private function __construct(private readonly array $validatorsByField) {}
+    private function __construct(private readonly array $validatorsByField)
+    {
+    }
 
     /**
      * ReflectionClass から FieldValidatorFactory インスタンスを生成する
