@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\NumericField;
 use PhpValueObject\Core\Validators\NumericValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * NumericFieldクラスのテスト

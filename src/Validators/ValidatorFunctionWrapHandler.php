@@ -7,6 +7,7 @@ namespace PhpValueObject\Validators;
 use ArrayIterator;
 use LogicException;
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Core\Validators\Validatorable;
 
 final class ValidatorFunctionWrapHandler
 {

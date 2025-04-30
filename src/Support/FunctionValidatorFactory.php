@@ -29,8 +29,7 @@ final class FunctionValidatorFactory
     public function __construct(
         private readonly array $fieldValidators,
         private readonly array $functionalValidators,
-    ) {
-    }
+    ) {}
 
     /**
      * FieldValidatorStorageからFunctionValidatorFactoryを作成する

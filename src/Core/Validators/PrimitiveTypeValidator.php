@@ -8,7 +8,6 @@ use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyValue;
 use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use TypeError;
 

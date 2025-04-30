@@ -6,7 +6,7 @@ namespace PhpValueObject\Test\Validators;
 
 use ArrayIterator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Core\Validators\FunctionPlainValidator;

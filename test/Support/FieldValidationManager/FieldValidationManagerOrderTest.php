@@ -14,7 +14,7 @@ use PhpValueObject\Validators\AfterValidator; // Used for property attribute
 use PhpValueObject\Validators\BeforeValidator; // Used for property attribute
 use PhpValueObject\Validators\FieldValidator; // Used only for attribute reading/test setup
 // Added
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\Attributes\Test;

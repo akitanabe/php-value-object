@@ -7,7 +7,7 @@ namespace PhpValueObject\Fields;
 use Attribute;
 use Closure;
 use PhpValueObject\Core\Validators\NumericValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * NumericField

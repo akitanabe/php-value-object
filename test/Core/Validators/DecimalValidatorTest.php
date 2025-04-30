@@ -9,7 +9,7 @@ use PhpValueObject\Core\Validators\DecimalValidator;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use ArrayIterator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * DecimalValidatorのテストクラス

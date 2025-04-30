@@ -40,10 +40,8 @@ final class FieldValidatorTest extends TestCase
      */
     #[Test]
     #[DataProvider('modeProvider')]
-    public function constructorShouldSetMode(
-        ValidatorMode $mode,
-        ValidatorMode $expectedMode,
-    ): void {
+    public function constructorShouldSetMode(ValidatorMode $mode, ValidatorMode $expectedMode,): void
+    {
         $fieldValidator = new FieldValidator('test_field', $mode);
 
         // private プロパティ 'mode' をリフレクションで取得して検証
@@ -82,22 +80,10 @@ final class FieldValidatorTest extends TestCase
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => [
-                ValidatorMode::PLAIN,
-                ValidatorMode::PLAIN,
-                FunctionPlainValidator::class,
-            ],
+            'plain mode' => [ValidatorMode::PLAIN, ValidatorMode::PLAIN, FunctionPlainValidator::class,],
             'wrap mode' => [ValidatorMode::WRAP, ValidatorMode::WRAP, FunctionWrapValidator::class],
-            'before mode' => [
-                ValidatorMode::BEFORE,
-                ValidatorMode::BEFORE,
-                FunctionBeforeValidator::class,
-            ],
-            'after mode (default)' => [
-                ValidatorMode::AFTER,
-                ValidatorMode::AFTER,
-                FunctionAfterValidator::class,
-            ],
+            'before mode' => [ValidatorMode::BEFORE, ValidatorMode::BEFORE, FunctionBeforeValidator::class,],
+            'after mode (default)' => [ValidatorMode::AFTER, ValidatorMode::AFTER, FunctionAfterValidator::class,],
         ];
     }
 

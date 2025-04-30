@@ -15,7 +15,7 @@ use ReflectionProperty;
 use ArrayIterator;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validators\Validatorable; // FunctionValidator から Validatorable に戻す
+use PhpValueObject\Core\Validators\Validatorable; // FunctionValidator から Validatorable に戻す
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
@@ -28,8 +28,7 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する

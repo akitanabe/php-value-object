@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\ListField;
 use PhpValueObject\Core\Validators\ListValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 class ListFieldValidateTestClass
 {

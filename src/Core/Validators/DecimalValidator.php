@@ -6,7 +6,6 @@ namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
 
 /**
  * 小数値のバリデーターを実装するクラス

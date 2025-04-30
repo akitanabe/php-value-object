@@ -6,7 +6,6 @@ namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\DecimalField;
 use PhpValueObject\Core\Validators\DecimalValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 class DecimalFieldValidateTestClass
 {

@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Core\Validators;
 
 use Closure;
-use PhpValueObject\Helpers\FieldsHelper;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
 
 /**
  * バリデーション処理の基底クラス
@@ -24,8 +22,7 @@ abstract class FunctionValidator implements Validatorable
 {
     public function __construct(
         protected readonly Closure $validator,
-    ) {
-    }
+    ) {}
 
     /**
      * バリデーション処理を実行する

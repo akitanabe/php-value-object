@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
+use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * バリデーション処理のインターフェース

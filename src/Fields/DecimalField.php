@@ -7,7 +7,7 @@ namespace PhpValueObject\Fields;
 use Attribute;
 use Closure;
 use PhpValueObject\Core\Validators\DecimalValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * 小数値を扱うフィールドクラス

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
 
 /**
  * 入力値をそのまま返すバリデーターを実装するクラス

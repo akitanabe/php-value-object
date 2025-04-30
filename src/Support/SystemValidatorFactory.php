@@ -11,7 +11,7 @@ use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Core\Validators\NoneTypeValidator;
 use PhpValueObject\Core\Validators\MixedTypeValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * システムバリデータを生成するファクトリークラス

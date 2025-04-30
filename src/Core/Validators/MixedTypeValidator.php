@@ -9,7 +9,6 @@ use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**

@@ -6,7 +6,7 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use PhpValueObject\Core\Validators\IdenticalValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Field extends BaseField

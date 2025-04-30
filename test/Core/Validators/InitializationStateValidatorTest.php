@@ -14,7 +14,7 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use ArrayIterator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 class InitializationStateValidatorTest extends TestCase
 {

@@ -7,7 +7,7 @@ namespace PhpValueObject\Test\Core\Validators;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;

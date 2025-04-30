@@ -7,7 +7,7 @@ namespace PhpValueObject\Fields;
 use Attribute;
 use Closure;
 use PhpValueObject\Core\Validators\ListValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * ListField

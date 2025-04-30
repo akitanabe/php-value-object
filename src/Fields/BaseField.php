@@ -6,7 +6,7 @@ namespace PhpValueObject\Fields;
 
 use Closure;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * フィールドの基底クラス

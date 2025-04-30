@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Core\Validators\IdenticalValidator;
-use PhpValueObject\Validators\Validatorable;
+use PhpValueObject\Core\Validators\Validatorable;
 
 use function strtolower as _strtolower;
 
