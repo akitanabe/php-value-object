@@ -1,0 +1,75 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhpValueObject\Support;
+
+use PhpValueObject\Core\Validators\FunctionBeforeValidator;
+use PhpValueObject\Core\Validators\FunctionAfterValidator;
+use PhpValueObject\Core\Validators\FunctionValidator;
+use PhpValueObject\Core\Validators\FunctionWrapValidator;
+use PhpValueObject\Core\Validators\FunctionPlainValidator;
+use PhpValueObject\Helpers\AttributeHelper;
+use PhpValueObject\Validators\FieldValidator;
+use PhpValueObject\Validators\FunctionalValidator;
+use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorCallable;
+use ReflectionAttribute;
+use ReflectionProperty;
+
+/**
+ * FieldValidatorとFunctionalValidatorからFunctionValidatorを生成するファクトリクラス
+ */
+final class FunctionValidatorFactory
+{
+    /**
+     * @param array<FieldValidator> $fieldValidators フィールドバリデータの配列
+     * @param array<FunctionalValidator> $functionalValidators 関数型バリデータの配列
+     */
+    public function __construct(
+        private readonly array $fieldValidators,
+        private readonly array $functionalValidators,
+    ) {}
+
+    /**
+     * FieldValidatorStorageからFunctionValidatorFactoryを作成する
+     *
+     * @param FieldValidatorStorage $validatorStorage バリデータストレージ
+     * @param ReflectionProperty $property バリデーション対象のプロパティ
+     * @return self
+     */
+    public static function createFromStorage(
+        FieldValidatorStorage $validatorStorage,
+        ReflectionProperty $property,
+    ): self {
+        // プロパティに関連付けられたすべてのFieldValidatorを取得
+        $fieldValidators = $validatorStorage->getValidatorsForProperty($property);
+
+        // プロパティから直接アトリビュートとして指定されたValidatorCallableを取得
+        $functionalValidators = AttributeHelper::getAttributeInstances(
+            $property,
+            FunctionalValidator::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        );
+
+        return new self($fieldValidators, $functionalValidators);
+    }
+
+    /**
+     * 登録されているバリデータからFunctionValidatorを作成する
+     *
+     * @return array<FunctionValidator> 生成されたFunctionValidatorの配列
+     */
+    public function createValidators(): array
+    {
+        return array_map(
+            static fn(ValidatorCallable $validator): FunctionValidator => match ($validator->getMode()) {
+                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validator->getCallable()),
+                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validator->getCallable()),
+                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator->getCallable()),
+                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator->getCallable()),
+            },
+            [...$this->fieldValidators, ...$this->functionalValidators,],
+        );
+    }
+}
