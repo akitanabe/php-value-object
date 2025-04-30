@@ -7,7 +7,7 @@ namespace PhpValueObject\Validators;
 /**
  * バリデーションの実行タイミングや方法を示す Enum
  */
-enum FunctionalValidatorMode
+enum ValidatorMode
 {
     /**
      * FunctionBeforeValidator を利用する場合

@@ -12,7 +12,7 @@ use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +40,7 @@ final class FieldValidatorFactoryTest extends TestCase
     {
         // 1つのフィールドに1つのバリデータを持つクラス
         $class = new class {
-            #[FieldValidator(field: 'name', mode: FunctionalValidatorMode::AFTER)]
+            #[FieldValidator(field: 'name', mode: ValidatorMode::AFTER)]
             public static function validateName(string $value): string
             {
                 return $value . '_validated';
@@ -68,13 +68,13 @@ final class FieldValidatorFactoryTest extends TestCase
     {
         // 1つのフィールドに複数のバリデータを持つクラス
         $class = new class {
-            #[FieldValidator(field: 'age', mode: FunctionalValidatorMode::BEFORE)]
+            #[FieldValidator(field: 'age', mode: ValidatorMode::BEFORE)]
             public static function validateAgeType(mixed $value): int
             {
                 return (int) $value;
             }
 
-            #[FieldValidator(field: 'age', mode: FunctionalValidatorMode::AFTER)]
+            #[FieldValidator(field: 'age', mode: ValidatorMode::AFTER)]
             public static function validateAgeRange(int $value): int
             {
                 if ($value < 0) {
@@ -104,14 +104,14 @@ final class FieldValidatorFactoryTest extends TestCase
     {
         // 複数のフィールドにバリデータを持つクラス
         $class = new class {
-            #[FieldValidator(field: 'email', mode: FunctionalValidatorMode::PLAIN)]
+            #[FieldValidator(field: 'email', mode: ValidatorMode::PLAIN)]
             public static function validateEmailFormat(string $value): string
             {
                 // dummy validation
                 return $value;
             }
 
-            #[FieldValidator(field: 'password', mode: FunctionalValidatorMode::WRAP)]
+            #[FieldValidator(field: 'password', mode: ValidatorMode::WRAP)]
             public static function hashPassword(string $value, callable $next): string
             {
                 // dummy validation
@@ -161,12 +161,12 @@ final class FieldValidatorFactoryTest extends TestCase
     }
 
     /**
-     * @param FunctionalValidatorMode $mode テスト対象のモード
+     * @param ValidatorMode $mode テスト対象のモード
      * @param class-string<FunctionValidator> $expectedClass 期待される FunctionValidator のクラス名
      */
     #[DataProvider('modeProvider')]
     #[Test]
-    public function testCreateFromClassWithDifferentModes(FunctionalValidatorMode $mode, string $expectedClass): void
+    public function testCreateFromClassWithDifferentModes(ValidatorMode $mode, string $expectedClass): void
     {
         // 動的にモードを設定するクラス定義 (クロージャを使用)
         // FieldValidator の namespace を修正
@@ -176,14 +176,14 @@ final class FieldValidatorFactoryTest extends TestCase
             private string \$mode;
             public function __construct(string \$mode) { \$this->mode = \$mode; }
 
-            #[\\PhpValueObject\\Validators\\FieldValidator(field: 'data', mode: \\PhpValueObject\\Validators\\FunctionalValidatorMode::{$modeString})]
+            #[\\PhpValueObject\\Validators\\FieldValidator(field: 'data', mode: \\PhpValueObject\\Validators\\ValidatorMode::{$modeString})]
             public static function validateData(mixed \$value): mixed
             {
                 return \$value;
             }
         };
         PHP;
-        $class = eval($classDefinition);
+        $class = eval ($classDefinition);
 
         $refClass = new ReflectionClass($class);
 
@@ -203,15 +203,15 @@ final class FieldValidatorFactoryTest extends TestCase
     }
 
     /**
-     * @return array<string, array{FunctionalValidatorMode, class-string<FunctionValidator>}>
+     * @return array<string, array{ValidatorMode, class-string<FunctionValidator>}>
      */
     public static function modeProvider(): array
     {
         return [
-            'plain mode' => [FunctionalValidatorMode::PLAIN, FunctionPlainValidator::class],
-            'wrap mode' => [FunctionalValidatorMode::WRAP, FunctionWrapValidator::class],
-            'before mode' => [FunctionalValidatorMode::BEFORE, FunctionBeforeValidator::class],
-            'after mode' => [FunctionalValidatorMode::AFTER, FunctionAfterValidator::class],
+            'plain mode' => [ValidatorMode::PLAIN, FunctionPlainValidator::class],
+            'wrap mode' => [ValidatorMode::WRAP, FunctionWrapValidator::class],
+            'before mode' => [ValidatorMode::BEFORE, FunctionBeforeValidator::class],
+            'after mode' => [ValidatorMode::AFTER, FunctionAfterValidator::class],
         ];
     }
 }

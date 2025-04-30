@@ -17,7 +17,7 @@ use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\WrapValidator;
 use PhpValueObject\Validators\PlainValidator;
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -69,12 +69,12 @@ class FunctionValidatorFactoryTest extends TestCase
         $this->testProperty = $reflectionClass->getProperty('testProperty');
 
         // FieldValidatorStorageにテスト用のバリデータを登録
-        $beforeValidator = new FieldValidator('testProperty', FunctionalValidatorMode::BEFORE);
+        $beforeValidator = new FieldValidator('testProperty', ValidatorMode::BEFORE);
         $beforeValidator->setCallable(function ($value) {
             return 'field_before_' . $value;
         });
 
-        $afterValidator = new FieldValidator('testProperty', FunctionalValidatorMode::AFTER);
+        $afterValidator = new FieldValidator('testProperty', ValidatorMode::AFTER);
         $afterValidator->setCallable(function ($value) {
             return $value . '_field_after';
         });

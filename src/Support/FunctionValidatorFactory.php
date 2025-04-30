@@ -12,7 +12,7 @@ use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Helpers\AttributeHelper;
 use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Validators\FunctionalValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PhpValueObject\Validators\ValidatorCallable;
 use ReflectionAttribute;
 use ReflectionProperty;
@@ -29,7 +29,8 @@ final class FunctionValidatorFactory
     public function __construct(
         private readonly array $fieldValidators,
         private readonly array $functionalValidators,
-    ) {}
+    ) {
+    }
 
     /**
      * FieldValidatorStorageからFunctionValidatorFactoryを作成する
@@ -64,10 +65,10 @@ final class FunctionValidatorFactory
     {
         return array_map(
             static fn(ValidatorCallable $validator): FunctionValidator => match ($validator->getMode()) {
-                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validator->resolveValidator()),
-                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validator->resolveValidator()),
-                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator->resolveValidator()),
-                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator->resolveValidator()),
+                ValidatorMode::BEFORE => new FunctionBeforeValidator($validator->resolveValidator()),
+                ValidatorMode::AFTER => new FunctionAfterValidator($validator->resolveValidator()),
+                ValidatorMode::WRAP => new FunctionWrapValidator($validator->resolveValidator()),
+                ValidatorMode::PLAIN => new FunctionPlainValidator($validator->resolveValidator()),
             },
             [...$this->fieldValidators, ...$this->functionalValidators,],
         );

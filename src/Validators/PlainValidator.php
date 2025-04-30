@@ -20,5 +20,5 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class PlainValidator extends FunctionalValidator
 {
-    protected FunctionalValidatorMode $mode = FunctionalValidatorMode::PLAIN;
+    protected ValidatorMode $mode = ValidatorMode::PLAIN;
 }

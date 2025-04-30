@@ -16,7 +16,7 @@ use InvalidArgumentException;
  */
 abstract class FunctionalValidator implements ValidatorCallable
 {
-    protected FunctionalValidatorMode $mode;
+    protected ValidatorMode $mode;
     /**
      * バリデーション処理を行う callable
      *
@@ -45,9 +45,9 @@ abstract class FunctionalValidator implements ValidatorCallable
     /**
      * バリデーションのモードを取得する
      *
-     * @return FunctionalValidatorMode バリデーションモード
+     * @return ValidatorMode バリデーションモード
      */
-    final public function getMode(): FunctionalValidatorMode
+    final public function getMode(): ValidatorMode
     {
         return $this->mode;
     }

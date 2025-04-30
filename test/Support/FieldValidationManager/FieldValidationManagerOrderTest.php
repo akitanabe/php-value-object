@@ -16,7 +16,7 @@ use PhpValueObject\Validators\FieldValidator; // Used only for attribute reading
 // Added
 use PhpValueObject\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass; // 追加
@@ -140,9 +140,9 @@ class FieldValidationManagerOrderTest extends TestCase
     #[Test]
     public function testMultipleFieldValidatorsOrder(): void
     {
-        $firstBeforeValidator = new FieldValidator('name', FunctionalValidatorMode::BEFORE);
-        $secondBeforeValidator = new FieldValidator('name', FunctionalValidatorMode::BEFORE);
-        $afterValidator = new FieldValidator('name', FunctionalValidatorMode::AFTER);
+        $firstBeforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
+        $secondBeforeValidator = new FieldValidator('name', ValidatorMode::BEFORE);
+        $afterValidator = new FieldValidator('name', ValidatorMode::AFTER);
 
         // リフレクションを使用して FieldValidatorFactory インスタンスを生成・設定
         $validatorsForField = [
@@ -191,8 +191,8 @@ class FieldValidationManagerOrderTest extends TestCase
     #[Test]
     public function testAttributeAndFieldValidatorOrder(): void
     {
-        $beforeFieldValidator = new FieldValidator('testProp', FunctionalValidatorMode::BEFORE);
-        $afterFieldValidator = new FieldValidator('testProp', FunctionalValidatorMode::AFTER);
+        $beforeFieldValidator = new FieldValidator('testProp', ValidatorMode::BEFORE);
+        $afterFieldValidator = new FieldValidator('testProp', ValidatorMode::AFTER);
 
         // リフレクションを使用して FieldValidatorFactory インスタンスを生成・設定
         $validatorsForField = [

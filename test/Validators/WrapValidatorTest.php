@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\WrapValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class WrapValidatorTest extends TestCase
 {
     /**
-     * getModeがFunctionalValidatorMode::WRAPを返すことを確認
+     * getModeがValidatorMode::WRAPを返すことを確認
      */
     #[Test]
     public function shouldReturnCorrectMode(): void
@@ -33,7 +33,7 @@ class WrapValidatorTest extends TestCase
         $mode = $validator->getMode();
 
         // Assert
-        $this->assertSame(FunctionalValidatorMode::WRAP, $mode);
+        $this->assertSame(ValidatorMode::WRAP, $mode);
     }
 
     /**

@@ -18,5 +18,5 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class WrapValidator extends FunctionalValidator
 {
-    protected FunctionalValidatorMode $mode = FunctionalValidatorMode::WRAP;
+    protected ValidatorMode $mode = ValidatorMode::WRAP;
 }

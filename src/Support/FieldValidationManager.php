@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Support;
 
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
@@ -28,7 +28,8 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {}
+    ) {
+    }
 
     /**
      * プロパティからFieldValidationManagerを生成する
@@ -49,10 +50,10 @@ class FieldValidationManager
         // 属性から取得したバリデータを追加
         $attributeValidators = array_map(
             static fn(ValidatorCallable $validatorCallable): Validatorable => match ($validatorCallable->getMode()) {
-                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validatorCallable->resolveValidator()),
-                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validatorCallable->resolveValidator()),
-                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validatorCallable->resolveValidator()),
-                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validatorCallable->resolveValidator()),
+                ValidatorMode::BEFORE => new FunctionBeforeValidator($validatorCallable->resolveValidator()),
+                ValidatorMode::AFTER => new FunctionAfterValidator($validatorCallable->resolveValidator()),
+                ValidatorMode::WRAP => new FunctionWrapValidator($validatorCallable->resolveValidator()),
+                ValidatorMode::PLAIN => new FunctionPlainValidator($validatorCallable->resolveValidator()),
             },
             AttributeHelper::getAttributeInstances(
                 $property,

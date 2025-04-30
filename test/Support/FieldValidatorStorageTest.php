@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PhpValueObject\Validators\FieldValidator;
 use PhpValueObject\Support\FieldValidatorStorage;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -100,7 +100,7 @@ class FieldValidatorStorageTest extends TestCase
         $refClass = new ReflectionClass(TestClassWithValidators::class);
         $storage = FieldValidatorStorage::createFromClass($refClass);
         $nameProperty = $refClass->getProperty('name');
-        $validator = new FieldValidator('name', FunctionalValidatorMode::BEFORE);
+        $validator = new FieldValidator('name', ValidatorMode::BEFORE);
         $validator->setCallable([TestClassWithValidators::class, 'additionalValidator']);
 
         // Act
@@ -153,7 +153,7 @@ class TestClassWithValidators
         return $value >= 18;
     }
 
-    #[FieldValidator('age', FunctionalValidatorMode::BEFORE)]
+    #[FieldValidator('age', ValidatorMode::BEFORE)]
     public static function validateAgeMax(int $value): bool
     {
         return $value <= 120;

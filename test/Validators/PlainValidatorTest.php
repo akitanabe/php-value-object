@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\PlainValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 class PlainValidatorTest extends TestCase
 {
     /**
-     * getModeがFunctionalValidatorMode::PLAINを返すことを確認
+     * getModeがValidatorMode::PLAINを返すことを確認
      */
     #[Test]
     public function shouldReturnCorrectMode(): void
@@ -33,7 +33,7 @@ class PlainValidatorTest extends TestCase
         $mode = $validator->getMode();
 
         // Assert
-        $this->assertSame(FunctionalValidatorMode::PLAIN, $mode);
+        $this->assertSame(ValidatorMode::PLAIN, $mode);
     }
 
     /**

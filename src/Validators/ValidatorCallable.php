@@ -7,7 +7,7 @@ namespace PhpValueObject\Validators;
 use Closure;
 
 /**
- * バリデーション処理 (callable) とその実行モード (FunctionalValidatorMode) を提供するインターフェース
+ * バリデーション処理 (callable) とその実行モード (ValidatorMode) を提供するインターフェース
  * @phpstan-type validator_callable callable-string|class-string|array{string|object, string}|Closure
  */
 interface ValidatorCallable
@@ -21,7 +21,7 @@ interface ValidatorCallable
     /**
      * バリデーションのモードを取得する
      *
-     * @return FunctionalValidatorMode バリデーションモード
+     * @return ValidatorMode バリデーションモード
      */
-    public function getMode(): FunctionalValidatorMode;
+    public function getMode(): ValidatorMode;
 }

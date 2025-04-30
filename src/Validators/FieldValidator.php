@@ -24,7 +24,7 @@ final class FieldValidator implements ValidatorCallable
     /**
      * バリデーターモード
      */
-    private readonly FunctionalValidatorMode $mode;
+    private readonly ValidatorMode $mode;
 
     /**
      * バリデーション処理を行うcallable
@@ -38,7 +38,7 @@ final class FieldValidator implements ValidatorCallable
      */
     public function __construct(
         public readonly string $field,
-        FunctionalValidatorMode $mode = FunctionalValidatorMode::AFTER,
+        ValidatorMode $mode = ValidatorMode::AFTER,
     ) {
         $this->mode = $mode;
     }
@@ -72,9 +72,9 @@ final class FieldValidator implements ValidatorCallable
     /**
      * バリデーションのモードを取得する
      *
-     * @return FunctionalValidatorMode バリデーションモード
+     * @return ValidatorMode バリデーションモード
      */
-    public function getMode(): FunctionalValidatorMode
+    public function getMode(): ValidatorMode
     {
         return $this->mode;
     }
@@ -89,10 +89,10 @@ final class FieldValidator implements ValidatorCallable
     {
         $validator = FieldsHelper::createFactory($callable);
         return match ($this->mode) {
-            FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator),
-            FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator),
-            FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validator),
-            FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validator),
+            ValidatorMode::PLAIN => new FunctionPlainValidator($validator),
+            ValidatorMode::WRAP => new FunctionWrapValidator($validator),
+            ValidatorMode::BEFORE => new FunctionBeforeValidator($validator),
+            ValidatorMode::AFTER => new FunctionAfterValidator($validator),
         };
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Validators;
 
 use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 class AfterValidatorTest extends TestCase
 {
     /**
-     * getModeがFunctionalValidatorMode::AFTERを返すことを確認
+     * getModeがValidatorMode::AFTERを返すことを確認
      */
     #[Test]
     public function shouldReturnCorrectMode(): void
@@ -33,7 +33,7 @@ class AfterValidatorTest extends TestCase
         $mode = $validator->getMode();
 
         // Assert
-        $this->assertSame(FunctionalValidatorMode::AFTER, $mode);
+        $this->assertSame(ValidatorMode::AFTER, $mode);
     }
 
     /**

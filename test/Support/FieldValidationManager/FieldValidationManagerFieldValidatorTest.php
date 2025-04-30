@@ -11,7 +11,7 @@ use PhpValueObject\Support\FieldValidatorFactory; // 追加
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\FunctionalValidatorMode;
+use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass; // 追加
@@ -22,7 +22,7 @@ class TestClassWithFieldValidators
 {
     public string $name;
 
-    #[FieldValidator('name', FunctionalValidatorMode::BEFORE)]
+    #[FieldValidator('name', ValidatorMode::BEFORE)]
     public static function validateLength(string $value): string
     {
         if (strlen($value) < 3) {
@@ -31,7 +31,7 @@ class TestClassWithFieldValidators
         return $value;
     }
 
-    #[FieldValidator('name', FunctionalValidatorMode::AFTER)]
+    #[FieldValidator('name', ValidatorMode::AFTER)]
     public static function formatName(string $value): string
     {
         return ucfirst($value);
