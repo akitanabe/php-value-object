@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PhpValueObject\Core\Validators\FunctionValidator;
 use ReflectionClass;
+use RuntimeException;
 
 /**
  * @phpstan-import-type validator_callable from ValidatorCallable
@@ -98,5 +99,59 @@ final class FieldValidatorTest extends TestCase
                 FunctionAfterValidator::class,
             ],
         ];
+    }
+
+    /**
+     * FieldValidatorがValidatorCallableインターフェースを実装していることを確認する
+     */
+    #[Test]
+    public function shouldImplementValidatorCallableInterface(): void
+    {
+        $fieldValidator = new FieldValidator('test_field');
+        $this->assertInstanceOf(ValidatorCallable::class, $fieldValidator);
+    }
+
+    /**
+     * setCallableメソッドがcallableを正しく設定し、getCallableで取得できることを確認する
+     */
+    #[Test]
+    public function setCallableShouldSetCallableCorrectly(): void
+    {
+        $fieldValidator = new FieldValidator('test_field');
+        $callable = function ($value) {
+            return $value !== null;
+        };
+
+        $result = $fieldValidator->setCallable($callable);
+
+        // メソッドチェーンのためにselfが返されることを確認
+        $this->assertSame($fieldValidator, $result);
+
+        // getCallableで設定したcallableが返されることを確認
+        $this->assertSame($callable, $fieldValidator->getCallable());
+    }
+
+    /**
+     * callableが設定されていない場合、getCallableが例外をスローすることを確認する
+     */
+    #[Test]
+    public function getCallableShouldThrowExceptionWhenCallableIsNotSet(): void
+    {
+        $fieldValidator = new FieldValidator('test_field');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Validator callable is not set');
+
+        $fieldValidator->getCallable();
+    }
+
+    /**
+     * getModeがコンストラクタで設定したモードを返すことを確認する
+     */
+    #[Test]
+    public function getModeShouldReturnCorrectMode(): void
+    {
+        $fieldValidator = new FieldValidator('test_field', FunctionalValidatorMode::PLAIN);
+        $this->assertSame(FunctionalValidatorMode::PLAIN, $fieldValidator->getMode());
     }
 }
