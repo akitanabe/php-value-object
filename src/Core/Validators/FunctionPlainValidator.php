@@ -28,7 +28,6 @@ final class FunctionPlainValidator extends FunctionValidator
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         // バリデーション処理を実行（次のハンドラーは呼び出さない）
-        $validator = $this->resolveValidator();
-        return $validator($value);
+        return ($this->validator)($value);
     }
 }

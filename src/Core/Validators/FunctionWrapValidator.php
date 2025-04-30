@@ -34,7 +34,6 @@ final class FunctionWrapValidator extends FunctionValidator
         }
 
         // バリデータ関数を解決し、バリデータに次のハンドラーを渡す
-        $validator = $this->resolveValidator();
-        return $validator($value, $handler);
+        return ($this->validator)($value, $handler);
     }
 }

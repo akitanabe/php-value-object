@@ -82,63 +82,6 @@ class FunctionWrapValidatorTest extends TestCase
         $this->assertEquals('before_test_next_after', $result);
     }
 
-    /**
-     * 配列形式のバリデータが正しく解決され、ハンドラーと組み合わせて動作することを確認
-     */
-    #[Test]
-    public function shouldResolveArrayValidator(): void
-    {
-        // テスト用のバリデーション関数を持つクラス
-        $validatorClass = new class {
-            public static function wrapValue(string $value, callable $next): string
-            {
-                return '[' . $next($value) . ']';
-            }
-        };
-
-        // Arrange
-        $validator = new FunctionWrapValidator([get_class($validatorClass), 'wrapValue']);
-        $value = 'test';
-
-        // ハンドラーを作成
-        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_processed');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
-
-        // Act
-        $result = $validator->validate($value, $handler);
-
-        // Assert
-        $this->assertEquals('[test_processed]', $result);
-    }
-
-    /**
-     * 文字列形式のバリデータが正しく解決され、ハンドラーと組み合わせて動作することを確認
-     */
-    #[Test]
-    public function shouldWorkWithStringValidatorAndHandler(): void
-    {
-        // Arrange - カスタム関数を定義
-        $functionName = 'testWrapFunction';
-
-        $validator = new FunctionWrapValidator(__NAMESPACE__ . '\\' . $functionName);
-        $value = 'test';
-
-        // 実際のハンドラーを作成
-        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_modified');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
-
-        // Act
-        $result = $validator->validate($value, $handler);
-
-        // Assert
-        // FunctionWrapValidatorはハンドラーの結果を括弧で囲む
-        $this->assertEquals('(test_modified)', $result);
-    }
-
     protected function tearDown(): void
     {
         parent::tearDown();

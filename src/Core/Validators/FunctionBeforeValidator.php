@@ -28,8 +28,7 @@ final class FunctionBeforeValidator extends FunctionValidator
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         // バリデーション処理を実行
-        $validator = $this->resolveValidator();
-        $validatedValue = $validator($value);
+        $validatedValue = ($this->validator)($value);
 
         // 次のハンドラーが存在する場合は実行
         if ($handler !== null) {

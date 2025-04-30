@@ -33,7 +33,6 @@ final class FunctionAfterValidator extends FunctionValidator
         }
 
         // 次のハンドラーの結果に対してバリデーション処理を実行
-        $validator = $this->resolveValidator();
-        return $validator($value);
+        return ($this->validator)($value);
     }
 }

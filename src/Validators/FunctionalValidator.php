@@ -17,13 +17,20 @@ use InvalidArgumentException;
 abstract class FunctionalValidator implements ValidatorCallable
 {
     protected FunctionalValidatorMode $mode;
+    /**
+     * バリデーション処理を行う callable
+     *
+     * @var validator_callable
+     */
+    private readonly string|array|Closure $callable;
 
     /**
      * @param validator_callable $validator
      */
-    public function __construct(
-        protected readonly string|array|Closure $validator,
-    ) {}
+    public function __construct(string|array|Closure $validator)
+    {
+        $this->callable = $validator;
+    }
 
     /**
      * バリデーション処理を行う callable を返す
@@ -32,7 +39,7 @@ abstract class FunctionalValidator implements ValidatorCallable
      */
     final public function resolveValidator(): Closure
     {
-        return FieldsHelper::createFactory($this->validator);
+        return FieldsHelper::createFactory($this->callable);
     }
 
     /**

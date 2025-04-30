@@ -82,11 +82,12 @@ final class FieldValidator implements ValidatorCallable
     /**
      * 自身の mode と指定された callable から FunctionValidator インスタンスを生成する
      *
-     * @param validator_callable $validator バリデーション処理を行う callable
+     * @param validator_callable $callable バリデーション処理を行う callable
      * @return FunctionValidator 生成された FunctionValidator インスタンス
      */
-    public function getValidator(string|array|Closure $validator): FunctionValidator
+    public function getValidator(string|array|Closure $callable): FunctionValidator
     {
+        $validator = FieldsHelper::createFactory($callable);
         return match ($this->mode) {
             FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator),
             FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator),
