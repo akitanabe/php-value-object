@@ -30,7 +30,7 @@ class PrimitiveTypeValidator implements Validatorable
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
         // $handlerがnullかどうかで処理を分岐するアロー関数
-        $processValue = fn(mixed $v) => $handler !== null ? $handler($v) : $v;
+        $processValue = fn(mixed $v): mixed => $handler !== null ? $handler($v) : $v;
 
         $propertyValue = PropertyValue::fromValue($value);
 
