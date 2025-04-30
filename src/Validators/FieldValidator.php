@@ -11,7 +11,9 @@ use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
+use PhpValueObject\Helpers\FieldsHelper;
 use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * @phpstan-import-type validator_callable from ValidatorCallable
@@ -54,17 +56,17 @@ final class FieldValidator implements ValidatorCallable
     }
 
     /**
-     * バリデーション処理を行う callable を返す
+     * バリデーション処理を行う Closure を返す
      *
-     * @return validator_callable
      * @throws RuntimeException callable が設定されていない場合
+     * @throws InvalidArgumentException callable が無効な場合
      */
-    public function getCallable(): string|array|Closure
+    public function resolveValidator(): Closure
     {
         if ($this->callable === null) {
             throw new RuntimeException('Validator callable is not set');
         }
-        return $this->callable;
+        return FieldsHelper::createFactory($this->callable);
     }
 
     /**

@@ -128,7 +128,7 @@ final class FieldValidatorTest extends TestCase
         $this->assertSame($fieldValidator, $result);
 
         // getCallableで設定したcallableが返されることを確認
-        $this->assertSame($callable, $fieldValidator->getCallable());
+        $this->assertSame($callable, $fieldValidator->resolveValidator());
     }
 
     /**
@@ -142,7 +142,7 @@ final class FieldValidatorTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Validator callable is not set');
 
-        $fieldValidator->getCallable();
+        $fieldValidator->resolveValidator();
     }
 
     /**

@@ -47,7 +47,7 @@ class PlainValidatorTest extends TestCase
         $validator = new PlainValidator($callable);
 
         // Act
-        $returnedCallable = $validator->getCallable();
+        $returnedCallable = $validator->resolveValidator();
 
         // Assert
         $this->assertSame($callable, $returnedCallable);

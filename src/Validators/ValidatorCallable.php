@@ -13,11 +13,10 @@ use Closure;
 interface ValidatorCallable
 {
     /**
-     * バリデーション処理を行う callable を返す
+     * バリデーション処理を行う callable を解決して返す
      *
-     * @return validator_callable
      */
-    public function getCallable(): string|array|Closure;
+    public function resolveValidator(): Closure;
 
     /**
      * バリデーションのモードを取得する

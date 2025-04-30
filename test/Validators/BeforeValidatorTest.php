@@ -47,7 +47,7 @@ class BeforeValidatorTest extends TestCase
         $validator = new BeforeValidator($callable);
 
         // Act
-        $returnedCallable = $validator->getCallable();
+        $returnedCallable = $validator->resolveValidator();
 
         // Assert
         $this->assertSame($callable, $returnedCallable);

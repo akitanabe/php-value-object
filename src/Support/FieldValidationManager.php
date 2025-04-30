@@ -49,10 +49,10 @@ class FieldValidationManager
         // 属性から取得したバリデータを追加
         $attributeValidators = array_map(
             static fn(ValidatorCallable $validatorCallable): Validatorable => match ($validatorCallable->getMode()) {
-                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validatorCallable->getCallable()),
-                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validatorCallable->getCallable()),
-                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validatorCallable->getCallable()),
-                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validatorCallable->getCallable()),
+                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validatorCallable->resolveValidator()),
+                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validatorCallable->resolveValidator()),
+                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validatorCallable->resolveValidator()),
+                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validatorCallable->resolveValidator()),
             },
             AttributeHelper::getAttributeInstances(
                 $property,

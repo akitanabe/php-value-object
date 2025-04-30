@@ -64,10 +64,10 @@ final class FunctionValidatorFactory
     {
         return array_map(
             static fn(ValidatorCallable $validator): FunctionValidator => match ($validator->getMode()) {
-                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validator->getCallable()),
-                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validator->getCallable()),
-                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator->getCallable()),
-                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator->getCallable()),
+                FunctionalValidatorMode::BEFORE => new FunctionBeforeValidator($validator->resolveValidator()),
+                FunctionalValidatorMode::AFTER => new FunctionAfterValidator($validator->resolveValidator()),
+                FunctionalValidatorMode::WRAP => new FunctionWrapValidator($validator->resolveValidator()),
+                FunctionalValidatorMode::PLAIN => new FunctionPlainValidator($validator->resolveValidator()),
             },
             [...$this->fieldValidators, ...$this->functionalValidators,],
         );

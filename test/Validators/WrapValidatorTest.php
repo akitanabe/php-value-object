@@ -47,7 +47,7 @@ class WrapValidatorTest extends TestCase
         $validator = new WrapValidator($callable);
 
         // Act
-        $returnedCallable = $validator->getCallable();
+        $returnedCallable = $validator->resolveValidator();
 
         // Assert
         $this->assertSame($callable, $returnedCallable);

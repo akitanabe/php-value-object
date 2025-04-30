@@ -47,7 +47,7 @@ class AfterValidatorTest extends TestCase
         $validator = new AfterValidator($callable);
 
         // Act
-        $returnedCallable = $validator->getCallable();
+        $returnedCallable = $validator->resolveValidator();
 
         // Assert
         $this->assertSame($callable, $returnedCallable);

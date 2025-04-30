@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PhpValueObject\Validators;
 
 use Closure;
+use PhpValueObject\Helpers\FieldsHelper;
+use InvalidArgumentException;
 
 /**
  * 関数ベースのバリデーション処理の基底クラス
@@ -26,11 +28,11 @@ abstract class FunctionalValidator implements ValidatorCallable
     /**
      * バリデーション処理を行う callable を返す
      *
-     * @return validator_callable
+     * @throws InvalidArgumentException
      */
-    final public function getCallable(): string|array|Closure
+    final public function resolveValidator(): Closure
     {
-        return $this->validator;
+        return FieldsHelper::createFactory($this->validator);
     }
 
     /**
