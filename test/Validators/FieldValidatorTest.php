@@ -40,7 +40,7 @@ final class FieldValidatorTest extends TestCase
      */
     #[Test]
     #[DataProvider('modeProvider')]
-    public function constructorShouldSetMode(ValidatorMode $mode, ValidatorMode $expectedMode,): void
+    public function constructorShouldSetMode(ValidatorMode $mode, ValidatorMode $expectedMode): void
     {
         $fieldValidator = new FieldValidator('test_field', $mode);
 
