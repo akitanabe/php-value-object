@@ -8,15 +8,7 @@ use Closure;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
- * バリデーション処理の基底クラス
- *
- * @example
- * ```php
- * #[FunctionBeforeValidator([ValidationClass::class, 'validateLength'])]
- * #[FunctionAfterValidator([ValidationClass::class, 'formatString'])]
- * public string $value;
- * ```
- *
+ * ユーザー入力バリデーション処理の基底クラス
  */
 abstract class FunctionValidator implements Validatorable
 {

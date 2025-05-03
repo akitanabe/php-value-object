@@ -8,13 +8,9 @@ use LogicException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
- * 値をラップしてバリデーションを実行するクラス
- *
- * @example
- * ```php
- * #[FunctionWrapValidator(fn($value) => strtoupper($value))]
- * public string $value;
- * ```
+ * ユーザー入力バリデーションを実行するクラス
+ * 実行タイミングはシステムバリデータの前で、次のハンドラーを利用するかはユーザー入力バリデータに委任する
+ * つまりハンドラーが実行されなかった場合はFunctionPlainValidatorと同じ動作をする
  */
 final class FunctionWrapValidator extends FunctionValidator
 {

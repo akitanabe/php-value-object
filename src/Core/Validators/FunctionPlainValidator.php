@@ -7,13 +7,10 @@ namespace PhpValueObject\Core\Validators;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
- * 通常のバリデーション処理より先に実行され、他のバリデーション処理をスキップするバリデータ
- *
- * @example
- * ```php
- * #[FunctionPlainValidator([ValidationClass::class, 'validate'])]
- * public string $value;
- * ```
+ * ユーザー入力バリデーションを実行するクラス
+ * 実行タイミングはシステムバリデータの実行前で、次のハンドラーを呼び出さない
+ * つまり、バリデーション処理を実行するが、このハンドラーの後に続くバリデーションは実行しない
+ * (登録されているハンドラーは実行される。例えばFunctionAfterValidatorが先に登録されていればそれは実行される)
  */
 final class FunctionPlainValidator extends FunctionValidator
 {

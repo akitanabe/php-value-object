@@ -7,13 +7,8 @@ namespace PhpValueObject\Core\Validators;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
- * setPropertyValueの前にバリデーションを実行するクラス
- *
- * @example
- * ```php
- * #[FunctionAfterValidator([ValidationClass::class, 'formatString'])]
- * public string $value;
- * ```
+ * ユーザー入力バリデーションを実行するクラス
+ * 実行タイミングはシステムバリデータの実行後
  */
 final class FunctionAfterValidator extends FunctionValidator
 {

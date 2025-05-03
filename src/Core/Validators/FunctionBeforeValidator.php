@@ -7,13 +7,9 @@ namespace PhpValueObject\Core\Validators;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
- * PropertyOperator::valueへの代入前にバリデーションを実行するクラス
+ * ユーザー入力バリデーションを実行するクラス
+ * 実行タイミングはシステムバリデータの実行前
  *
- * @example
- * ```php
- * #[FunctionBeforeValidator([ValidationClass::class, 'validateLength'])]
- * public string $value;
- * ```
  */
 final class FunctionBeforeValidator extends FunctionValidator
 {
