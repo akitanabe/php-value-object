@@ -7,6 +7,7 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\FunctionValidatorFactory;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\AfterValidator;
@@ -14,6 +15,9 @@ use PhpValueObject\Validators\BeforeValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use PhpValueObject\Helpers\AttributeHelper;
+use PhpValueObject\Validators\FunctionalValidator;
+use ReflectionAttribute;
 
 // テスト用のバリデータクラス
 class TestValidatorForFailureOrder
@@ -73,7 +77,17 @@ class FieldValidationManagerFailureOrderTest extends TestCase
     {
         $testClass = new TestClassForFailureOrder1();
         $prop = new ReflectionProperty($testClass, 'testProp');
-        $manager = FieldValidationManager::createFromProperty($prop, $this->field);
+
+        // 属性バリデータを取得して FunctionValidatorFactory を作成
+        $functionValidators = AttributeHelper::getAttributeInstances(
+            $prop,
+            FunctionalValidator::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        );
+        $functionValidatorFactory = new FunctionValidatorFactory([], $functionValidators);
+
+        // FunctionValidatorFactory を使用してマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty($prop, $this->field, $functionValidatorFactory);
 
         $inputData = new InputData(['testProp' => 'fail1']);
         $operator = PropertyOperator::create($prop, $inputData, $this->field);
@@ -91,7 +105,17 @@ class FieldValidationManagerFailureOrderTest extends TestCase
     {
         $testClass = new TestClassForFailureOrder2();
         $prop = new ReflectionProperty($testClass, 'testProp');
-        $manager = FieldValidationManager::createFromProperty($prop, $this->field);
+
+        // 属性バリデータを取得して FunctionValidatorFactory を作成
+        $functionValidators = AttributeHelper::getAttributeInstances(
+            $prop,
+            FunctionalValidator::class,
+            ReflectionAttribute::IS_INSTANCEOF,
+        );
+        $functionValidatorFactory = new FunctionValidatorFactory([], $functionValidators);
+
+        // FunctionValidatorFactory を使用してマネージャーを作成
+        $manager = FieldValidationManager::createFromProperty($prop, $this->field, $functionValidatorFactory);
 
         // 2番目のバリデーター(After)で失敗するケース
         $inputData = new InputData(['testProp' => 'fail2']);

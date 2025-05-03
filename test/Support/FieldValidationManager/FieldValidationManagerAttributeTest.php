@@ -7,6 +7,8 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
+use PhpValueObject\Support\FieldValidatorStorage;
+use PhpValueObject\Support\FunctionValidatorFactory;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\AfterValidator;
@@ -79,12 +81,37 @@ class FieldValidationManagerAttributeTest extends TestCase
         $this->wrapProperty = new ReflectionProperty($class, 'wrappedValue');
         $this->field = new StringField();
 
-        // 属性のみを使用したマネージャー
-        $this->managerWithAttributes = FieldValidationManager::createFromProperty($this->property, $this->field);
+        $fieldValidatorStorage = new FieldValidatorStorage();
+
+        // 属性のみを使用したマネージャー（name プロパティ用）
+        $nameValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $this->property);
+        $this->managerWithAttributes = FieldValidationManager::createFromProperty(
+            $this->property,
+            $this->field,
+            $nameValidatorFactory,
+        );
+
         // PlainValidator用のマネージャー
-        $this->managerWithPlain = FieldValidationManager::createFromProperty($this->plainProperty, $this->field);
+        $plainValidatorFactory = FunctionValidatorFactory::createFromStorage(
+            $fieldValidatorStorage,
+            $this->plainProperty,
+        );
+        $this->managerWithPlain = FieldValidationManager::createFromProperty(
+            $this->plainProperty,
+            $this->field,
+            $plainValidatorFactory,
+        );
+
         // WrapValidator用のマネージャー
-        $this->managerWithWrap = FieldValidationManager::createFromProperty($this->wrapProperty, $this->field);
+        $wrapValidatorFactory = FunctionValidatorFactory::createFromStorage(
+            $fieldValidatorStorage,
+            $this->wrapProperty,
+        );
+        $this->managerWithWrap = FieldValidationManager::createFromProperty(
+            $this->wrapProperty,
+            $this->field,
+            $wrapValidatorFactory,
+        );
     }
 
     /**

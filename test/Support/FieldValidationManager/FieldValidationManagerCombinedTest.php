@@ -7,7 +7,8 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
-use PhpValueObject\Support\FieldValidatorFactory; // 追加
+use PhpValueObject\Support\FieldValidatorStorage;
+use PhpValueObject\Support\FunctionValidatorFactory; // 追加
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Validators\AfterValidator;
@@ -18,6 +19,10 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass; // 追加
 use ReflectionProperty;
+
+// 追加
+// 追加
+ // 追加
 
 // テスト用のバリデータクラス (属性とFieldValidatorの両方で使用)
 class TestClassForCombined
@@ -65,14 +70,19 @@ class FieldValidationManagerCombinedTest extends TestCase
         $this->property = $refClass->getProperty('name');
         $this->field = new StringField();
 
-        // FieldValidatorFactory を生成
-        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
+        // FieldValidatorStoarge を生成
+        $fieldValidatorStorage = FieldValidatorStorage::createFromClass($refClass);
 
-        // FieldValidatorFactory を使用してマネージャーを作成
+        $functionValidatorFactory = FunctionValidatorFactory::createFromStorage(
+            $fieldValidatorStorage,
+            $this->property,
+        );
+
+        // FunctionValidatorFactory を使用してマネージャーを作成
         $this->managerWithBoth = FieldValidationManager::createFromProperty(
             $this->property,
             $this->field,
-            $fieldValidatorFactory, // ファクトリを渡す
+            $functionValidatorFactory, // FunctionValidatorFactory を渡す
         );
     }
 

@@ -4,18 +4,10 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
-use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Validators\ValidatorMode;
-use PhpValueObject\Core\Validators\FunctionBeforeValidator;
-use PhpValueObject\Core\Validators\FunctionPlainValidator;
-use PhpValueObject\Core\Validators\FunctionWrapValidator;
-use PhpValueObject\Validators\ValidatorCallable;
-use ReflectionAttribute;
 use ReflectionProperty;
 use ArrayIterator;
 use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Core\Validators\Validatorable; // FunctionValidator から Validatorable に戻す
+use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
@@ -36,44 +28,28 @@ class FieldValidationManager
      *
      * @param ReflectionProperty $property
      * @param BaseField $field
-     * @param FieldValidatorFactory $fieldValidatorFactory FieldValidator を提供するファクトリ
+     * @param FunctionValidatorFactory|null $functionValidatorFactory 関数型バリデータを提供するファクトリ
      * @param SystemValidatorFactory|null $systemValidators
      */
     public static function createFromProperty(
         ReflectionProperty $property,
         BaseField $field,
-        ?FieldValidatorFactory $fieldValidatorFactory = null,
+        ?FunctionValidatorFactory $functionValidatorFactory = null,
         ?SystemValidatorFactory $systemValidators = null,
     ): self {
-
-        // 属性から取得したバリデータを追加
-        $attributeValidators = array_map(
-            static fn(ValidatorCallable $validatorCallable): Validatorable => match ($validatorCallable->getMode()) {
-                ValidatorMode::BEFORE => new FunctionBeforeValidator($validatorCallable->resolveValidator()),
-                ValidatorMode::AFTER => new FunctionAfterValidator($validatorCallable->resolveValidator()),
-                ValidatorMode::WRAP => new FunctionWrapValidator($validatorCallable->resolveValidator()),
-                ValidatorMode::PLAIN => new FunctionPlainValidator($validatorCallable->resolveValidator()),
-            },
-            AttributeHelper::getAttributeInstances(
-                $property,
-                ValidatorCallable::class,
-                ReflectionAttribute::IS_INSTANCEOF,
-            ),
-        );
-
-        // ファクトリからこのプロパティに対応する FunctionValidator を取得
-        $methodValdators = $fieldValidatorFactory?->getValidatorsForField($property->name) ?? [];
+        // FunctionValidatorFactoryから関数バリデータを取得
+        // (フィールドバリデータと属性バリデータの両方を含む)
+        $functionValidators = $functionValidatorFactory?->createValidators() ?? [];
 
         // システムバリデータを pre と standard に分けて取得
         $preSystemValidators = $systemValidators?->getPreValidators() ?? [];
         $standardSystemValidators = $systemValidators?->getStandardValidators() ?? [];
 
-        // バリデータの順序を変更: preシステム → フィールド → 属性 → standardシステム
+        // バリデータの順序: preシステム → 関数型バリデータ → standardシステム
         $validators = [
             ...$preSystemValidators,       // 1. Pre System Validators
-            ...$methodValdators,           // 2. Field Validators (User Defined)
-            ...$attributeValidators,       // 3. Attribute Validators (User Defined)
-            ...$standardSystemValidators,  // 4. Standard System Validators
+            ...$functionValidators,        // 2. Function Validators (User Defined, includes field and attribute validators)
+            ...$standardSystemValidators,  // 3. Standard System Validators
         ];
 
         return new self(validators: $validators);

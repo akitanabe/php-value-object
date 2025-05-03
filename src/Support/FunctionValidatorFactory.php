@@ -46,13 +46,24 @@ final class FunctionValidatorFactory
         $fieldValidators = $validatorStorage->getValidatorsForProperty($property);
 
         // プロパティから直接アトリビュートとして指定されたValidatorCallableを取得
-        $functionalValidators = AttributeHelper::getAttributeInstances(
+        $functionalValidators = self::getFunctionalValidators($property);
+
+        return new self($fieldValidators, $functionalValidators);
+    }
+
+    /**
+     * FuncationalValidatorを取得する
+     * @param ReflectionProperty $property
+     * @return FunctionalValidator[]
+     */
+    public static function getFunctionalValidators(ReflectionProperty $property,): array
+    {
+        // プロパティから直接アトリビュートとして指定されたValidatorCallableを取得
+        return AttributeHelper::getAttributeInstances(
             $property,
             FunctionalValidator::class,
             ReflectionAttribute::IS_INSTANCEOF,
         );
-
-        return new self($fieldValidators, $functionalValidators);
     }
 
     /**
