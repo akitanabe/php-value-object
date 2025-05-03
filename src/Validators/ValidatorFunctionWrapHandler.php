@@ -10,19 +10,19 @@ use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Core\Validators\Validatorable;
 
 /**
- * @phpstan-type ValidatorQueue SplQueue<Validatorable>
+ * @phpstan-type validator_queue SplQueue<Validatorable>
  */
 final class ValidatorFunctionWrapHandler
 {
     private readonly ?Validatorable $validator;
 
     /**
-     * @var ValidatorQueue
+     * @var validator_queue
      */
     private readonly SplQueue $validators;
 
     /**
-     * @param ValidatorQueue $validators
+     * @param validator_queue $validators
      */
     public function __construct(
         SplQueue $validators,
