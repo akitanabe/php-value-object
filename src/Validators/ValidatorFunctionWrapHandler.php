@@ -9,19 +9,26 @@ use LogicException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Core\Validators\Validatorable;
 
+/**
+ * @phpstan-type ValidatorQueue SplQueue<Validatorable>
+ */
 final class ValidatorFunctionWrapHandler
 {
     private readonly ?Validatorable $validator;
+
+    /**
+     * @var ValidatorQueue
+     */
     private readonly SplQueue $validators;
 
     /**
-     * @param SplQueue<Validatorable> $validators
+     * @param ValidatorQueue $validators
      */
     public function __construct(
         SplQueue $validators,
     ) {
         $this->validators = $validators;
-        $this->validator = !$this->validators->isEmpty() ? $this->validators->dequeue() : null;
+        $this->validator = $this->validators->isEmpty() === false ? $this->validators->dequeue() : null;
     }
 
     /**
