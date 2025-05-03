@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Validators;
 
-use ArrayIterator;
+use SplQueue;
 use LogicException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Core\Validators\Validatorable;
@@ -12,19 +12,16 @@ use PhpValueObject\Core\Validators\Validatorable;
 final class ValidatorFunctionWrapHandler
 {
     private readonly ?Validatorable $validator;
-    private readonly ArrayIterator $validators;
+    private readonly SplQueue $validators;
 
     /**
-     * @param ArrayIterator<int,Validatorable> $validators
+     * @param SplQueue<Validatorable> $validators
      */
     public function __construct(
-        ArrayIterator $validators,
+        SplQueue $validators,
     ) {
         $this->validators = $validators;
-        $this->validator = $this->validators->current();
-
-        // 次のハンドラーを準備
-        $this->validators->next();
+        $this->validator = !$this->validators->isEmpty() ? $this->validators->dequeue() : null;
     }
 
     /**

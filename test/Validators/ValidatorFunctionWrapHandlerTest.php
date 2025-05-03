@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Validators;
 
-use ArrayIterator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Core\Validators\FunctionPlainValidator;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
+use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -35,8 +34,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
         $plainValidator = new FunctionPlainValidator(fn($value) => $value . '_plain');
         $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_after');
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$plainValidator, $afterValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$plainValidator, $afterValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $handler('test');
@@ -56,8 +54,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
         $beforeValidator = new FunctionBeforeValidator(fn($value) => $value . '_before');
         $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_after');
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$beforeValidator, $afterValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$beforeValidator, $afterValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $handler('test');
@@ -78,8 +75,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
         $beforeValidator = new FunctionBeforeValidator(fn($value) => $value . '_before');
         $plainValidator = new FunctionPlainValidator(fn($value) => $value . '_plain');
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$beforeValidator, $plainValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$beforeValidator, $plainValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // 実行して結果を検証
@@ -103,8 +99,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
         $beforeValidator = new FunctionBeforeValidator(fn($value) => $value . '_before');
         $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_after');
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$beforeValidator, $afterValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$beforeValidator, $afterValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // 実行して結果を検証
@@ -136,8 +131,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
 
         // 次のバリデータとしてAfterValidatorを使用
         $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_processed');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$wrapValidator, $afterValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$wrapValidator, $afterValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // 実行して結果を検証
@@ -169,8 +163,7 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
 
         // 次のバリデータを追加（呼び出されないはず）
         $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_should_not_execute');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$wrapValidator, $afterValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$wrapValidator, $afterValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // 'end'を渡すと大文字化して'END'になり、次のハンドラーは呼び出されない
