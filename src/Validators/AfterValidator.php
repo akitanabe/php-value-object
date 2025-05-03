@@ -7,7 +7,7 @@ namespace PhpValueObject\Validators;
 use Attribute;
 
 /**
- * setPropertyValueの前にバリデーションを実行するAttribute
+ * システムバリデータの実行後にバリデーションを実行するAttribute
  *
  * @example
  * ```php

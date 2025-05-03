@@ -9,7 +9,8 @@ use PhpValueObject\Helpers\FieldsHelper;
 use InvalidArgumentException;
 
 /**
- * 関数ベースのバリデーション処理の基底クラス
+ * Attributeバリデーション設定の基底クラス
+ * modeの指定は各具象クラスで行う
  * ValidatorCallable を実装し、バリデーション関数とそのモードを提供する
  *
  * @phpstan-import-type validator_callable from ValidatorCallable
