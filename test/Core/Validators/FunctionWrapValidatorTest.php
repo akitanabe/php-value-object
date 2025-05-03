@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Core\Validators;
 
+use LogicException;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ArrayIterator;
-use LogicException;
+use SplQueue;
 
 /**
  * テスト用のバリデーション関数
@@ -59,16 +60,17 @@ class FunctionWrapValidatorTest extends TestCase
     public function shouldWrapHandlerWithValidation(): void
     {
         // Arrange
+        // 通常の関数でラップバリデータを作成
         $validator = new FunctionWrapValidator(
-            fn($value, $next) => 'before_' . $next($value) . '_after',
+            fn($value, $next) => $next($value . '_before') . '_after'
         );
         $value = 'test';
 
         // 実際のハンドラーを作成
         // 次のバリデータとしてFunctionAfterValidatorを使用する
         $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_next');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$nextValidator]);
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // Act
@@ -76,10 +78,8 @@ class FunctionWrapValidatorTest extends TestCase
 
         // Assert
         // 処理の流れ:
-        // 1. FunctionWrapValidator: 'before_' + (次のハンドラーの結果) + '_after'
-        // 2. FunctionAfterValidator (nextValidator): 'test' + '_next' -> 'test_next'
-        // 3. 最終結果: 'before_test_next_after'
-        $this->assertEquals('before_test_next_after', $result);
+        // 1. 'test' -> 'test_before' -> FunctionAfterValidator -> 'test_before_next' -> + '_after' -> 'test_before_next_after'
+        $this->assertEquals('test_before_next_after', $result);
     }
 
     protected function tearDown(): void

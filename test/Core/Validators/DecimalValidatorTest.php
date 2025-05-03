@@ -8,8 +8,9 @@ use PHPUnit\Framework\TestCase;
 use PhpValueObject\Core\Validators\DecimalValidator;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use ArrayIterator;
 use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Helpers\ValidatorHelper;
+use SplQueue;
 
 /**
  * DecimalValidatorのテストクラス
@@ -303,8 +304,8 @@ class DecimalValidatorTest extends TestCase
             }
         };
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$mockValidator]);
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$mockValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $validator->validate(123.45, $handler);

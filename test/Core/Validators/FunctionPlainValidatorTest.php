@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Core\Validators;
 
 use PhpValueObject\Core\Validators\FunctionPlainValidator;
+use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ArrayIterator;
+use SplQueue;
 
 /**
  * FunctionPlainValidatorのテストクラス
@@ -48,20 +50,20 @@ class FunctionPlainValidatorTest extends TestCase
         $validator = new FunctionPlainValidator(fn($value) => $value . '_plain');
         $value = 'test';
 
-        // ダミーのハンドラーを作成（このハンドラーは呼ばれないはず）
-        $mockValidator = $this->createMock(Validatorable::class);
-        $mockValidator->expects($this->never())
-            ->method('validate');
-
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$mockValidator]);
+        // ハンドラーを使用しても無視されることを確認するために
+        // 次のバリデータとしてFunctionAfterValidatorを使用する
+        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_next');
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // Act
         $result = $validator->validate($value, $handler);
 
         // Assert
-        // ハンドラーが無視され、FunctionPlainValidatorのみが実行される
+        // 処理の流れ:
+        // 1. FunctionPlainValidator: 'test' -> 'test_plain'
+        // 2. 次のハンドラーは無視される
         $this->assertEquals('test_plain', $result);
     }
 

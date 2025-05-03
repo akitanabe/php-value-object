@@ -11,9 +11,10 @@ use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use ArrayIterator;
+use SplQueue;
 use PhpValueObject\Core\Validators\Validatorable;
 
 class InitializationStateValidatorTest extends TestCase
@@ -102,8 +103,8 @@ class InitializationStateValidatorTest extends TestCase
         // 値を変更する実際のバリデータを作成
         $nextValidator = new ValueChangingValidator('changed_value');
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$validator, $nextValidator]);
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$validator, $nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $handler($value);
@@ -127,8 +128,8 @@ class InitializationStateValidatorTest extends TestCase
         // 値を変更する実際のバリデータを作成
         $nextValidator = new ValueChangingValidator('changed_value');
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$validator, $nextValidator]);
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$validator, $nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $handler($value);
@@ -153,8 +154,8 @@ class InitializationStateValidatorTest extends TestCase
         // 値を変更する実際のバリデータを作成
         $nextValidator = new ValueChangingValidator($changedValue);
 
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$validator, $nextValidator]);
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$validator, $nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $handler($value);
@@ -184,7 +185,8 @@ class ValueChangingValidator implements Validatorable
 {
     public function __construct(
         private string $newValue,
-    ) {}
+    ) {
+    }
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {

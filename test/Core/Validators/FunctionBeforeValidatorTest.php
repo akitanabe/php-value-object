@@ -8,10 +8,11 @@ use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ArrayIterator;
+use SplQueue;
 
 /**
  * FunctionBeforeValidatorのテストクラス
@@ -52,8 +53,8 @@ class FunctionBeforeValidatorTest extends TestCase
         // 実際のハンドラーを作成
         // 次のバリデータとしてFunctionAfterValidatorを使用する
         $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_next');
-        /** @var ArrayIterator<int, Validatorable> $validators */
-        $validators = new ArrayIterator([$nextValidator]);
+        // ValidatorHelperを使用してSplQueueを作成
+        $validators = ValidatorHelper::createValidatorQueue([$nextValidator]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         // Act
@@ -62,7 +63,8 @@ class FunctionBeforeValidatorTest extends TestCase
         // Assert
         // 処理の流れ:
         // 1. FunctionBeforeValidator: 'test' -> 'test_before'
-        // 2. FunctionAfterValidator (nextValidator): 'test_before' + '_next' -> 'test_before_next'
+        // 2. 次にハンドラーを呼び出し: 'test_before' -> FunctionAfterValidator
+        // 3. FunctionAfterValidator: 'test_before' -> 'test_before_next'
         $this->assertEquals('test_before_next', $result);
     }
 
