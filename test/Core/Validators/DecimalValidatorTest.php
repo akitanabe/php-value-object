@@ -10,7 +10,6 @@ use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Helpers\ValidatorHelper;
-use SplQueue;
 
 /**
  * DecimalValidatorのテストクラス

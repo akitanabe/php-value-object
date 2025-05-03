@@ -13,7 +13,7 @@ use InvalidArgumentException;
 /**
  * 静的メソッドが対象とし、システムバリデータの実行前後にバリデーションを実行するAttribute
  * modeの指定で、バリデーションの実行タイミングを指定する
- * 
+ *
  * @phpstan-import-type validator_callable from ValidatorCallable
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Support;
 
 use ReflectionProperty;
-use SplQueue;
 use PhpValueObject\Fields\BaseField;
 use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Helpers\ValidatorHelper;
@@ -21,8 +20,7 @@ class FieldValidationManager
      */
     private function __construct(
         private readonly array $validators,
-    ) {
-    }
+    ) {}
 
     /**
      * プロパティからFieldValidationManagerを生成する

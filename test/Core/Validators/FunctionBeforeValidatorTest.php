@@ -7,12 +7,10 @@ namespace PhpValueObject\Test\Core\Validators;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use SplQueue;
 
 /**
  * FunctionBeforeValidatorのテストクラス

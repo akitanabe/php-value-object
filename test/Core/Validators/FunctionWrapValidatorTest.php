@@ -8,12 +8,10 @@ use LogicException;
 use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use SplQueue;
 
 /**
  * テスト用のバリデーション関数
@@ -62,7 +60,7 @@ class FunctionWrapValidatorTest extends TestCase
         // Arrange
         // 通常の関数でラップバリデータを作成
         $validator = new FunctionWrapValidator(
-            fn($value, $next) => $next($value . '_before') . '_after'
+            fn($value, $next) => $next($value . '_before') . '_after',
         );
         $value = 'test';
 

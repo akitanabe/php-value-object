@@ -14,7 +14,6 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use SplQueue;
 use PhpValueObject\Core\Validators\Validatorable;
 
 class InitializationStateValidatorTest extends TestCase
@@ -185,8 +184,7 @@ class ValueChangingValidator implements Validatorable
 {
     public function __construct(
         private string $newValue,
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
