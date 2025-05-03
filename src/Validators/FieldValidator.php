@@ -6,11 +6,6 @@ namespace PhpValueObject\Validators;
 
 use Attribute;
 use Closure;
-use PhpValueObject\Core\Validators\FunctionValidator;
-use PhpValueObject\Core\Validators\FunctionPlainValidator;
-use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Core\Validators\FunctionBeforeValidator;
-use PhpValueObject\Core\Validators\FunctionWrapValidator;
 use PhpValueObject\Helpers\FieldsHelper;
 use RuntimeException;
 use InvalidArgumentException;
@@ -77,22 +72,5 @@ final class FieldValidator implements ValidatorCallable
     public function getMode(): ValidatorMode
     {
         return $this->mode;
-    }
-
-    /**
-     * 自身の mode と指定された callable から FunctionValidator インスタンスを生成する
-     *
-     * @param validator_callable $callable バリデーション処理を行う callable
-     * @return FunctionValidator 生成された FunctionValidator インスタンス
-     */
-    public function getValidator(string|array|Closure $callable): FunctionValidator
-    {
-        $validator = FieldsHelper::createFactory($callable);
-        return match ($this->mode) {
-            ValidatorMode::PLAIN => new FunctionPlainValidator($validator),
-            ValidatorMode::WRAP => new FunctionWrapValidator($validator),
-            ValidatorMode::BEFORE => new FunctionBeforeValidator($validator),
-            ValidatorMode::AFTER => new FunctionAfterValidator($validator),
-        };
     }
 }

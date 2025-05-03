@@ -53,27 +53,6 @@ final class FieldValidatorTest extends TestCase
     }
 
     /**
-     * getValidatorが正しいFunctionValidatorインスタンスを返すことを確認する
-     * @param ValidatorMode $mode
-     * @param ValidatorMode $expectedMode
-     * @param class-string<FunctionValidator> $expectedClass
-     */
-    #[Test]
-    #[DataProvider('modeProvider')]
-    public function getValidatorShouldReturnCorrectInstance(
-        ValidatorMode $mode,
-        ValidatorMode $expectedMode,
-        string $expectedClass,
-    ): void {
-        $fieldValidator = new FieldValidator('test_field', $mode);
-        $dummyCallable = fn($v) => $v;
-
-        $functionValidator = $fieldValidator->getValidator($dummyCallable);
-
-        $this->assertInstanceOf($expectedClass, $functionValidator);
-    }
-
-    /**
      * モードと期待されるクラス名のデータプロバイダ
      * @return array<string, array{ValidatorMode, ValidatorMode, class-string<FunctionValidator>}>
      */
