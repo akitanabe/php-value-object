@@ -19,16 +19,16 @@ final class ValidatorFunctionWrapHandler
     /**
      * @var validator_queue
      */
-    private readonly SplQueue $validators;
+    private readonly SplQueue $validatorQueue;
 
     /**
-     * @param validator_queue $validators
+     * @param validator_queue $validatorQueue
      */
     public function __construct(
-        SplQueue $validators,
+        SplQueue $validatorQueue,
     ) {
-        $this->validators = $validators;
-        $this->validator = $this->validators->isEmpty() === false ? $this->validators->dequeue() : null;
+        $this->validatorQueue = $validatorQueue;
+        $this->validator = $this->validatorQueue->isEmpty() === false ? $this->validatorQueue->dequeue() : null;
     }
 
     /**
@@ -45,7 +45,7 @@ final class ValidatorFunctionWrapHandler
             return $value;
         }
 
-        $nextHandler = new self($this->validators);
+        $nextHandler = new self($this->validatorQueue);
 
         // バリデータに次のハンドラーを含めて実行を委譲
         // 各バリデータ内部で次のハンドラーを呼び出すかどうかを決定する
