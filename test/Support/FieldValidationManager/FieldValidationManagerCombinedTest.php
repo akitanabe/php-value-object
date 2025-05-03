@@ -22,7 +22,7 @@ use ReflectionProperty;
 
 // 追加
 // 追加
- // 追加
+// 追加
 
 // テスト用のバリデータクラス (属性とFieldValidatorの両方で使用)
 class TestClassForCombined
