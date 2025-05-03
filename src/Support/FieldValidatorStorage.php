@@ -47,10 +47,10 @@ final class FieldValidatorStorage extends SplObjectStorage
                 continue;
             }
 
-            $methodName = $refMethod->getName();
+            $methodName = $refMethod->name;
 
             // staticメソッドであることを確認
-            if (!$refMethod->isStatic()) {
+            if ($refMethod->isStatic() === false) {
                 throw new InvalidArgumentException(
                     "Method {$className}::{$methodName} must be static for use with FieldValidator",
                 );
