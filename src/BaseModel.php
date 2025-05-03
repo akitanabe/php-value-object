@@ -11,7 +11,8 @@ use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Helpers\AssertionHelper;
 use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Support\FieldValidatorFactory;
+use PhpValueObject\Support\FieldValidatorStorage;
+use PhpValueObject\Support\FunctionValidatorFactory;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\SystemValidatorFactory;
@@ -39,8 +40,8 @@ abstract class BaseModel
 
         AssertionHelper::assertInheritableClass(refClass: $refClass, modelConfig: $modelConfig);
 
-        // FieldValidatorFactory を生成
-        $fieldValidatorFactory = FieldValidatorFactory::createFromClass($refClass);
+        // FieldValidatorStorage を生成
+        $fieldValidatorStorage = FieldValidatorStorage::createFromClass($refClass);
 
         foreach ($refClass->getProperties() as $property) {
             $field = FieldsHelper::createField($property);
@@ -62,11 +63,16 @@ abstract class BaseModel
                 field: $field,
             );
 
+            $functionValidatorFactory = FunctionValidatorFactory::createFromStorage(
+                validatorStorage: $fieldValidatorStorage,
+                property: $property,
+            );
+
             // フィールドバリデーションマネージャーの作成
             $fieldValidationManager = FieldValidationManager::createFromProperty(
                 $property,
                 $field,
-                $fieldValidatorFactory,
+                $functionValidatorFactory,
                 $systemValidators,
             );
 
