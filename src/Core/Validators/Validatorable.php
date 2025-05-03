@@ -6,6 +6,7 @@ namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use LogicException;
 
 /**
  * バリデーション処理のインターフェース
@@ -21,6 +22,7 @@ interface Validatorable
      * @param ValidatorFunctionWrapHandler|null $handler 内部バリデーション処理をラップするハンドラ
      * @return mixed バリデーション後の値
      * @throws ValidationException バリデーションに失敗した場合
+     * @throws LogicException FunctionWrapValidatorがハンドラなしで実行された場合
      */
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed;
 

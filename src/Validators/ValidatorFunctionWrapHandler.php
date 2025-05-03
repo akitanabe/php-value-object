@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Validators;
 
+use PhpValueObject\Core\Validators\IdenticalValidator;
 use SplQueue;
 use LogicException;
 use PhpValueObject\Exceptions\ValidationException;
@@ -14,12 +15,9 @@ use PhpValueObject\Core\Validators\Validatorable;
  */
 final class ValidatorFunctionWrapHandler
 {
-    private readonly ?Validatorable $validator;
+    private readonly Validatorable $validator;
 
-    /**
-     * @var validator_queue
-     */
-    private readonly SplQueue $validatorQueue;
+    private readonly ?self $nextHandler;
 
     /**
      * @param validator_queue $validatorQueue
@@ -27,8 +25,16 @@ final class ValidatorFunctionWrapHandler
     public function __construct(
         SplQueue $validatorQueue,
     ) {
-        $this->validatorQueue = $validatorQueue;
-        $this->validator = $this->validatorQueue->isEmpty() === false ? $this->validatorQueue->dequeue() : null;
+        if ($validatorQueue->isEmpty() == false) {
+            $this->validator = $validatorQueue->dequeue();
+            $this->nextHandler = new self($validatorQueue);
+
+        } else {
+            // バリデータキューが空になった場合はIdenticalValidatorを使用して返すのみにする
+            $this->validator = new IdenticalValidator();
+            $this->nextHandler = null;
+        }
+
     }
 
     /**
@@ -40,15 +46,8 @@ final class ValidatorFunctionWrapHandler
      */
     public function __invoke(mixed $value): mixed
     {
-        // バリデータがない場合は、値をそのまま返す
-        if ($this->validator === null) {
-            return $value;
-        }
-
-        $nextHandler = new self($this->validatorQueue);
-
         // バリデータに次のハンドラーを含めて実行を委譲
         // 各バリデータ内部で次のハンドラーを呼び出すかどうかを決定する
-        return $this->validator->validate($value, $nextHandler);
+        return $this->validator->validate($value, $this->nextHandler);
     }
 }
