@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
+use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 use PhpValueObject\Core\Validators\NumericValidator;
 use PhpValueObject\Exceptions\ValidationException;
 
@@ -12,7 +13,8 @@ class NumericValidatorTest extends TestCase
 {
     public function testValidateReturnsNumericWhenValid(): void
     {
-        $validator = new NumericValidator();
+        $definition = new NumericValidatorDefinition();
+        $validator = new NumericValidator($definition);
         $result = $validator->validate(123);
 
         $this->assertSame(123, $result);
@@ -20,7 +22,8 @@ class NumericValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenValueIsNotNumeric(): void
     {
-        $validator = new NumericValidator();
+        $definition = new NumericValidatorDefinition();
+        $validator = new NumericValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be numeric');
@@ -30,7 +33,8 @@ class NumericValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenValueIsNotGreaterThan(): void
     {
-        $validator = new NumericValidator(gt: 10);
+        $definition = new NumericValidatorDefinition(gt: 10);
+        $validator = new NumericValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be greater than 10');
@@ -40,7 +44,8 @@ class NumericValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenValueIsNotLessThan(): void
     {
-        $validator = new NumericValidator(lt: 10);
+        $definition = new NumericValidatorDefinition(lt: 10);
+        $validator = new NumericValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be less than 10');
@@ -50,7 +55,8 @@ class NumericValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenValueIsNotGreaterThanOrEqual(): void
     {
-        $validator = new NumericValidator(ge: 10);
+        $definition = new NumericValidatorDefinition(ge: 10);
+        $validator = new NumericValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be greater than or equal to 10');
@@ -60,7 +66,8 @@ class NumericValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenValueIsNotLessThanOrEqual(): void
     {
-        $validator = new NumericValidator(le: 10);
+        $definition = new NumericValidatorDefinition(le: 10);
+        $validator = new NumericValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be less than or equal to 10');
@@ -70,7 +77,8 @@ class NumericValidatorTest extends TestCase
 
     public function testValidateAcceptsNumericStringValue(): void
     {
-        $validator = new NumericValidator();
+        $definition = new NumericValidatorDefinition();
+        $validator = new NumericValidator($definition);
         $result = $validator->validate('123');
 
         $this->assertSame('123', $result);

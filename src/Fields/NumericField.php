@@ -6,6 +6,7 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
+use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 use PhpValueObject\Core\Validators\NumericValidator;
 use PhpValueObject\Core\Validators\Validatorable;
 
@@ -16,6 +17,11 @@ use PhpValueObject\Core\Validators\Validatorable;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class NumericField extends BaseField
 {
+    /**
+     * バリデーション定義
+     */
+    private NumericValidatorDefinition $definition;
+
     /**
      *
      * @param ?default_factory $defaultFactory
@@ -28,12 +34,13 @@ final class NumericField extends BaseField
     public function __construct(
         string|array|Closure|null $defaultFactory = null,
         string|null $alias = null,
-        private float|int|null $gt = null,
-        private float|int|null $lt = null,
-        private float|int|null $ge = null,
-        private float|int|null $le = null,
+        float|int|null $gt = null,
+        float|int|null $lt = null,
+        float|int|null $ge = null,
+        float|int|null $le = null,
     ) {
         parent::__construct($defaultFactory, $alias);
+        $this->definition = new NumericValidatorDefinition($gt, $lt, $ge, $le);
     }
 
     /**
@@ -43,6 +50,6 @@ final class NumericField extends BaseField
      */
     public function getValidator(): Validatorable
     {
-        return new NumericValidator($this->gt, $this->lt, $this->ge, $this->le);
+        return new NumericValidator($this->definition);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Core\Validators;
 
+use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
@@ -13,17 +14,12 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 class NumericValidator implements Validatorable
 {
     /**
-     * @param float|int|null $gt より大きい
-     * @param float|int|null $lt より小さい
-     * @param float|int|null $ge 以上
-     * @param float|int|null $le 以下
+     * @param NumericValidatorDefinition $definition バリデーション定義
      */
     public function __construct(
-        private float|int|null $gt = null,
-        private float|int|null $lt = null,
-        private float|int|null $ge = null,
-        private float|int|null $le = null,
-    ) {}
+        private NumericValidatorDefinition $definition,
+    ) {
+    }
 
     /**
      * 数値のバリデーションを実行
@@ -43,23 +39,31 @@ class NumericValidator implements Validatorable
         $numericValue = (float) $value;
 
         // gt (>) の検証
-        if ($this->gt !== null && $numericValue <= $this->gt) {
-            throw new ValidationException("{$invalidMessage}. Must be greater than {$this->gt}");
+        if ($this->definition->gt !== null && $numericValue <= $this->definition->gt) {
+            throw new ValidationException(
+                "{$invalidMessage}. Must be greater than {$this->definition->gt}"
+            );
         }
 
         // lt (<) の検証
-        if ($this->lt !== null && $numericValue >= $this->lt) {
-            throw new ValidationException("{$invalidMessage}. Must be less than {$this->lt}");
+        if ($this->definition->lt !== null && $numericValue >= $this->definition->lt) {
+            throw new ValidationException(
+                "{$invalidMessage}. Must be less than {$this->definition->lt}"
+            );
         }
 
         // ge (>=) の検証
-        if ($this->ge !== null && $numericValue < $this->ge) {
-            throw new ValidationException("{$invalidMessage}. Must be greater than or equal to {$this->ge}");
+        if ($this->definition->ge !== null && $numericValue < $this->definition->ge) {
+            throw new ValidationException(
+                "{$invalidMessage}. Must be greater than or equal to {$this->definition->ge}"
+            );
         }
 
         // le (<=) の検証
-        if ($this->le !== null && $numericValue > $this->le) {
-            throw new ValidationException("{$invalidMessage}. Must be less than or equal to {$this->le}");
+        if ($this->definition->le !== null && $numericValue > $this->definition->le) {
+            throw new ValidationException(
+                "{$invalidMessage}. Must be less than or equal to {$this->definition->le}"
+            );
         }
 
         $validatedValue = $value;
@@ -70,5 +74,4 @@ class NumericValidator implements Validatorable
 
         return $validatedValue;
     }
-
 }
