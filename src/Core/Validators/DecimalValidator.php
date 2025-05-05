@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Core\Validators;
 
 use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
-use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 

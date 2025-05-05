@@ -256,12 +256,7 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateWithCombinedConstraints(): void
     {
-        $definition = new DecimalValidatorDefinition(
-            maxDigits: 5,
-            decimalPlaces: 2,
-            ge: 10,
-            lt: 1000
-        );
+        $definition = new DecimalValidatorDefinition(maxDigits: 5, decimalPlaces: 2, ge: 10, lt: 1000);
         $validator = new DecimalValidator($definition);
 
         // Valid: 5 digits total, 2 decimal places, >= 10, < 1000

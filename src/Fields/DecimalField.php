@@ -44,14 +44,7 @@ final class DecimalField extends BaseField
         float|int|null $le = null,
     ) {
         parent::__construct($defaultFactory, $alias);
-        $this->definition = new DecimalValidatorDefinition(
-            $maxDigits,
-            $decimalPlaces,
-            $gt,
-            $lt,
-            $ge,
-            $le
-        );
+        $this->definition = new DecimalValidatorDefinition($maxDigits, $decimalPlaces, $gt, $lt, $ge, $le);
     }
 
     /**

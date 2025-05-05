@@ -20,6 +20,5 @@ class NumericValidatorDefinition
         public readonly float|int|null $lt = null,
         public readonly float|int|null $ge = null,
         public readonly float|int|null $le = null,
-    ) {
-    }
+    ) {}
 }

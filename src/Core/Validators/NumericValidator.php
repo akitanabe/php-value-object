@@ -18,8 +18,7 @@ class NumericValidator implements Validatorable
      */
     public function __construct(
         private NumericValidatorDefinition $definition,
-    ) {
-    }
+    ) {}
 
     /**
      * 数値のバリデーションを実行
@@ -40,29 +39,25 @@ class NumericValidator implements Validatorable
 
         // gt (>) の検証
         if ($this->definition->gt !== null && $numericValue <= $this->definition->gt) {
-            throw new ValidationException(
-                "{$invalidMessage}. Must be greater than {$this->definition->gt}"
-            );
+            throw new ValidationException("{$invalidMessage}. Must be greater than {$this->definition->gt}");
         }
 
         // lt (<) の検証
         if ($this->definition->lt !== null && $numericValue >= $this->definition->lt) {
-            throw new ValidationException(
-                "{$invalidMessage}. Must be less than {$this->definition->lt}"
-            );
+            throw new ValidationException("{$invalidMessage}. Must be less than {$this->definition->lt}");
         }
 
         // ge (>=) の検証
         if ($this->definition->ge !== null && $numericValue < $this->definition->ge) {
             throw new ValidationException(
-                "{$invalidMessage}. Must be greater than or equal to {$this->definition->ge}"
+                "{$invalidMessage}. Must be greater than or equal to {$this->definition->ge}",
             );
         }
 
         // le (<=) の検証
         if ($this->definition->le !== null && $numericValue > $this->definition->le) {
             throw new ValidationException(
-                "{$invalidMessage}. Must be less than or equal to {$this->definition->le}"
+                "{$invalidMessage}. Must be less than or equal to {$this->definition->le}",
             );
         }
 
