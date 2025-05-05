@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Core\Validators;
 
+use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
+use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
@@ -18,22 +20,12 @@ class DecimalValidator implements Validatorable
     private NumericValidator $numericValidator;
 
     /**
-     * @param ?non-negative-int $maxDigits 合計桁数の制限
-     * @param ?non-negative-int $decimalPlaces 小数点以下の桁数制限
-     * @param float|int|null $gt より大きい
-     * @param float|int|null $lt より小さい
-     * @param float|int|null $ge 以上
-     * @param float|int|null $le 以下
+     * @param DecimalValidatorDefinition $definition バリデーション定義
      */
     public function __construct(
-        private ?int $maxDigits = null,
-        private ?int $decimalPlaces = null,
-        float|int|null $gt = null,
-        float|int|null $lt = null,
-        float|int|null $ge = null,
-        float|int|null $le = null,
+        private DecimalValidatorDefinition $definition,
     ) {
-        $this->numericValidator = new NumericValidator($gt, $lt, $ge, $le);
+        $this->numericValidator = new NumericValidator($definition);
     }
 
     /**
@@ -53,22 +45,22 @@ class DecimalValidator implements Validatorable
         $stringValue = (string) $value;
 
         // Validate max digits first
-        if ($this->maxDigits !== null) {
+        if ($this->definition->maxDigits !== null) {
             $digits = strlen(str_replace(['.', '-'], '', $stringValue));
-            if ($digits > $this->maxDigits) {
+            if ($digits > $this->definition->maxDigits) {
                 throw new ValidationException(
-                    "Invalid Field Value. Number must have no more than {$this->maxDigits} digits in total",
+                    "Invalid Field Value. Number must have no more than {$this->definition->maxDigits} digits in total",
                 );
             }
         }
 
         // Then decimal places validation
-        if ($this->decimalPlaces !== null) {
+        if ($this->definition->decimalPlaces !== null) {
             $parts = explode('.', $stringValue);
             $currentPlaces = strlen($parts[1] ?? '');
-            if ($currentPlaces > $this->decimalPlaces) {
+            if ($currentPlaces > $this->definition->decimalPlaces) {
                 throw new ValidationException(
-                    "Invalid Field Value. Number must have no more than {$this->decimalPlaces} decimal places",
+                    "Invalid Field Value. Number must have no more than {$this->definition->decimalPlaces} decimal places",
                 );
             }
         }
@@ -82,5 +74,4 @@ class DecimalValidator implements Validatorable
 
         return $validatedValue;
     }
-
 }

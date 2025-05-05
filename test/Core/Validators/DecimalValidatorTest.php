@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
+use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
 use PhpValueObject\Core\Validators\DecimalValidator;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
@@ -29,7 +30,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateReturnsDecimalWhenValid(): void
     {
-        $validator = new DecimalValidator();
+        $definition = new DecimalValidatorDefinition();
+        $validator = new DecimalValidator($definition);
         $result = $validator->validate(123.45);
 
         $this->assertSame(123.45, $result);
@@ -42,7 +44,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateAcceptsIntegerAsValidDecimal(): void
     {
-        $validator = new DecimalValidator();
+        $definition = new DecimalValidatorDefinition();
+        $validator = new DecimalValidator($definition);
         $result = $validator->validate(123);
 
         $this->assertSame(123, $result);
@@ -55,7 +58,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateAcceptsNumericString(): void
     {
-        $validator = new DecimalValidator();
+        $definition = new DecimalValidatorDefinition();
+        $validator = new DecimalValidator($definition);
         $result = $validator->validate('123.45');
 
         $this->assertSame('123.45', $result);
@@ -68,7 +72,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateThrowsExceptionWhenValueIsNotNumeric(): void
     {
-        $validator = new DecimalValidator();
+        $definition = new DecimalValidatorDefinition();
+        $validator = new DecimalValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be numeric');
@@ -84,7 +89,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateThrowsExceptionWhenTotalDigitsExceedMaxDigits(): void
     {
-        $validator = new DecimalValidator(maxDigits: 4);
+        $definition = new DecimalValidatorDefinition(maxDigits: 4);
+        $validator = new DecimalValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Number must have no more than 4 digits in total');
@@ -102,7 +108,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testMaxDigitsIncludesIntegerAndDecimalDigits(): void
     {
-        $validator = new DecimalValidator(maxDigits: 5);
+        $definition = new DecimalValidatorDefinition(maxDigits: 5);
+        $validator = new DecimalValidator($definition);
 
         // 3 digits before decimal point, 2 after (total: 5) - should pass
         $this->assertSame(123.45, $validator->validate(123.45));
@@ -124,7 +131,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testMaxDigitsWithNegativeNumber(): void
     {
-        $validator = new DecimalValidator(maxDigits: 4);
+        $definition = new DecimalValidatorDefinition(maxDigits: 4);
+        $validator = new DecimalValidator($definition);
 
         // Negative sign should not count towards digit count
         $this->assertSame(-123.4, $validator->validate(-123.4));
@@ -141,7 +149,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateThrowsExceptionWhenDecimalPlacesExceedLimit(): void
     {
-        $validator = new DecimalValidator(decimalPlaces: 2);
+        $definition = new DecimalValidatorDefinition(decimalPlaces: 2);
+        $validator = new DecimalValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Number must have no more than 2 decimal places');
@@ -160,7 +169,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testDecimalPlacesOnlyCountsDigitsAfterDecimalPoint(): void
     {
-        $validator = new DecimalValidator(decimalPlaces: 3);
+        $definition = new DecimalValidatorDefinition(decimalPlaces: 3);
+        $validator = new DecimalValidator($definition);
 
         // 3 decimal places - should pass
         $this->assertSame(123.456, $validator->validate(123.456));
@@ -185,7 +195,8 @@ class DecimalValidatorTest extends TestCase
     public function testValidatorSupportsAllNumericRangeValidations(): void
     {
         // Test greater than
-        $gtValidator = new DecimalValidator(gt: 100);
+        $gtDefinition = new DecimalValidatorDefinition(gt: 100);
+        $gtValidator = new DecimalValidator($gtDefinition);
         $this->assertSame(100.1, $gtValidator->validate(100.1));
 
         try {
@@ -196,7 +207,8 @@ class DecimalValidatorTest extends TestCase
         }
 
         // Test less than
-        $ltValidator = new DecimalValidator(lt: 100);
+        $ltDefinition = new DecimalValidatorDefinition(lt: 100);
+        $ltValidator = new DecimalValidator($ltDefinition);
         $this->assertSame(99.9, $ltValidator->validate(99.9));
 
         try {
@@ -207,7 +219,8 @@ class DecimalValidatorTest extends TestCase
         }
 
         // Test greater than or equal to
-        $geValidator = new DecimalValidator(ge: 100);
+        $geDefinition = new DecimalValidatorDefinition(ge: 100);
+        $geValidator = new DecimalValidator($geDefinition);
         $this->assertSame(100.0, $geValidator->validate(100.0));
 
         try {
@@ -218,7 +231,8 @@ class DecimalValidatorTest extends TestCase
         }
 
         // Test less than or equal to
-        $leValidator = new DecimalValidator(le: 100);
+        $leDefinition = new DecimalValidatorDefinition(le: 100);
+        $leValidator = new DecimalValidator($leDefinition);
         $this->assertSame(100.0, $leValidator->validate(100.0));
 
         try {
@@ -242,7 +256,13 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateWithCombinedConstraints(): void
     {
-        $validator = new DecimalValidator(maxDigits: 5, decimalPlaces: 2, ge: 10, lt: 1000);
+        $definition = new DecimalValidatorDefinition(
+            maxDigits: 5,
+            decimalPlaces: 2,
+            ge: 10,
+            lt: 1000
+        );
+        $validator = new DecimalValidator($definition);
 
         // Valid: 5 digits total, 2 decimal places, >= 10, < 1000
         $this->assertSame(123.45, $validator->validate(123.45));
@@ -292,7 +312,8 @@ class DecimalValidatorTest extends TestCase
      */
     public function testValidateUsesValidatorFunctionWrapHandler(): void
     {
-        $validator = new DecimalValidator();
+        $definition = new DecimalValidatorDefinition();
+        $validator = new DecimalValidator($definition);
 
         // 実際のValidatorFunctionWrapHandlerを作成
         $mockValidator = new class implements Validatorable {

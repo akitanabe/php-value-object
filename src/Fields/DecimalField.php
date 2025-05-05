@@ -6,18 +6,24 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
+use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
 use PhpValueObject\Core\Validators\DecimalValidator;
 use PhpValueObject\Core\Validators\Validatorable;
 
 /**
- * 小数値を扱うフィールドクラス
- *
+ * DecimalField
  * @phpstan-import-type default_factory from BaseField
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class DecimalField extends BaseField
+final class DecimalField extends BaseField
 {
     /**
+     * バリデーション定義
+     */
+    private DecimalValidatorDefinition $definition;
+
+    /**
+     *
      * @param ?default_factory $defaultFactory
      * @param ?string $alias
      * @param ?non-negative-int $maxDigits 合計桁数の制限
@@ -29,15 +35,23 @@ class DecimalField extends BaseField
      */
     public function __construct(
         string|array|Closure|null $defaultFactory = null,
-        ?string $alias = null,
-        private ?int $maxDigits = null,
-        private ?int $decimalPlaces = null,
-        private float|int|null $gt = null,
-        private float|int|null $lt = null,
-        private float|int|null $ge = null,
-        private float|int|null $le = null,
+        string|null $alias = null,
+        ?int $maxDigits = null,
+        ?int $decimalPlaces = null,
+        float|int|null $gt = null,
+        float|int|null $lt = null,
+        float|int|null $ge = null,
+        float|int|null $le = null,
     ) {
         parent::__construct($defaultFactory, $alias);
+        $this->definition = new DecimalValidatorDefinition(
+            $maxDigits,
+            $decimalPlaces,
+            $gt,
+            $lt,
+            $ge,
+            $le
+        );
     }
 
     /**
@@ -47,13 +61,6 @@ class DecimalField extends BaseField
      */
     public function getValidator(): Validatorable
     {
-        return new DecimalValidator(
-            $this->maxDigits,
-            $this->decimalPlaces,
-            $this->gt,
-            $this->lt,
-            $this->ge,
-            $this->le,
-        );
+        return new DecimalValidator($this->definition);
     }
 }
