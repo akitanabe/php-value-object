@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpValueObject\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
+use PhpValueObject\Core\Definitions\StringValidatorDefinition;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Core\Validators\StringValidator;
 
@@ -12,7 +13,8 @@ class StringValidatorTest extends TestCase
 {
     public function testValidateReturnsStringWhenValid(): void
     {
-        $validator = new StringValidator();
+        $definition = new StringValidatorDefinition();
+        $validator = new StringValidator($definition);
         $result = $validator->validate('test string');
 
         $this->assertSame('test string', $result);
@@ -20,7 +22,8 @@ class StringValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenValueIsNotString(): void
     {
-        $validator = new StringValidator();
+        $definition = new StringValidatorDefinition();
+        $validator = new StringValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Must be string');
@@ -30,7 +33,8 @@ class StringValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenEmptyStringNotAllowed(): void
     {
-        $validator = new StringValidator(allowEmpty: false);
+        $definition = new StringValidatorDefinition(allowEmpty: false);
+        $validator = new StringValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Field Value cannot be empty');
@@ -40,7 +44,8 @@ class StringValidatorTest extends TestCase
 
     public function testValidateAllowsEmptyStringWhenAllowed(): void
     {
-        $validator = new StringValidator(allowEmpty: true);
+        $definition = new StringValidatorDefinition(allowEmpty: true);
+        $validator = new StringValidator($definition);
         $result = $validator->validate('');
 
         $this->assertSame('', $result);
@@ -48,7 +53,8 @@ class StringValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenStringIsTooShort(): void
     {
-        $validator = new StringValidator(minLength: 5);
+        $definition = new StringValidatorDefinition(minLength: 5);
+        $validator = new StringValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Too short. Must be at least 5 characters');
@@ -58,7 +64,8 @@ class StringValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenStringIsTooLong(): void
     {
-        $validator = new StringValidator(maxLength: 5);
+        $definition = new StringValidatorDefinition(maxLength: 5);
+        $validator = new StringValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Too long. Must be at most 5 characters');
@@ -68,7 +75,8 @@ class StringValidatorTest extends TestCase
 
     public function testValidateThrowsExceptionWhenPatternDoesNotMatch(): void
     {
-        $validator = new StringValidator(pattern: '/^[a-z]+$/');
+        $definition = new StringValidatorDefinition(pattern: '/^[a-z]+$/');
+        $validator = new StringValidator($definition);
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Field Value. Invalid format');
@@ -78,10 +86,10 @@ class StringValidatorTest extends TestCase
 
     public function testValidateAcceptsStringMatchingPattern(): void
     {
-        $validator = new StringValidator(pattern: '/^[a-z]+$/');
+        $definition = new StringValidatorDefinition(pattern: '/^[a-z]+$/');
+        $validator = new StringValidator($definition);
         $result = $validator->validate('abc');
 
         $this->assertSame('abc', $result);
     }
-
 }

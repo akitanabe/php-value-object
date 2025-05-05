@@ -6,6 +6,7 @@ namespace PhpValueObject\Fields;
 
 use Attribute;
 use Closure;
+use PhpValueObject\Core\Definitions\StringValidatorDefinition;
 use PhpValueObject\Core\Validators\StringValidator;
 use PhpValueObject\Core\Validators\Validatorable;
 
@@ -16,6 +17,11 @@ use PhpValueObject\Core\Validators\Validatorable;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class StringField extends BaseField
 {
+    /**
+     * バリデーション定義
+     */
+    private StringValidatorDefinition $definition;
+
     /**
      *
      * @param ?default_factory $defaultFactory
@@ -28,12 +34,13 @@ final class StringField extends BaseField
     public function __construct(
         string|array|Closure|null $defaultFactory = null,
         string|null $alias = null,
-        private bool $allowEmpty = true,
-        private int $minLength = 1,
-        private int $maxLength = PHP_INT_MAX,
-        private string $pattern = '',
+        bool $allowEmpty = true,
+        int $minLength = 1,
+        int $maxLength = PHP_INT_MAX,
+        string $pattern = '',
     ) {
         parent::__construct($defaultFactory, $alias);
+        $this->definition = new StringValidatorDefinition($allowEmpty, $minLength, $maxLength, $pattern);
     }
 
     /**
@@ -43,6 +50,6 @@ final class StringField extends BaseField
      */
     public function getValidator(): Validatorable
     {
-        return new StringValidator($this->allowEmpty, $this->minLength, $this->maxLength, $this->pattern);
+        return new StringValidator($this->definition);
     }
 }
