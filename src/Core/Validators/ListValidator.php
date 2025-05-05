@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Core\Validators;
 
+use PhpValueObject\Core\Definitions\ListValidatorDefinition;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
@@ -17,19 +18,19 @@ class ListValidator implements Validatorable
     private readonly ?PropertyValueType $valueType;
 
     /**
-     * @param ?string $type リストの要素の型名（"int", "float", "string", "object"など）またはクラス名
+     * @param ListValidatorDefinition $definition バリデーション定義
      */
     public function __construct(
-        private readonly ?string $type = null,
+        private readonly ListValidatorDefinition $definition,
     ) {
-        if ($type === null) {
+        if ($this->definition->type === null) {
             $this->valueType = null;
             return;
         }
 
-        $this->valueType = (class_exists($type)
+        $this->valueType = (class_exists($this->definition->type)
             ? PropertyValueType::OBJECT
-            : PropertyValueType::fromShorthand($type));
+            : PropertyValueType::fromShorthand($this->definition->type));
     }
 
     /**
@@ -51,14 +52,14 @@ class ListValidator implements Validatorable
         }
 
         // 型の指定がない場合は配列とリストの検証のみ
-        if ($this->type === null || $this->valueType === null) {
+        if ($this->definition->type === null || $this->valueType === null) {
             return $value;
         }
 
         $listValidation = match (true) {
-            // クラスが指定されている場合
-            ($this->valueType === PropertyValueType::OBJECT && class_exists($this->type))
-            => fn(mixed $element): bool => is_object($element) && $element instanceof $this->type,
+                // クラスが指定されている場合
+            ($this->valueType === PropertyValueType::OBJECT && class_exists($this->definition->type))
+            => fn(mixed $element): bool => is_object($element) && $element instanceof $this->definition->type,
 
             // プリミティブ型 or $typeがobjectの場合
             default => fn(mixed $element): bool => gettype($element) === $this->valueType->value,
@@ -78,5 +79,4 @@ class ListValidator implements Validatorable
 
         return $validatedValue;
     }
-
 }
