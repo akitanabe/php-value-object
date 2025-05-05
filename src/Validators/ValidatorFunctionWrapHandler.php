@@ -15,8 +15,13 @@ use PhpValueObject\Core\Validators\Validatorable;
  */
 final class ValidatorFunctionWrapHandler
 {
-    private ?Validatorable $validator = null;
+    private Validatorable $validator;
+
     private ?self $nextHandler = null;
+
+    /**
+     * @var validator_queue
+     */
     private readonly SplQueue $validatorQueue;
     /**
      * @param validator_queue $validatorQueue
@@ -25,7 +30,6 @@ final class ValidatorFunctionWrapHandler
         SplQueue $validatorQueue,
     ) {
         $this->validatorQueue = $validatorQueue;
-
     }
 
     /**
@@ -38,7 +42,9 @@ final class ValidatorFunctionWrapHandler
     public function __invoke(mixed $value): mixed
     {
         // 実行時にバリデータとnextHandlerを取得する
-        $this->lazyLoadValidator();
+        if (isset($this->validator) === false) {
+            $this->lazyLoadValidator();
+        }
 
         // バリデータに次のハンドラーを含めて実行を委譲
         // 各バリデータ内部で次のハンドラーを呼び出すかどうかを決定する
@@ -50,11 +56,6 @@ final class ValidatorFunctionWrapHandler
      */
     private function lazyLoadValidator(): void
     {
-        // すでにバリデータが設定されている場合は何もしない
-        if ($this->validator !== null) {
-            return;
-        }
-
         // バリデータキューが空になった場合はIdenticalValidatorを使用して返すのみにする
         if ($this->validatorQueue->isEmpty()) {
             $this->validator = new IdenticalValidator();
