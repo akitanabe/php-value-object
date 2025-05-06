@@ -6,6 +6,7 @@ namespace PhpValueObject;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InheritableClassException;
 use PhpValueObject\Exceptions\ValidationException;
@@ -15,7 +16,6 @@ use PhpValueObject\Support\FieldValidatorStorage;
 use PhpValueObject\Support\FunctionValidatorFactory;
 use PhpValueObject\Support\InputData;
 use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Support\SystemValidatorFactory;
 use PhpValueObject\Support\FieldValidationManager;
 use ReflectionClass;
 use stdClass;
@@ -44,6 +44,8 @@ abstract class BaseModel
         $fieldValidatorStorage = FieldValidatorStorage::createFromClass($refClass);
 
         foreach ($refClass->getProperties() as $property) {
+            $validatorDefinitions = new ValidatorDefinitions();
+
             $field = FieldsHelper::createField($property);
 
             $propertyOperator = PropertyOperator::create(
@@ -55,29 +57,31 @@ abstract class BaseModel
             // フィールド設定を取得
             $fieldConfig = FieldConfig::factory($property);
 
-            // SystemValidatorFactoryを使用してシステムバリデータを構築
-            $systemValidators = SystemValidatorFactory::createForProperty(
-                propertyOperator: $propertyOperator,
-                modelConfig: $modelConfig,
-                fieldConfig: $fieldConfig,
-                field: $field,
-            );
-
             $functionValidatorFactory = FunctionValidatorFactory::createFromStorage(
                 validatorStorage: $fieldValidatorStorage,
                 property: $property,
             );
 
+            // バリデータの定義に登録
+            $validatorDefinitions->registerMultiple(
+                $modelConfig,
+                $fieldConfig,
+                $functionValidatorFactory->createDefinition(),
+                $field->getDefinition(),
+                $propertyOperator->metadata,
+            );
+
             // フィールドバリデーションマネージャーの作成
-            $fieldValidationManager = FieldValidationManager::createFromProperty(
-                $property,
-                $field,
-                $functionValidatorFactory,
-                $systemValidators,
+            $fieldValidationManager = new FieldValidationManager(
+                field: $field,
+                functionValidatorFactory: $functionValidatorFactory,
             );
 
             // すべてのバリデーションを実行
-            $validatedPropertyOperator = $fieldValidationManager->processValidation($propertyOperator);
+            $validatedPropertyOperator = $fieldValidationManager->processValidation(
+                $propertyOperator,
+                $validatorDefinitions,
+            );
 
             // 未初期化プロパティが許可されているのならスルー
             if ($validatedPropertyOperator->metadata->initializedStatus === PropertyInitializedStatus::UNINITIALIZED) {

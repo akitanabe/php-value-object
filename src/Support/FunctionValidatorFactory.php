@@ -28,8 +28,8 @@ final class FunctionValidatorFactory
      * @param array<FunctionalValidator> $functionalValidators 関数型バリデータの配列
      */
     public function __construct(
-        private readonly array $fieldValidators,
-        private readonly array $functionalValidators,
+        private readonly array $fieldValidators = [],
+        private readonly array $functionalValidators = [],
     ) {}
 
     /**
