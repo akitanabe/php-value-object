@@ -59,4 +59,24 @@ class StringFieldTest extends TestCase
 
         $this->assertEquals(StringValidator::class, $validator);
     }
+
+    /**
+     * getDefinitionメソッドが適切なStringValidatorDefinitionを返すことをテスト
+     *
+     * 検証内容:
+     * - StringFieldのgetDefinitionメソッドが適切なStringValidatorDefinitionオブジェクトを返すこと
+     */
+    #[Test]
+    public function testGetDefinitionReturnsStringValidatorDefinition(): void
+    {
+        $field = new StringField(allowEmpty: false, minLength: 5, maxLength: 10, pattern: '/^[a-z]+$/');
+        $definition = $field->getDefinition();
+
+        $this->assertIsObject($definition);
+        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\StringValidatorDefinition::class, $definition);
+        $this->assertFalse($definition->allowEmpty);
+        $this->assertEquals(5, $definition->minLength);
+        $this->assertEquals(10, $definition->maxLength);
+        $this->assertEquals('/^[a-z]+$/', $definition->pattern);
+    }
 }

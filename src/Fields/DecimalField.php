@@ -8,7 +8,6 @@ use Attribute;
 use Closure;
 use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
 use PhpValueObject\Core\Validators\DecimalValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * DecimalField
@@ -50,5 +49,10 @@ final class DecimalField extends BaseField
     public function getValidator(): string
     {
         return DecimalValidator::class;
+    }
+
+    public function getDefinition(): object
+    {
+        return $this->definition;
     }
 }

@@ -216,4 +216,20 @@ class FieldTest extends TestCase
 
         $this->assertEquals(IdenticalValidator::class, $validator);
     }
+
+    /**
+     * getDefinitionメソッドがNoneDefinitionオブジェクトを返すことをテスト
+     *
+     * 検証内容:
+     * - Fieldクラスは特定のバリデーション定義を持たないため、getDefinitionメソッドはNoneDefinitionを返すこと
+     */
+    #[Test]
+    public function testGetDefinitionReturnsNoneDefinition(): void
+    {
+        $field = new Field();
+        $definition = $field->getDefinition();
+
+        $this->assertIsObject($definition);
+        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\NoneDefinition::class, $definition);
+    }
 }

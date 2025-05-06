@@ -322,7 +322,7 @@ class DecimalValidatorTest extends TestCase
         };
 
         // ValidatorHelperを使用してSplQueueを作成
-        $validators = ValidatorHelper::createValidatorQueue([$mockValidator]);
+        $validators = ValidatorHelper::createValidatorQueue([$mockValidator::class]);
         $handler = new ValidatorFunctionWrapHandler($validators);
 
         $result = $validator->validate(123.45, $handler);

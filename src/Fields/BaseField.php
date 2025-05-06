@@ -53,4 +53,13 @@ abstract class BaseField
      * @return class-string<Validatorable> Validatorableを実装したValidatorのクラス名
      */
     abstract public function getValidator(): string;
+
+    /**
+     * バリデーター定義を取得する
+     * 各フィールドタイプに対応したバリデーター定義オブジェクトを返す
+     * definitionプロパティが存在しない場合はNoneDefinitionクラスを返す
+     *
+     * @return object バリデーター定義オブジェクト
+     */
+    abstract public function getDefinition(): object;
 }

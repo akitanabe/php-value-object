@@ -8,7 +8,6 @@ use Attribute;
 use Closure;
 use PhpValueObject\Core\Definitions\StringValidatorDefinition;
 use PhpValueObject\Core\Validators\StringValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * StringField
@@ -46,5 +45,10 @@ final class StringField extends BaseField
     public function getValidator(): string
     {
         return StringValidator::class;
+    }
+
+    public function getDefinition(): object
+    {
+        return $this->definition;
     }
 }

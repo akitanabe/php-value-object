@@ -8,7 +8,6 @@ use Attribute;
 use Closure;
 use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 use PhpValueObject\Core\Validators\NumericValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * NumericField
@@ -46,5 +45,10 @@ final class NumericField extends BaseField
     public function getValidator(): string
     {
         return NumericValidator::class;
+    }
+
+    public function getDefinition(): object
+    {
+        return $this->definition;
     }
 }

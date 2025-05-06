@@ -59,4 +59,21 @@ class ListFieldTest extends TestCase
 
         $this->assertEquals(ListValidator::class, $validator);
     }
+
+    /**
+     * getDefinitionメソッドが適切なListValidatorDefinitionを返すことをテスト
+     *
+     * 検証内容:
+     * - ListFieldのgetDefinitionメソッドが適切なListValidatorDefinitionオブジェクトを返すこと
+     */
+    #[Test]
+    public function testGetDefinitionReturnsListValidatorDefinition(): void
+    {
+        $field = new ListField(type: 'string');
+        $definition = $field->getDefinition();
+
+        $this->assertIsObject($definition);
+        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\ListValidatorDefinition::class, $definition);
+        $this->assertEquals('string', $definition->type);
+    }
 }

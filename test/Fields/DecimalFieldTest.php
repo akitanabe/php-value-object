@@ -62,4 +62,26 @@ class DecimalFieldTest extends TestCase
 
         $this->assertEquals(DecimalValidator::class, $validator);
     }
+
+    /**
+     * getDefinitionメソッドが適切なDecimalValidatorDefinitionを返すことをテスト
+     *
+     * 検証内容:
+     * - DecimalFieldのgetDefinitionメソッドが適切なDecimalValidatorDefinitionオブジェクトを返すこと
+     */
+    #[Test]
+    public function testGetDefinitionReturnsDecimalValidatorDefinition(): void
+    {
+        $field = new DecimalField(maxDigits: 5, decimalPlaces: 2, gt: 0, lt: 100);
+        $definition = $field->getDefinition();
+
+        $this->assertIsObject($definition);
+        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\DecimalValidatorDefinition::class, $definition);
+        $this->assertEquals(5, $definition->maxDigits);
+        $this->assertEquals(2, $definition->decimalPlaces);
+        $this->assertEquals(0, $definition->gt);
+        $this->assertEquals(100, $definition->lt);
+        $this->assertNull($definition->ge);
+        $this->assertNull($definition->le);
+    }
 }

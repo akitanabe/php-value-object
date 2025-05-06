@@ -8,7 +8,6 @@ use Attribute;
 use Closure;
 use PhpValueObject\Core\Definitions\ListValidatorDefinition;
 use PhpValueObject\Core\Validators\ListValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * ListField
@@ -40,5 +39,10 @@ final class ListField extends BaseField
     public function getValidator(): string
     {
         return ListValidator::class;
+    }
+
+    public function getDefinition(): object
+    {
+        return $this->definition;
     }
 }
