@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support\FieldValidationManager;
 
+use PhpValueObject\Config\FieldConfig;
+use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
@@ -73,6 +76,10 @@ class FieldValidationManagerAttributeTest extends TestCase
     private ReflectionProperty $wrapProperty;
     private StringField $field;
 
+    private ValidatorDefinitions $validatorDefinitions;
+
+    private array $managerFunctionValidatorDefinitions = [];
+
     protected function setUp(): void
     {
         $class = new TestClassForAttribute();
@@ -85,32 +92,38 @@ class FieldValidationManagerAttributeTest extends TestCase
 
         // 属性のみを使用したマネージャー（name プロパティ用）
         $nameValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $this->property);
-        $this->managerWithAttributes = FieldValidationManager::createFromProperty(
-            $this->property,
+        $this->managerWithAttributes = new FieldValidationManager(
             $this->field,
             $nameValidatorFactory,
         );
+        $this->managerFunctionValidatorDefinitions['name'] = $nameValidatorFactory->createDefinition();
 
         // PlainValidator用のマネージャー
         $plainValidatorFactory = FunctionValidatorFactory::createFromStorage(
             $fieldValidatorStorage,
             $this->plainProperty,
         );
-        $this->managerWithPlain = FieldValidationManager::createFromProperty(
-            $this->plainProperty,
+        $this->managerWithPlain = new FieldValidationManager(
             $this->field,
             $plainValidatorFactory,
         );
+        $this->managerFunctionValidatorDefinitions['plain'] = $plainValidatorFactory->createDefinition();
 
         // WrapValidator用のマネージャー
         $wrapValidatorFactory = FunctionValidatorFactory::createFromStorage(
             $fieldValidatorStorage,
             $this->wrapProperty,
         );
-        $this->managerWithWrap = FieldValidationManager::createFromProperty(
-            $this->wrapProperty,
+        $this->managerWithWrap = new FieldValidationManager(
             $this->field,
             $wrapValidatorFactory,
+        );
+        $this->managerFunctionValidatorDefinitions['wrap'] = $wrapValidatorFactory->createDefinition();
+
+        $this->validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+            $this->field->getDefinition(),
         );
     }
 
@@ -124,9 +137,15 @@ class FieldValidationManagerAttributeTest extends TestCase
         $inputData = new InputData(['name' => 'ab']);
         $operator = PropertyOperator::create($this->property, $inputData, $this->field);
 
+        $this->validatorDefinitions->registerMultiple(
+            $operator->metadata,
+            $this->managerFunctionValidatorDefinitions['name'],
+
+        );
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        $this->managerWithAttributes->processValidation($operator);
+        $this->managerWithAttributes->processValidation($operator, $this->validatorDefinitions);
     }
 
     /**
@@ -139,7 +158,12 @@ class FieldValidationManagerAttributeTest extends TestCase
         $inputData = new InputData(['name' => 'abc']);
         $original = PropertyOperator::create($this->property, $inputData, $this->field);
 
-        $result = $this->managerWithAttributes->processValidation($original);
+        $this->validatorDefinitions->registerMultiple(
+            $original->metadata,
+            $this->managerFunctionValidatorDefinitions['name'],
+        );
+
+        $result = $this->managerWithAttributes->processValidation($original, $this->validatorDefinitions);
 
         $this->assertNotSame($original, $result);
         $this->assertEquals('abc', $original->value->value);
@@ -158,9 +182,14 @@ class FieldValidationManagerAttributeTest extends TestCase
         $inputData = new InputData(['plainValidated' => 'abc']);
         $operator = PropertyOperator::create($this->plainProperty, $inputData, $this->field);
 
+        $this->validatorDefinitions->registerMultiple(
+            $operator->metadata,
+            $this->managerFunctionValidatorDefinitions['plain'],
+        );
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('4文字以上必要です');
-        $this->managerWithPlain->processValidation($operator);
+        $this->managerWithPlain->processValidation($operator, $this->validatorDefinitions);
     }
 
     /**
@@ -172,7 +201,12 @@ class FieldValidationManagerAttributeTest extends TestCase
         $inputData = new InputData(['plainValidated' => 'test']);
         $original = PropertyOperator::create($this->plainProperty, $inputData, $this->field);
 
-        $result = $this->managerWithPlain->processValidation($original);
+        $this->validatorDefinitions->registerMultiple(
+            $original->metadata,
+            $this->managerFunctionValidatorDefinitions['plain'],
+        );
+
+        $result = $this->managerWithPlain->processValidation($original, $this->validatorDefinitions);
 
         $this->assertNotSame($original, $result);
         $this->assertEquals('test', $original->value->value);
@@ -188,7 +222,13 @@ class FieldValidationManagerAttributeTest extends TestCase
         $inputData = new InputData(['wrappedValue' => 'TEST']);
         $original = PropertyOperator::create($this->wrapProperty, $inputData, $this->field);
 
-        $result = $this->managerWithWrap->processValidation($original);
+        $this->validatorDefinitions->registerMultiple(
+            $original->metadata,
+            $this->managerFunctionValidatorDefinitions['wrap'],
+        );
+
+
+        $result = $this->managerWithWrap->processValidation($original, $this->validatorDefinitions);
 
         $this->assertNotSame($original, $result);
         $this->assertEquals('TEST', $original->value->value);

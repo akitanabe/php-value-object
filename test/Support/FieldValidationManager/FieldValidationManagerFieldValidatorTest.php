@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support\FieldValidationManager;
 
+use PHPUnit\TextUI\XmlConfiguration\Validator;
+use PhpValueObject\Config\FieldConfig;
+use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
@@ -45,6 +49,8 @@ class FieldValidationManagerFieldValidatorTest extends TestCase
     private ReflectionProperty $property;
     private StringField $field;
 
+    private ValidatorDefinitions $validatorDefinitions;
+
     protected function setUp(): void
     {
         // バリデータを持つクラスの Reflection を使用
@@ -62,11 +68,18 @@ class FieldValidationManagerFieldValidatorTest extends TestCase
         );
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $this->managerWithFieldValidators = FieldValidationManager::createFromProperty(
-            $this->property,
+        $this->managerWithFieldValidators = new FieldValidationManager(
             $this->field,
             $functionValidatorFactory, // FunctionValidatorFactory を渡す
         );
+
+        $this->validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+            $functionValidatorFactory->createDefinition(),
+            $this->field->getDefinition(),
+        );
+
     }
 
     /**
@@ -79,9 +92,11 @@ class FieldValidationManagerFieldValidatorTest extends TestCase
         $inputData = new InputData(['name' => 'ab']);
         $operator = PropertyOperator::create($this->property, $inputData, $this->field);
 
+        $this->validatorDefinitions->register($operator->metadata);
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('3文字以上必要です');
-        $this->managerWithFieldValidators->processValidation($operator);
+        $this->managerWithFieldValidators->processValidation($operator, $this->validatorDefinitions);
     }
 
     /**
@@ -94,7 +109,8 @@ class FieldValidationManagerFieldValidatorTest extends TestCase
         $inputData = new InputData(['name' => 'john']);
         $original = PropertyOperator::create($this->property, $inputData, $this->field);
 
-        $result = $this->managerWithFieldValidators->processValidation($original);
+        $this->validatorDefinitions->register($original->metadata);
+        $result = $this->managerWithFieldValidators->processValidation($original, $this->validatorDefinitions);
 
         $this->assertNotSame($original, $result);
         $this->assertEquals('john', $original->value->value);

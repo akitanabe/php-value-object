@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support\FieldValidationManager;
 
+use PhpValueObject\Config\FieldConfig;
+use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
@@ -87,14 +90,22 @@ class FieldValidationManagerFailureOrderTest extends TestCase
         $functionValidatorFactory = new FunctionValidatorFactory([], $functionValidators);
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty($prop, $this->field, $functionValidatorFactory);
+        $manager = new FieldValidationManager($this->field, $functionValidatorFactory);
 
         $inputData = new InputData(['testProp' => 'fail1']);
         $operator = PropertyOperator::create($prop, $inputData, $this->field);
 
+        $validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+            $operator->metadata,
+            $functionValidatorFactory->createDefinition(),
+            $this->field->getDefinition(),
+        );
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('最初のバリデーションに失敗');
-        $manager->processValidation($operator);
+        $manager->processValidation($operator, $validatorDefinitions);
     }
 
     /**
@@ -115,14 +126,22 @@ class FieldValidationManagerFailureOrderTest extends TestCase
         $functionValidatorFactory = new FunctionValidatorFactory([], $functionValidators);
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty($prop, $this->field, $functionValidatorFactory);
+        $manager = new FieldValidationManager($this->field, $functionValidatorFactory);
 
         // 2番目のバリデーター(After)で失敗するケース
         $inputData = new InputData(['testProp' => 'fail2']);
         $operator = PropertyOperator::create($prop, $inputData, $this->field);
 
+        $validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+            $operator->metadata,
+            $functionValidatorFactory->createDefinition(),
+            $this->field->getDefinition(),
+        );
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('2番目のバリデーションに失敗');
-        $manager->processValidation($operator);
+        $manager->processValidation($operator, $validatorDefinitions);
     }
 }

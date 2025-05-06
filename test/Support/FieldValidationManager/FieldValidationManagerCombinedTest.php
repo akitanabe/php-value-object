@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support\FieldValidationManager;
 
+use PhpValueObject\Config\FieldConfig;
+use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
@@ -19,10 +22,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass; // 追加
 use ReflectionProperty;
-
-// 追加
-// 追加
-// 追加
 
 // テスト用のバリデータクラス (属性とFieldValidatorの両方で使用)
 class TestClassForCombined
@@ -63,6 +62,8 @@ class FieldValidationManagerCombinedTest extends TestCase
     private ReflectionProperty $property;
     private StringField $field;
 
+    private ValidatorDefinitions $validatorDefinitions;
+
     protected function setUp(): void
     {
         // バリデータを持つクラスの Reflection を使用
@@ -79,10 +80,16 @@ class FieldValidationManagerCombinedTest extends TestCase
         );
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $this->managerWithBoth = FieldValidationManager::createFromProperty(
-            $this->property,
+        $this->managerWithBoth = new FieldValidationManager(
             $this->field,
             $functionValidatorFactory, // FunctionValidatorFactory を渡す
+        );
+
+        $this->validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+            $functionValidatorFactory->createDefinition(),
+            $this->field->getDefinition(),
         );
     }
 
@@ -97,9 +104,11 @@ class FieldValidationManagerCombinedTest extends TestCase
         $inputData = new InputData(['name' => 'abcde']);
         $operator = PropertyOperator::create($this->property, $inputData, $this->field);
 
+        $this->validatorDefinitions->register($operator->metadata);
+
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('6文字以上必要です');
-        $this->managerWithBoth->processValidation($operator);
+        $this->managerWithBoth->processValidation($operator, $this->validatorDefinitions);
     }
 
     /**
@@ -111,8 +120,9 @@ class FieldValidationManagerCombinedTest extends TestCase
     {
         $inputData = new InputData(['name' => 'abcdef']);
         $original = PropertyOperator::create($this->property, $inputData, $this->field);
+        $this->validatorDefinitions->register($original->metadata);
 
-        $result = $this->managerWithBoth->processValidation($original);
+        $result = $this->managerWithBoth->processValidation($original, $this->validatorDefinitions);
 
         $this->assertNotSame($original, $result);
         $this->assertEquals('abcdef', $original->value->value);

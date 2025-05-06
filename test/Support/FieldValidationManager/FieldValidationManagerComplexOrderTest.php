@@ -6,6 +6,7 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Support\FieldValidatorStorage;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\FieldValidationManager;
@@ -34,6 +35,16 @@ use ReflectionAttribute;
 
 class FieldValidationManagerComplexOrderTest extends TestCase
 {
+    private ValidatorDefinitions $validatorDefinitions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->validatorDefinitions = (new ValidatorDefinitions)->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+        );
+    }
     /**
      * 全種類のバリデーター（Before、After、Plain、Wrap）を組み合わせたテスト
      */
@@ -94,8 +105,7 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $functionValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $prop);
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty(
-            $prop,
+        $manager = new FieldValidationManager(
             $field,
             $functionValidatorFactory, // FunctionValidatorFactory を渡す
         );
@@ -103,7 +113,13 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $inputData = new InputData(['allValidatorsProp' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
 
-        $result = $manager->processValidation($original);
+        $this->validatorDefinitions->registerMultiple(
+            $functionValidatorFactory->createDefinition(),
+            $field->getDefinition(),
+            $original->metadata,
+        );
+
+        $result = $manager->processValidation($original, $this->validatorDefinitions);
 
         // 実行順: field_before -> attr_before -> plain -> wrap -> attr_after -> field_after
         // field_before: + '_field_before'
@@ -166,14 +182,20 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $functionValidatorFactory = new FunctionValidatorFactory([], $functionValidators);
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty(
-            $prop,
+        $manager = new FieldValidationManager(
             $field,
             $functionValidatorFactory, // FunctionValidatorFactory を渡す
         );
         $inputData = new InputData(['mixedValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
-        $result = $manager->processValidation($original);
+
+        $this->validatorDefinitions->registerMultiple(
+            $functionValidatorFactory->createDefinition(),
+            $field->getDefinition(),
+            $original->metadata,
+        );
+
+        $result = $manager->processValidation($original, $this->validatorDefinitions);
 
         // 実行順: attr_before -> plain -> attr_after
         // first -> second -> third
@@ -229,14 +251,20 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $functionValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $prop);
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty(
-            $prop,
+        $manager = new FieldValidationManager(
             $field,
             $functionValidatorFactory, // FunctionValidatorFactory を渡す
         );
         $inputData = new InputData(['mixedValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
-        $result = $manager->processValidation($original);
+
+        $this->validatorDefinitions->registerMultiple(
+            $functionValidatorFactory->createDefinition(),
+            $field->getDefinition(),
+            $original->metadata,
+        );
+
+        $result = $manager->processValidation($original, $this->validatorDefinitions);
 
         // 実行順: field_before -> attr_before -> attr_after -> field_after
         // field1 -> attrFirst -> attrSecond -> field2
@@ -294,16 +322,21 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         $systemValidators = new SystemValidatorFactory([$coreValidator], []); // 第2引数に空配列を追加
 
         // FunctionValidatorFactory を使用してマネージャーを作成
-        $manager = FieldValidationManager::createFromProperty(
-            $prop,
+        $manager = new FieldValidationManager(
             $field,
-            $functionValidatorFactory, // FunctionValidatorFactory を渡す
-            $systemValidators,
+            $functionValidatorFactory // FunctionValidatorFactory を渡す
         );
 
         $inputData = new InputData(['allValidators' => 'base']);
         $original = PropertyOperator::create($prop, $inputData, $field);
-        $result = $manager->processValidation($original);
+
+        $this->validatorDefinitions->registerMultiple(
+            $functionValidatorFactory->createDefinition(),
+            $field->getDefinition(),
+            $original->metadata,
+        );
+
+        $result = $manager->processValidation($original, $this->validatorDefinitions);
 
         // 想定される実行順序:
         // 1. フィールドBefore (fieldValidator) -> + '_field'

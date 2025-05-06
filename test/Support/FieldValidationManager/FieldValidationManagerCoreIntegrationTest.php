@@ -7,6 +7,7 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use TypeError;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Support\TypeHint;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\SystemValidatorFactory;
@@ -20,6 +21,7 @@ use PhpValueObject\Core\Validators\NoneTypeValidator;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\TypeHintType;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
+use PhpValueObject\Support\FunctionValidatorFactory;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionProperty;
@@ -47,21 +49,22 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
             PropertyInitializedStatus::BY_DEFAULT,
         );
 
-        $modelConfig = new ModelConfig();
-        $fieldConfig = new FieldConfig();
+        $validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(),
+            new FieldConfig(),
+            $metadata,
+            $field->getDefinition(),
+        );
 
-        // 標準システムバリデータを使用 (pre と standard に分類)
-        $preValidators = [new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),];
-        $standardValidators = [new PrimitiveTypeValidator($metadata),];
-        $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
-
-        $manager = FieldValidationManager::createFromProperty($prop, $field, systemValidators: $systemValidators);
+        // 空のFunctionValidatorFactoryを作成
+        $functionValidatorFactory = new FunctionValidatorFactory([], []);
+        $manager = new FieldValidationManager($field, $functionValidatorFactory);
 
         // 正常値でのテスト
         $inputData = new InputData(['testProp' => 'valid_string']);
         $original = PropertyOperator::create($prop, $inputData, $field);
 
-        $result = $manager->processValidation($original);
+        $result = $manager->processValidation($original, $validatorDefinitions);
         $this->assertEquals('valid_string', $result->value->value);
 
         // 不正な型の値でのテスト（StringFieldに対して数値を渡す）
@@ -70,7 +73,7 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
 
         $this->expectException(TypeError::class);
         $this->expectExceptionMessage('Cannot assign integer to property');
-        $manager->processValidation($originalInvalid);
+        $manager->processValidation($originalInvalid, $validatorDefinitions);
     }
 
     /**
@@ -93,22 +96,23 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
             PropertyInitializedStatus::UNINITIALIZED,
         );
 
-        $modelConfig = new ModelConfig(allowUninitializedProperty: false);
-        $fieldConfig = new FieldConfig(allowUninitializedProperty: false);
+        $validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(allowUninitializedProperty: false),
+            new FieldConfig(allowUninitializedProperty: false),
+            $metadata,
+            $field->getDefinition(),
+        );
 
-        // 未初期化プロパティのテスト用のシステムバリデータ (pre と standard に分類)
-        $preValidators = [new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),];
-        $standardValidators = [new PrimitiveTypeValidator($metadata),];
-        $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
-
-        $manager = FieldValidationManager::createFromProperty($prop, $field, systemValidators: $systemValidators);
+        // 空のFunctionValidatorFactoryを作成
+        $functionValidatorFactory = new FunctionValidatorFactory([], []);
+        $manager = new FieldValidationManager($field, $functionValidatorFactory);
 
         $inputData = new InputData(['testProp' => 'some_value']);
         $original = PropertyOperator::create($prop, $inputData, $field);
 
         $this->expectException(InvalidPropertyStateException::class);
         $this->expectExceptionMessage('is not initialized');
-        $manager->processValidation($original);
+        $manager->processValidation($original, $validatorDefinitions);
     }
 
     /**
@@ -132,25 +136,24 @@ class FieldValidationManagerCoreIntegrationTest extends TestCase
             PropertyInitializedStatus::BY_DEFAULT,
         );
 
-        $modelConfig = new ModelConfig(allowNoneTypeProperty: false);
-        $fieldConfig = new FieldConfig(allowNoneTypeProperty: false);
+        // 空のFunctionValidatorFactoryを作成
+        $functionValidatorFactory = new FunctionValidatorFactory([], []);
 
-        // None型プロパティのテスト用のシステムバリデータ
-        // NoneTypeValidatorを明示的に含める
-        $preValidators = [
-            new InitializationStateValidator($modelConfig, $fieldConfig, $metadata),
-            new NoneTypeValidator($modelConfig, $fieldConfig, $metadata),
-        ];
-        $standardValidators = [new PrimitiveTypeValidator($metadata),];
-        $systemValidators = new SystemValidatorFactory($preValidators, $standardValidators);
-
-        $manager = FieldValidationManager::createFromProperty($prop, $field, systemValidators: $systemValidators);
+        $manager = new FieldValidationManager($field, $functionValidatorFactory);
 
         $inputData = new InputData(['testProp' => 'some_value']);
         $original = PropertyOperator::create($prop, $inputData, $field);
 
+        $validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
+            new ModelConfig(allowUninitializedProperty: false),
+            new FieldConfig(allowUninitializedProperty: false),
+            $original->metadata,
+            $field->getDefinition(),
+        );
+
+
         $this->expectException(InvalidPropertyStateException::class);
         $this->expectExceptionMessage('not allow none property type');
-        $manager->processValidation($original);
+        $manager->processValidation($original, $validatorDefinitions);
     }
 }
