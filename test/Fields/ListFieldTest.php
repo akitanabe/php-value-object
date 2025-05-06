@@ -53,7 +53,6 @@ class ListFieldTest extends TestCase
         $field = new ListField(type: 'string');
         $definition = $field->getDefinition();
 
-        $this->assertIsObject($definition);
         $this->assertInstanceOf(ListValidatorDefinition::class, $definition);
         $this->assertEquals('string', $definition->type);
     }

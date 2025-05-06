@@ -69,7 +69,6 @@ final class ValidatorFunctionWrapHandler
         $validatorClass = $this->queue->dequeue();
 
         // Validatorableインターフェースのbuildメソッドを使用してインスタンス化
-        /** @var Validatorable */
         $this->validator = $validatorClass::build($this->definitions);
 
         // 次のハンドラーを作成

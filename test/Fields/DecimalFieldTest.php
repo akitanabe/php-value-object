@@ -51,7 +51,6 @@ class DecimalFieldTest extends TestCase
         $field = new DecimalField(maxDigits: 5, decimalPlaces: 2, gt: 0, lt: 100);
         $definition = $field->getDefinition();
 
-        $this->assertIsObject($definition);
         $this->assertInstanceOf(DecimalValidatorDefinition::class, $definition);
         $this->assertEquals(5, $definition->maxDigits);
         $this->assertEquals(2, $definition->decimalPlaces);

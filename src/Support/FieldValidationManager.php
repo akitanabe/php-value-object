@@ -20,13 +20,11 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  */
 class FieldValidationManager
 {
-    /**
-     * @param FunctionValidator[] $functionalidators
-     */
     public function __construct(
         private readonly BaseField $field,
         private readonly FunctionValidatorFactory $functionValidatorFactory,
-    ) {}
+    ) {
+    }
 
     /**
      * バリデータクラスを取得する。

@@ -18,7 +18,8 @@ abstract class FunctionValidator implements Validatorable
 {
     public function __construct(
         protected readonly Closure $validator,
-    ) {}
+    ) {
+    }
 
     /**
      * バリデーション処理を実行する
@@ -34,19 +35,19 @@ abstract class FunctionValidator implements Validatorable
             throw new LogicException('FunctionalValidatorQueueDefinition is not set.');
         }
 
-        $functionalValidator = $functionalValidatorQueue->dequeue();
+        $validatorCallable = $functionalValidatorQueue->dequeue();
 
         /**
          * @var class-string<FunctionValidator> $funtionValidatorClass
          */
-        $funtionValidatorClass = match ($functionalValidator->getMode()) {
+        $funtionValidatorClass = match ($validatorCallable->getMode()) {
             ValidatorMode::BEFORE => FunctionBeforeValidator::class,
             ValidatorMode::AFTER => FunctionAfterValidator::class,
             ValidatorMode::WRAP => FunctionWrapValidator::class,
             ValidatorMode::PLAIN => FunctionPlainValidator::class,
         };
 
-        $validator = $functionalValidator->resolveValidator();
+        $validator = $validatorCallable->resolveValidator();
 
         return new $funtionValidatorClass($validator);
     }

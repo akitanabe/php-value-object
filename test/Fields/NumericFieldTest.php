@@ -45,7 +45,6 @@ class NumericFieldTest extends TestCase
         $field = new NumericField(gt: 0, lt: 100, ge: 1, le: 99);
         $definition = $field->getDefinition();
 
-        $this->assertIsObject($definition);
         $this->assertInstanceOf(NumericValidatorDefinition::class, $definition);
         $this->assertEquals(0, $definition->gt);
         $this->assertEquals(100, $definition->lt);

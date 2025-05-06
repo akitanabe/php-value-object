@@ -50,7 +50,6 @@ class StringFieldTest extends TestCase
         $field = new StringField(allowEmpty: false, minLength: 5, maxLength: 10, pattern: '/^[a-z]+$/');
         $definition = $field->getDefinition();
 
-        $this->assertIsObject($definition);
         $this->assertInstanceOf(StringValidatorDefinition::class, $definition);
         $this->assertFalse($definition->allowEmpty);
         $this->assertEquals(5, $definition->minLength);

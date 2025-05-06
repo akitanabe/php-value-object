@@ -229,7 +229,6 @@ class FieldTest extends TestCase
         $field = new Field();
         $definition = $field->getDefinition();
 
-        $this->assertIsObject($definition);
         $this->assertInstanceOf(NoneDefinition::class, $definition);
     }
 }

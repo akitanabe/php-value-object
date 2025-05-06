@@ -6,6 +6,7 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
+use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
 use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Fields\StringField;
@@ -78,6 +79,9 @@ class FieldValidationManagerAttributeTest extends TestCase
 
     private ValidatorDefinitions $validatorDefinitions;
 
+    /**
+     * @var array<string, FunctionValidatorDefinition>
+     */
     private array $managerFunctionValidatorDefinitions = [];
 
     protected function setUp(): void
@@ -92,7 +96,7 @@ class FieldValidationManagerAttributeTest extends TestCase
 
         // 属性のみを使用したマネージャー（name プロパティ用）
         $nameValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $this->property);
-        $this->managerWithAttributes = new FieldValidationManager($this->field, $nameValidatorFactory,);
+        $this->managerWithAttributes = new FieldValidationManager($this->field, $nameValidatorFactory, );
         $this->managerFunctionValidatorDefinitions['name'] = $nameValidatorFactory->createDefinition();
 
         // PlainValidator用のマネージャー
@@ -100,7 +104,7 @@ class FieldValidationManagerAttributeTest extends TestCase
             $fieldValidatorStorage,
             $this->plainProperty,
         );
-        $this->managerWithPlain = new FieldValidationManager($this->field, $plainValidatorFactory,);
+        $this->managerWithPlain = new FieldValidationManager($this->field, $plainValidatorFactory, );
         $this->managerFunctionValidatorDefinitions['plain'] = $plainValidatorFactory->createDefinition();
 
         // WrapValidator用のマネージャー
@@ -108,7 +112,7 @@ class FieldValidationManagerAttributeTest extends TestCase
             $fieldValidatorStorage,
             $this->wrapProperty,
         );
-        $this->managerWithWrap = new FieldValidationManager($this->field, $wrapValidatorFactory,);
+        $this->managerWithWrap = new FieldValidationManager($this->field, $wrapValidatorFactory, );
         $this->managerFunctionValidatorDefinitions['wrap'] = $wrapValidatorFactory->createDefinition();
 
         $this->validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
