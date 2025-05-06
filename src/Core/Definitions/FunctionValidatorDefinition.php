@@ -6,7 +6,7 @@ use SplQueue;
 use PhpValueObject\Validators\ValidatorCallable;
 
 /**
- * FunctionalValidatorをキューとして管理するクラス
+ * ValidaotorCallableをimplementsしているクラスをキューとして管理
  *
  * @extends SplQueue<ValidatorCallable>
  */
