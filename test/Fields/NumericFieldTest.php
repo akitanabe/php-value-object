@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\NumericField;
 use PhpValueObject\Core\Validators\NumericValidator;
+use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
 
 /**
  * NumericFieldクラスのテスト
@@ -33,31 +34,6 @@ class NumericFieldTest extends TestCase
     }
 
     /**
-     * カスタム設定でのgetValidatorメソッドの動作をテスト
-     *
-     * 検証内容:
-     * - gt, lt, ge, leなどの数値範囲制約を持つNumericFieldから
-     *   getValidatorメソッドを呼び出しても、正しくNumericValidatorクラスの名前（文字列）が返されること
-     *
-     * 設定値:
-     * - gt: 10 (10より大きい値のみ許可)
-     * - lt: 100 (100未満の値のみ許可)
-     * - ge: 20 (20以上の値のみ許可)
-     * - le: 80 (80以下の値のみ許可)
-     *
-     * これらの制約を組み合わせると、実質的に20以上80以下の範囲の値のみが許可されます。
-     */
-    #[Test]
-    public function testGetValidatorWithCustomConfigurationReturnsNumericValidator(): void
-    {
-        $field = new NumericField(gt: 10, lt: 100, ge: 20, le: 80);
-
-        $validator = $field->getValidator();
-
-        $this->assertEquals(NumericValidator::class, $validator);
-    }
-
-    /**
      * getDefinitionメソッドが適切なNumericValidatorDefinitionを返すことをテスト
      *
      * 検証内容:
@@ -70,7 +46,7 @@ class NumericFieldTest extends TestCase
         $definition = $field->getDefinition();
 
         $this->assertIsObject($definition);
-        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\NumericValidatorDefinition::class, $definition);
+        $this->assertInstanceOf(NumericValidatorDefinition::class, $definition);
         $this->assertEquals(0, $definition->gt);
         $this->assertEquals(100, $definition->lt);
         $this->assertEquals(1, $definition->ge);

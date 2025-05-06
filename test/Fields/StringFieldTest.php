@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Core\Validators\StringValidator;
+use PhpValueObject\Core\Definitions\StringValidatorDefinition;
 
 class StringFieldValidateTestClass
 {
@@ -38,29 +39,6 @@ class StringFieldTest extends TestCase
     }
 
     /**
-     * カスタム設定でのgetValidatorメソッドの動作をテスト
-     *
-     * 検証内容:
-     * - allowEmpty, minLength, maxLength, patternなどのカスタム設定を持つStringFieldから
-     *   getValidatorメソッドを呼び出しても、正しくStringValidatorクラスの名前（文字列）が返されること
-     *
-     * 設定値:
-     * - allowEmpty: false (空文字列を許可しない)
-     * - minLength: 5 (最小文字数5文字)
-     * - maxLength: 10 (最大文字数10文字)
-     * - pattern: '/^[a-z]+$/' (小文字アルファベットのみを許可)
-     */
-    #[Test]
-    public function testGetValidatorWithCustomConfigurationReturnsStringValidator(): void
-    {
-        $field = new StringField(allowEmpty: false, minLength: 5, maxLength: 10, pattern: '/^[a-z]+$/');
-
-        $validator = $field->getValidator();
-
-        $this->assertEquals(StringValidator::class, $validator);
-    }
-
-    /**
      * getDefinitionメソッドが適切なStringValidatorDefinitionを返すことをテスト
      *
      * 検証内容:
@@ -73,7 +51,7 @@ class StringFieldTest extends TestCase
         $definition = $field->getDefinition();
 
         $this->assertIsObject($definition);
-        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\StringValidatorDefinition::class, $definition);
+        $this->assertInstanceOf(StringValidatorDefinition::class, $definition);
         $this->assertFalse($definition->allowEmpty);
         $this->assertEquals(5, $definition->minLength);
         $this->assertEquals(10, $definition->maxLength);

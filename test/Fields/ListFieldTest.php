@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\ListField;
 use PhpValueObject\Core\Validators\ListValidator;
-use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Core\Definitions\ListValidatorDefinition;
 
 class ListFieldValidateTestClass
 {
@@ -42,25 +42,6 @@ class ListFieldTest extends TestCase
     }
 
     /**
-     * 型指定ありの設定でのgetValidatorメソッドの動作をテスト
-     *
-     * 検証内容:
-     * - 要素の型（string）を指定したListFieldからgetValidatorメソッドを呼び出しても、
-     *   正しくListValidatorクラスの名前（文字列）が返されること
-     *
-     * 'string'型の指定ありの場合、配列内の全要素が文字列型であることを検証します。
-     */
-    #[Test]
-    public function testGetValidatorWithTypeConfigurationReturnsListValidator(): void
-    {
-        $field = new ListField(type: 'string');
-
-        $validator = $field->getValidator();
-
-        $this->assertEquals(ListValidator::class, $validator);
-    }
-
-    /**
      * getDefinitionメソッドが適切なListValidatorDefinitionを返すことをテスト
      *
      * 検証内容:
@@ -73,7 +54,7 @@ class ListFieldTest extends TestCase
         $definition = $field->getDefinition();
 
         $this->assertIsObject($definition);
-        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\ListValidatorDefinition::class, $definition);
+        $this->assertInstanceOf(ListValidatorDefinition::class, $definition);
         $this->assertEquals('string', $definition->type);
     }
 }

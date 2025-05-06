@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use DateTime;
 use PhpValueObject\Fields\Field;
 use PhpValueObject\Core\Validators\IdenticalValidator;
-use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Core\Definitions\NoneDefinition;
 
 use function strtolower as _strtolower;
 
@@ -230,6 +230,6 @@ class FieldTest extends TestCase
         $definition = $field->getDefinition();
 
         $this->assertIsObject($definition);
-        $this->assertInstanceOf(\PhpValueObject\Core\Definitions\NoneDefinition::class, $definition);
+        $this->assertInstanceOf(NoneDefinition::class, $definition);
     }
 }
