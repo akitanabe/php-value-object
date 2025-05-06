@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Core\Validators;
 
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use LogicException;
@@ -26,4 +27,11 @@ interface Validatorable
      */
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed;
 
+    /**
+     * バリデータを構築する
+     *
+     * @param ValidatorDefinitions $definitions バリデータ定義
+     * @return Validatorable 構築されたバリデータインスタンス
+     */
+    public static function build(ValidatorDefinitions $definitions): Validatorable;
 }
