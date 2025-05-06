@@ -12,9 +12,11 @@ use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorQueue;
 use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Core\Validators\Validatorable;
 
 class InitializationStateValidatorTest extends TestCase
@@ -97,15 +99,17 @@ class InitializationStateValidatorTest extends TestCase
         $modelConfig = new ModelConfig(true); // 未初期化プロパティを許可
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = InitializationStateValidator::class;
         $value = 'test_value';
 
         // 値を変更する実際のバリデータを作成
-        $nextValidator = new ValueChangingValidator('changed_value');
+        $changedValue = new Value('changed_value');
+        $nextValidator = ValueChangingValidator::class;
 
-        // ValidatorHelperを使用してSplQueueを作成
-        $validators = ValidatorHelper::createValidatorQueue([$validator, $nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        // ValidatorQueueを直接作成
+        $validators = new ValidatorQueue([$validator, $nextValidator]);
+        $definitions = (new ValidatorDefinitions())->registerMultiple($changedValue, $metadata, $modelConfig, $fieldConfig);
+        $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $handler($value);
         // 後続のハンドラーが実行されていなければ、値は変更されないままのはず
@@ -122,15 +126,17 @@ class InitializationStateValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(true); // 未初期化プロパティを許可
 
-        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = InitializationStateValidator::class;
         $value = 'test_value';
 
         // 値を変更する実際のバリデータを作成
-        $nextValidator = new ValueChangingValidator('changed_value');
+        $nextValidator = ValueChangingValidator::class;
+        $changedValue = new Value('changed_value');
 
-        // ValidatorHelperを使用してSplQueueを作成
-        $validators = ValidatorHelper::createValidatorQueue([$validator, $nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        // ValidatorQueueを直接作成
+        $validators = new ValidatorQueue([$validator, $nextValidator]);
+        $definitions = (new ValidatorDefinitions())->registerMultiple($changedValue, $metadata, $modelConfig, $fieldConfig);
+        $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $handler($value);
         // 後続のハンドラーが実行されていなければ、値は変更されないままのはず
@@ -147,16 +153,18 @@ class InitializationStateValidatorTest extends TestCase
         $modelConfig = new ModelConfig(false);
         $fieldConfig = new FieldConfig(false);
 
-        $validator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
+        $validator = InitializationStateValidator::class;
         $value = 'test_value';
-        $changedValue = 'changed_value';
 
         // 値を変更する実際のバリデータを作成
-        $nextValidator = new ValueChangingValidator($changedValue);
+        // 値を変更する実際のバリデータを作成
+        $nextValidator = ValueChangingValidator::class;
+        $changedValue = new Value('changed_value');
 
-        // ValidatorHelperを使用してSplQueueを作成
-        $validators = ValidatorHelper::createValidatorQueue([$validator, $nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        // ValidatorQueueを直接作成
+        $validators = new ValidatorQueue([$validator, $nextValidator]);
+        $definitions = (new ValidatorDefinitions())->registerMultiple($changedValue, $metadata, $modelConfig, $fieldConfig);
+        $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $handler($value);
         // 後続のハンドラーが実行されれば、値は変更されているはず
@@ -178,6 +186,19 @@ class InitializationStateValidatorTest extends TestCase
     }
 }
 
+class Value
+{
+    public function __construct(
+        private string $value,
+    ) {
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+}
+
 /**
  * テスト用の値を変更するバリデータ
  */
@@ -186,12 +207,13 @@ class ValueChangingValidator implements Validatorable
     use ValidatorBuildTrait;
 
     public function __construct(
-        private string $newValue,
-    ) {}
+        private Value $newValue,
+    ) {
+    }
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
-        $changedValue = $this->newValue;
+        $changedValue = (string) $this->newValue;
 
         if ($handler !== null) {
             return $handler($changedValue);

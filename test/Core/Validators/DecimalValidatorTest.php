@@ -11,7 +11,9 @@ use PhpValueObject\Core\Validators\ValidatorBuildTrait;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
+use PhpValueObject\Validators\ValidatorQueue;
 use PhpValueObject\Helpers\ValidatorHelper;
+use PhpValueObject\Core\ValidatorDefinitions;
 
 /**
  * DecimalValidatorのテストクラス
@@ -321,9 +323,10 @@ class DecimalValidatorTest extends TestCase
             }
         };
 
-        // ValidatorHelperを使用してSplQueueを作成
-        $validators = ValidatorHelper::createValidatorQueue([$mockValidator::class]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        // ValidatorQueueを直接作成
+        $validators = new ValidatorQueue([$mockValidator::class]);
+        $definitions = new ValidatorDefinitions();
+        $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $validator->validate(123.45, $handler);
 

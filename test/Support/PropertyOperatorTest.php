@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support;
 
-use PhpValueObject\Core\Validators\ValidatorBuildTrait;
+use PhpValueObject\Core\Definitions\NoneDefinition;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
@@ -13,17 +13,13 @@ use PhpValueObject\Support\PropertyOperator;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Support\PropertyValue;
 use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Validators\BeforeValidator;
 use PhpValueObject\Validators\AfterValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\IdenticalValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 class PropertyOperatorTest extends TestCase
 {
@@ -54,7 +50,6 @@ class PropertyOperatorTest extends TestCase
 
         $inputData = new InputData($input);
         $field = new TestField($defaultFactoryValue);
-        $validationManager = FieldValidationManager::createFromProperty($property, $field);
 
         $operator = PropertyOperator::create($property, $inputData, $field);
 
@@ -173,24 +168,13 @@ class TestField extends BaseField
         );
     }
 
-    public function getValidator(): Validatorable
+    public function getValidator(): string
     {
-        return new IdenticalValidator();
+        return IdenticalValidator::class;
     }
-}
 
-class ValidationErrorField extends BaseField
-{
-    public function getValidator(): Validatorable
+    public function getDefinition(): object
     {
-        $validator = new class implements Validatorable {
-            use ValidatorBuildTrait;
-            public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
-            {
-                throw new ValidationException('Validation failed');
-            }
-        };
-
-        return $validator;
+        return new NoneDefinition();
     }
 }

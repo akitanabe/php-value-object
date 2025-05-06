@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Core\Validators;
 
+use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
+use PhpValueObject\Validators\AfterValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhpValueObject\Validators\ValidatorQueue;
 use PhpValueObject\Helpers\ValidatorHelper;
+use PhpValueObject\Core\ValidatorDefinitions;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -50,10 +54,12 @@ class FunctionBeforeValidatorTest extends TestCase
 
         // 実際のハンドラーを作成
         // 次のバリデータとしてFunctionAfterValidatorを使用する
-        $nextValidator = new FunctionAfterValidator(fn($v) => $v . '_next');
-        // ValidatorHelperを使用してSplQueueを作成
-        $validators = ValidatorHelper::createValidatorQueue([$nextValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $nextValidator = new AfterValidator(fn($v) => $v . '_next');
+        $functionValidatorDefinition = new FunctionValidatorDefinition([$nextValidator]);
+        // ValidatorQueueを直接作成
+        $validators = new ValidatorQueue([FunctionAfterValidator::class]);
+        $definitions = (new ValidatorDefinitions())->register($functionValidatorDefinition);
+        $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         // Act
         $result = $validator->validate($value, $handler);

@@ -117,7 +117,7 @@ class ValidatorDefinitionsTest extends TestCase
         $validatorDefinitions = new ValidatorDefinitions();
         $modelConfig = new ModelConfig(allowUninitializedProperty: true);
         $object1 = new stdClass();
-        $object2 = new class () {};
+        $object2 = new class {};
 
         // registerMultipleで複数のオブジェクトを一度に登録
         $result = $validatorDefinitions->registerMultiple($modelConfig, $object1, $object2);
