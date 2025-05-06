@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support;
 
+use PhpValueObject\Core\Validators\ValidatorBuildTrait;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Enums\PropertyValueType;
 use PhpValueObject\Fields\BaseField;
@@ -183,6 +184,7 @@ class ValidationErrorField extends BaseField
     public function getValidator(): Validatorable
     {
         $validator = new class implements Validatorable {
+            use ValidatorBuildTrait;
             public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
             {
                 throw new ValidationException('Validation failed');

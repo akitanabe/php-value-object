@@ -11,10 +11,11 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * リスト（配列）のバリデーターを実装するクラス
- * @phpstan-template T
  */
 class ListValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     private readonly ?PropertyValueType $valueType;
 
     /**

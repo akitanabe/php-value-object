@@ -7,6 +7,7 @@ namespace PhpValueObject\Test\Validators;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
+use PhpValueObject\Core\Validators\ValidatorBuildTrait;
 use PhpValueObject\Enums\PropertyInitializedStatus;
 use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
@@ -182,6 +183,8 @@ class InitializationStateValidatorTest extends TestCase
  */
 class ValueChangingValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     public function __construct(
         private string $newValue,
     ) {}

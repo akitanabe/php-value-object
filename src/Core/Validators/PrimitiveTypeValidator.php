@@ -16,6 +16,8 @@ use TypeError;
  */
 class PrimitiveTypeValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     public function __construct(
         private readonly PropertyMetadata $metadata,
     ) {}

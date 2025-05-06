@@ -7,6 +7,7 @@ namespace PhpValueObject\Test\Core\Validators;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
 use PhpValueObject\Core\Validators\DecimalValidator;
+use PhpValueObject\Core\Validators\ValidatorBuildTrait;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
@@ -312,6 +313,7 @@ class DecimalValidatorTest extends TestCase
 
         // 実際のValidatorFunctionWrapHandlerを作成
         $mockValidator = new class implements Validatorable {
+            use ValidatorBuildTrait;
             public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
             {
                 // 値を2倍にする簡単な処理

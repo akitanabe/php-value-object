@@ -16,6 +16,8 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  */
 class NoneTypeValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     public function __construct(
         private readonly ModelConfig $modelConfig,
         private readonly FieldConfig $fieldConfig,

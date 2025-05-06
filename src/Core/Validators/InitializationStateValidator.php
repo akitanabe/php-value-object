@@ -16,6 +16,8 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  */
 class InitializationStateValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     public function __construct(
         private readonly ModelConfig $modelConfig,
         private readonly FieldConfig $fieldConfig,

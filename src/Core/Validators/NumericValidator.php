@@ -13,6 +13,8 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  */
 class NumericValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     /**
      * @param NumericValidatorDefinition $definition バリデーション定義
      */

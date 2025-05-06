@@ -13,6 +13,8 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  */
 class DecimalValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     /**
      * 数値範囲のバリデーションを行うためのNumericValidatorインスタンス
      */

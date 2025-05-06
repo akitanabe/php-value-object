@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support\FieldValidationManager;
 
+use PhpValueObject\Core\Validators\ValidatorBuildTrait;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\FunctionValidatorFactory; // FieldValidatorFactoryから変更
@@ -80,6 +81,7 @@ class FieldValidationManagerOrderTest extends TestCase
 
         // テスト用のシステムバリデータを作成
         $this->preSystemValidator = new class implements Validatorable {
+            use ValidatorBuildTrait;
             public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
             {
                 // 処理を行い、次のハンドラーを呼び出す
@@ -88,6 +90,7 @@ class FieldValidationManagerOrderTest extends TestCase
             }
         };
         $this->standardSystemValidator = new class implements Validatorable {
+            use ValidatorBuildTrait;
             public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
             {
                 // 処理を行い、次のハンドラーを呼び出す (このバリデータは最後なのでハンドラ呼び出しは不要だが、念のため)

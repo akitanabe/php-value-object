@@ -12,6 +12,8 @@ use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
  */
 class IdenticalValidator implements Validatorable
 {
+    use ValidatorBuildTrait;
+
     /**
      * 値をそのまま返す
      *
