@@ -18,8 +18,7 @@ abstract class FunctionValidator implements Validatorable
 {
     public function __construct(
         protected readonly Closure $validator,
-    ) {
-    }
+    ) {}
 
     /**
      * バリデーション処理を実行する

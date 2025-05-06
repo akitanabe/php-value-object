@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpValueObject\Support;
 
 use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\FunctionValidator;
 use PhpValueObject\Core\Validators\InitializationStateValidator;
 use PhpValueObject\Core\Validators\MixedTypeValidator;
 use PhpValueObject\Core\Validators\NoneTypeValidator;
@@ -23,8 +22,7 @@ class FieldValidationManager
     public function __construct(
         private readonly BaseField $field,
         private readonly FunctionValidatorFactory $functionValidatorFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * バリデータクラスを取得する。
