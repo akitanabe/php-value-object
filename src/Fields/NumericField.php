@@ -43,13 +43,8 @@ final class NumericField extends BaseField
         $this->definition = new NumericValidatorDefinition($gt, $lt, $ge, $le);
     }
 
-    /**
-     * NumericValidatorを取得
-     *
-     * @return Validatorable
-     */
-    public function getValidator(): Validatorable
+    public function getValidator(): string
     {
-        return new NumericValidator($this->definition);
+        return NumericValidator::class;
     }
 }

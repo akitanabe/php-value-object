@@ -11,14 +11,8 @@ use PhpValueObject\Core\Validators\Validatorable;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Field extends BaseField
 {
-    /**
-     * IdenticalValidatorを取得
-     * 値をそのまま返すバリデーター
-     *
-     * @return Validatorable
-     */
-    public function getValidator(): Validatorable
+    public function getValidator(): string
     {
-        return new IdenticalValidator();
+        return IdenticalValidator::class;
     }
 }

@@ -47,13 +47,8 @@ final class DecimalField extends BaseField
         $this->definition = new DecimalValidatorDefinition($maxDigits, $decimalPlaces, $gt, $lt, $ge, $le);
     }
 
-    /**
-     * DecimalValidatorを取得
-     *
-     * @return Validatorable
-     */
-    public function getValidator(): Validatorable
+    public function getValidator(): string
     {
-        return new DecimalValidator($this->definition);
+        return DecimalValidator::class;
     }
 }

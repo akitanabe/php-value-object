@@ -37,13 +37,8 @@ final class ListField extends BaseField
         $this->definition = new ListValidatorDefinition($type);
     }
 
-    /**
-     * ListValidatorを取得
-     *
-     * @return Validatorable
-     */
-    public function getValidator(): Validatorable
+    public function getValidator(): string
     {
-        return new ListValidator($this->definition);
+        return ListValidator::class;
     }
 }

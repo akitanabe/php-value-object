@@ -200,11 +200,10 @@ class FieldTest extends TestCase
     }
 
     /**
-     * getValidatorメソッドがIdenticalValidatorを返すことをテストします。
+     * getValidatorメソッドがIdenticalValidatorのクラス名を返すことをテストします。
      *
      * 検証内容:
-     * - FieldクラスのgetValidatorメソッドが、値をそのまま返すIdenticalValidatorクラスのインスタンスを返すこと
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     * - FieldクラスのgetValidatorメソッドが、IdenticalValidatorクラスの名前（文字列）を返すこと
      *
      * IdenticalValidatorは、入力値に対して特別なバリデーションを行わず、値をそのまま返すシンプルなバリデーターです。
      * これはFieldクラスが特定の型チェックを必要としない汎用的なフィールドとして設計されているためです。
@@ -215,7 +214,6 @@ class FieldTest extends TestCase
         $field = new Field();
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(IdenticalValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(IdenticalValidator::class, $validator);
     }
 }

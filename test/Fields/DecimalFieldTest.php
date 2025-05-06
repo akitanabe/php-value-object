@@ -27,8 +27,7 @@ class DecimalFieldTest extends TestCase
      * デフォルト設定でのgetValidatorメソッドの動作をテスト
      *
      * 検証内容:
-     * - DecimalFieldのgetValidatorメソッドがDecimalValidatorクラスのインスタンスを返すこと
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     * - DecimalFieldのgetValidatorメソッドがDecimalValidatorクラスの名前（文字列）を返すこと
      */
     #[Test]
     public function testGetValidatorReturnsDecimalValidator(): void
@@ -36,8 +35,7 @@ class DecimalFieldTest extends TestCase
         $field = new DecimalField();
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(DecimalValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(DecimalValidator::class, $validator);
     }
 
     /**
@@ -45,8 +43,7 @@ class DecimalFieldTest extends TestCase
      *
      * 検証内容:
      * - maxDigits, decimalPlaces, gt, lt などの制約を持つDecimalFieldから
-     *   getValidatorメソッドを呼び出しても、正しくDecimalValidatorクラスのインスタンスが返されること
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *   getValidatorメソッドを呼び出しても、正しくDecimalValidatorクラスの名前（文字列）が返されること
      *
      * 設定値:
      * - maxDigits: 5 (合計桁数の制限が5桁)
@@ -63,7 +60,6 @@ class DecimalFieldTest extends TestCase
 
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(DecimalValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(DecimalValidator::class, $validator);
     }
 }

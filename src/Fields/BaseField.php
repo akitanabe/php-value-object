@@ -22,7 +22,8 @@ abstract class BaseField
     public function __construct(
         private readonly string|array|Closure|null $defaultFactory = null,
         public readonly ?string $alias = null,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string|int, mixed> $data
@@ -46,10 +47,10 @@ abstract class BaseField
     }
 
     /**
-     * バリデーターを取得する
-     * 各フィールドタイプに対応したValidatorableを実装したValidatorを返す
+     * バリデーターのクラス名を取得する
+     * 各フィールドタイプに対応したValidatorableを実装したValidatorのクラス名を返す
      *
-     * @return Validatorable
+     * @return class-string<Validatorable> Validatorableを実装したValidatorのクラス名
      */
-    abstract public function getValidator(): Validatorable;
+    abstract public function getValidator(): string;
 }

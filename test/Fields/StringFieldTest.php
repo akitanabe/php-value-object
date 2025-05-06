@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Core\Validators\StringValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 class StringFieldValidateTestClass
 {
@@ -19,7 +18,7 @@ class StringFieldValidateTestClass
  * StringFieldクラスのテスト
  *
  * StringFieldクラスのgetValidatorメソッドが適切に動作することを確認するためのテスト。
- * getValidatorメソッドはStringValidatorインスタンスを返し、これを使用して文字列の検証を行えることを確認します。
+ * getValidatorメソッドはStringValidatorクラス名（文字列）を返し、これを使用して文字列の検証を行えることを確認します。
  */
 class StringFieldTest extends TestCase
 {
@@ -27,8 +26,7 @@ class StringFieldTest extends TestCase
      * デフォルト設定でのgetValidatorメソッドの動作をテスト
      *
      * 検証内容:
-     * - StringFieldのgetValidatorメソッドがStringValidatorクラスのインスタンスを返すこと
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     * - StringFieldのgetValidatorメソッドがStringValidatorクラスの名前（文字列）を返すこと
      */
     #[Test]
     public function testGetValidatorReturnsStringValidator(): void
@@ -36,8 +34,7 @@ class StringFieldTest extends TestCase
         $field = new StringField();
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(StringValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(StringValidator::class, $validator);
     }
 
     /**
@@ -45,8 +42,7 @@ class StringFieldTest extends TestCase
      *
      * 検証内容:
      * - allowEmpty, minLength, maxLength, patternなどのカスタム設定を持つStringFieldから
-     *   getValidatorメソッドを呼び出しても、正しくStringValidatorクラスのインスタンスが返されること
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *   getValidatorメソッドを呼び出しても、正しくStringValidatorクラスの名前（文字列）が返されること
      *
      * 設定値:
      * - allowEmpty: false (空文字列を許可しない)
@@ -61,7 +57,6 @@ class StringFieldTest extends TestCase
 
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(StringValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(StringValidator::class, $validator);
     }
 }

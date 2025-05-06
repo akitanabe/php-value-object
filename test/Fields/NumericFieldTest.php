@@ -8,13 +8,12 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use PhpValueObject\Fields\NumericField;
 use PhpValueObject\Core\Validators\NumericValidator;
-use PhpValueObject\Core\Validators\Validatorable;
 
 /**
  * NumericFieldクラスのテスト
  *
  * NumericFieldクラスのgetValidatorメソッドが適切に動作することを確認するためのテスト。
- * getValidatorメソッドはNumericValidatorインスタンスを返し、これを使用して数値の検証を行えることを確認します。
+ * getValidatorメソッドはNumericValidatorクラス名（文字列）を返し、これを使用して数値の検証を行えることを確認します。
  */
 class NumericFieldTest extends TestCase
 {
@@ -22,8 +21,7 @@ class NumericFieldTest extends TestCase
      * デフォルト設定でのgetValidatorメソッドの動作をテスト
      *
      * 検証内容:
-     * - NumericFieldのgetValidatorメソッドがNumericValidatorクラスのインスタンスを返すこと
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     * - NumericFieldのgetValidatorメソッドがNumericValidatorクラスの名前（文字列）を返すこと
      */
     #[Test]
     public function testGetValidatorReturnsNumericValidator(): void
@@ -31,8 +29,7 @@ class NumericFieldTest extends TestCase
         $field = new NumericField();
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(NumericValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(NumericValidator::class, $validator);
     }
 
     /**
@@ -40,8 +37,7 @@ class NumericFieldTest extends TestCase
      *
      * 検証内容:
      * - gt, lt, ge, leなどの数値範囲制約を持つNumericFieldから
-     *   getValidatorメソッドを呼び出しても、正しくNumericValidatorクラスのインスタンスが返されること
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *   getValidatorメソッドを呼び出しても、正しくNumericValidatorクラスの名前（文字列）が返されること
      *
      * 設定値:
      * - gt: 10 (10より大きい値のみ許可)
@@ -58,7 +54,6 @@ class NumericFieldTest extends TestCase
 
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(NumericValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(NumericValidator::class, $validator);
     }
 }

@@ -28,8 +28,7 @@ class ListFieldTest extends TestCase
      * デフォルト設定でのgetValidatorメソッドの動作をテスト
      *
      * 検証内容:
-     * - ListFieldのgetValidatorメソッドがListValidatorクラスのインスタンスを返すこと
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     * - ListFieldのgetValidatorメソッドがListValidatorクラスの名前（文字列）を返すこと
      *
      * デフォルト設定では、配列（リスト）の形式のみをチェックし、要素の型については検証しません。
      */
@@ -39,8 +38,7 @@ class ListFieldTest extends TestCase
         $field = new ListField();
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(ListValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(ListValidator::class, $validator);
     }
 
     /**
@@ -48,8 +46,7 @@ class ListFieldTest extends TestCase
      *
      * 検証内容:
      * - 要素の型（string）を指定したListFieldからgetValidatorメソッドを呼び出しても、
-     *   正しくListValidatorクラスのインスタンスが返されること
-     * - 返されるオブジェクトがValidatorableインターフェースを実装していること
+     *   正しくListValidatorクラスの名前（文字列）が返されること
      *
      * 'string'型の指定ありの場合、配列内の全要素が文字列型であることを検証します。
      */
@@ -60,7 +57,6 @@ class ListFieldTest extends TestCase
 
         $validator = $field->getValidator();
 
-        $this->assertInstanceOf(ListValidator::class, $validator);
-        $this->assertInstanceOf(Validatorable::class, $validator);
+        $this->assertEquals(ListValidator::class, $validator);
     }
 }

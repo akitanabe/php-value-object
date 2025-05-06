@@ -43,13 +43,8 @@ final class StringField extends BaseField
         $this->definition = new StringValidatorDefinition($allowEmpty, $minLength, $maxLength, $pattern);
     }
 
-    /**
-     * StringValidatorを取得
-     *
-     * @return Validatorable
-     */
-    public function getValidator(): Validatorable
+    public function getValidator(): string
     {
-        return new StringValidator($this->definition);
+        return StringValidator::class;
     }
 }
