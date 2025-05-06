@@ -16,7 +16,7 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class BeforeValidator extends FunctionalValidator
+class BeforeValidator extends FunctionalValidator
 {
     protected ValidatorMode $mode = ValidatorMode::BEFORE;
 }

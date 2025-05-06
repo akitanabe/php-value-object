@@ -19,7 +19,7 @@ use Attribute;
  * @phpstan-import-type validator_callable from ValidatorCallable
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class PlainValidator extends FunctionalValidator
+class PlainValidator extends FunctionalValidator
 {
     protected ValidatorMode $mode = ValidatorMode::PLAIN;
 }

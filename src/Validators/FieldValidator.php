@@ -17,7 +17,7 @@ use InvalidArgumentException;
  * @phpstan-import-type validator_callable from ValidatorCallable
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
-final class FieldValidator implements ValidatorCallable
+class FieldValidator implements ValidatorCallable
 {
     /**
      * バリデーターモード
@@ -47,7 +47,7 @@ final class FieldValidator implements ValidatorCallable
      * @param validator_callable $callable バリデーション処理を行う callable
      * @return self
      */
-    public function setCallable(string|array|Closure $callable): self
+    final public function setCallable(string|array|Closure $callable): self
     {
         $this->callable = $callable;
         return $this;
@@ -59,7 +59,7 @@ final class FieldValidator implements ValidatorCallable
      * @throws RuntimeException callable が設定されていない場合
      * @throws InvalidArgumentException callable が無効な場合
      */
-    public function resolveValidator(): Closure
+    final public function resolveValidator(): Closure
     {
         if ($this->callable === null) {
             throw new RuntimeException('Validator callable is not set');
@@ -72,7 +72,7 @@ final class FieldValidator implements ValidatorCallable
      *
      * @return ValidatorMode バリデーションモード
      */
-    public function getMode(): ValidatorMode
+    final public function getMode(): ValidatorMode
     {
         return $this->mode;
     }
