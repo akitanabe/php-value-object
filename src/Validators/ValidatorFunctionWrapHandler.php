@@ -16,23 +16,23 @@ final class ValidatorFunctionWrapHandler
 
     private ?self $nextHandler = null;
 
-    private readonly ValidatorQueue $validatorQueue;
+    private readonly ValidatorQueue $queue;
 
     /**
      * バリデータのビルドに必要な定義
      */
-    private readonly ValidatorDefinitions $validatorDefinitions;
+    private readonly ValidatorDefinitions $definitions;
 
     /**
-     * @param ValidatorQueue $validatorQueue バリデータクラス名のキュー
-     * @param ValidatorDefinitions $validatorDefinitions バリデータ定義
+     * @param ValidatorQueue $queue バリデータクラス名のキュー
+     * @param ValidatorDefinitions $definitions バリデータ定義
      */
     public function __construct(
-        ValidatorQueue $validatorQueue,
-        ValidatorDefinitions $validatorDefinitions,
+        ValidatorQueue $queue,
+        ValidatorDefinitions $definitions,
     ) {
-        $this->validatorQueue = $validatorQueue;
-        $this->validatorDefinitions = $validatorDefinitions;
+        $this->queue = $queue;
+        $this->definitions = $definitions;
     }
 
     /**
@@ -60,19 +60,19 @@ final class ValidatorFunctionWrapHandler
     private function lazyLoadValidator(): void
     {
         // バリデータキューが空になった場合はIdenticalValidatorを使用して返すのみにする
-        if ($this->validatorQueue->isEmpty()) {
+        if ($this->queue->isEmpty()) {
             $this->validator = new IdenticalValidator();
             return;
         }
 
         // バリデータクラス名を取得
-        $validatorClass = $this->validatorQueue->dequeue();
+        $validatorClass = $this->queue->dequeue();
 
         // Validatorableインターフェースのbuildメソッドを使用してインスタンス化
         /** @var Validatorable */
-        $this->validator = $validatorClass::build($this->validatorDefinitions);
+        $this->validator = $validatorClass::build($this->definitions);
 
         // 次のハンドラーを作成
-        $this->nextHandler = new self($this->validatorQueue, $this->validatorDefinitions);
+        $this->nextHandler = new self($this->queue, $this->definitions);
     }
 }
