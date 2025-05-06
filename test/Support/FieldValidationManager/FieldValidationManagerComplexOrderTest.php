@@ -306,20 +306,6 @@ class FieldValidationManagerComplexOrderTest extends TestCase
         // FieldValidatorStoarge から FunctionValidatorFactory を生成
         $functionValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $prop);
 
-        $metadata = new PropertyMetadata(
-            $refClass->getName(), // get_class($testClass) から変更
-            'allValidators',
-            [new TypeHint(TypeHintType::STRING, true, false)],
-            PropertyInitializedStatus::BY_DEFAULT,
-        );
-
-        // InitializationStateValidatorなどのコアバリデータを使用する場合はここで設定
-        $modelConfig = new ModelConfig();
-        $fieldConfig = new FieldConfig();
-        $coreValidator = new InitializationStateValidator($modelConfig, $fieldConfig, $metadata);
-
-        // テスト用にカスタムバリデータを持つSystemValidatorFactoryを直接作成
-        $systemValidators = new SystemValidatorFactory([$coreValidator], []); // 第2引数に空配列を追加
 
         // FunctionValidatorFactory を使用してマネージャーを作成
         $manager = new FieldValidationManager(
