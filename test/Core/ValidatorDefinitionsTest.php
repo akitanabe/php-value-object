@@ -106,4 +106,33 @@ class ValidatorDefinitionsTest extends TestCase
         $this->assertSame($modelConfig2, $validatorDefinitions->get(ModelConfig::class));
         $this->assertNotSame($modelConfig1, $validatorDefinitions->get(ModelConfig::class));
     }
+
+    /**
+     * registerMultipleメソッドをテストする
+     * 複数のバリデータを一括で登録できることを確認
+     */
+    public function testRegisterMultipleMethod(): void
+    {
+        // SetUp
+        $validatorDefinitions = new ValidatorDefinitions();
+        $modelConfig = new ModelConfig(allowUninitializedProperty: true);
+        $object1 = new stdClass();
+        $object2 = new class() {};
+
+        // registerMultipleで複数のオブジェクトを一度に登録
+        $result = $validatorDefinitions->registerMultiple($modelConfig, $object1, $object2);
+
+        // 戻り値はValidatorDefinitionsのインスタンス（メソッドチェーン用）
+        $this->assertInstanceOf(ValidatorDefinitions::class, $result);
+
+        // すべてのオブジェクトが正しく登録されていることを確認
+        $this->assertTrue($validatorDefinitions->has(ModelConfig::class));
+        $this->assertTrue($validatorDefinitions->has(stdClass::class));
+        $this->assertTrue($validatorDefinitions->has(get_class($object2)));
+
+        // 登録された各オブジェクトが取得できることを確認
+        $this->assertSame($modelConfig, $validatorDefinitions->get(ModelConfig::class));
+        $this->assertSame($object1, $validatorDefinitions->get(stdClass::class));
+        $this->assertSame($object2, $validatorDefinitions->get(get_class($object2)));
+    }
 }

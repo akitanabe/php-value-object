@@ -32,6 +32,21 @@ class ValidatorDefinitions
     }
 
     /**
+     * 複数のバリデータオブジェクトを一括で登録する
+     *
+     * @param object ...$validatorArgumentInstances バリデータの引数オブジェクト（可変長引数）
+     * @return self
+     */
+    public function registerMultiple(object ...$validatorArgumentInstances): self
+    {
+        foreach ($validatorArgumentInstances as $instance) {
+            $this->register($instance);
+        }
+        
+        return $this;
+    }
+
+    /**
      * バリデータオブジェクトが登録されているか確認する
      *
      * @param class-string $type バリデータの型
