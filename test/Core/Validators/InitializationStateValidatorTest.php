@@ -13,7 +13,6 @@ use PhpValueObject\Exceptions\InvalidPropertyStateException;
 use PhpValueObject\Support\PropertyMetadata;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\ValidatorQueue;
-use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PhpValueObject\Core\ValidatorDefinitions;
@@ -108,7 +107,12 @@ class InitializationStateValidatorTest extends TestCase
 
         // ValidatorQueueを直接作成
         $validators = new ValidatorQueue([$validator, $nextValidator]);
-        $definitions = (new ValidatorDefinitions())->registerMultiple($changedValue, $metadata, $modelConfig, $fieldConfig);
+        $definitions = (new ValidatorDefinitions())->registerMultiple(
+            $changedValue,
+            $metadata,
+            $modelConfig,
+            $fieldConfig,
+        );
         $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $handler($value);
@@ -135,7 +139,12 @@ class InitializationStateValidatorTest extends TestCase
 
         // ValidatorQueueを直接作成
         $validators = new ValidatorQueue([$validator, $nextValidator]);
-        $definitions = (new ValidatorDefinitions())->registerMultiple($changedValue, $metadata, $modelConfig, $fieldConfig);
+        $definitions = (new ValidatorDefinitions())->registerMultiple(
+            $changedValue,
+            $metadata,
+            $modelConfig,
+            $fieldConfig,
+        );
         $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $handler($value);
@@ -163,7 +172,12 @@ class InitializationStateValidatorTest extends TestCase
 
         // ValidatorQueueを直接作成
         $validators = new ValidatorQueue([$validator, $nextValidator]);
-        $definitions = (new ValidatorDefinitions())->registerMultiple($changedValue, $metadata, $modelConfig, $fieldConfig);
+        $definitions = (new ValidatorDefinitions())->registerMultiple(
+            $changedValue,
+            $metadata,
+            $modelConfig,
+            $fieldConfig,
+        );
         $handler = new ValidatorFunctionWrapHandler($validators, $definitions);
 
         $result = $handler($value);
@@ -190,8 +204,7 @@ class Value
 {
     public function __construct(
         private string $value,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {
@@ -208,8 +221,7 @@ class ValueChangingValidator implements Validatorable
 
     public function __construct(
         private Value $newValue,
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {

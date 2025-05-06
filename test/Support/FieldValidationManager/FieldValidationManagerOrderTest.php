@@ -7,7 +7,6 @@ namespace PhpValueObject\Test\Support\FieldValidationManager;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\ValidatorBuildTrait;
 use PhpValueObject\Fields\StringField;
 use PhpValueObject\Support\FieldValidationManager;
 use PhpValueObject\Support\FunctionValidatorFactory; // FieldValidatorFactoryから変更
@@ -18,8 +17,6 @@ use PhpValueObject\Validators\AfterValidator; // Used for property attribute
 use PhpValueObject\Validators\BeforeValidator; // Used for property attribute
 use PhpValueObject\Validators\FieldValidator; // Used only for attribute reading/test setup
 // Added
-use PhpValueObject\Core\Validators\Validatorable;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Validators\ValidatorMode;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -96,7 +93,7 @@ class FieldValidationManagerOrderTest extends TestCase
 
         $manager = new FieldValidationManager(
             $this->field,
-            $functionValidatorFactory // 生成したファクトリを渡す
+            $functionValidatorFactory, // 生成したファクトリを渡す
         );
         $inputData = new InputData(['name' => 'john']);
         $operator = PropertyOperator::create($this->nameProperty, $inputData, $this->field);
@@ -144,7 +141,7 @@ class FieldValidationManagerOrderTest extends TestCase
         // SystemValidatorFactory と FunctionValidatorFactory を渡して Manager を作成
         $manager = new FieldValidationManager(
             $this->field,
-            $functionValidatorFactory // 生成したファクトリを渡す
+            $functionValidatorFactory, // 生成したファクトリを渡す
         );
 
         $inputData = new InputData(['name' => 'test']);
@@ -192,7 +189,7 @@ class FieldValidationManagerOrderTest extends TestCase
         // SystemValidatorFactory と FunctionValidatorFactory を渡して Manager を作成
         $manager = new FieldValidationManager(
             $this->field,
-            $functionValidatorFactory // 生成したファクトリを渡す
+            $functionValidatorFactory, // 生成したファクトリを渡す
         );
 
         $inputData = new InputData(['testProp' => 'base']);
@@ -214,9 +211,6 @@ class FieldValidationManagerOrderTest extends TestCase
         // field_after: + '_field_after'
         // stdSys: + '_stdSys'
         // 修正: stdSys は after より前に実行される
-        $this->assertEquals(
-            'base_field_before_attr_before_attr_after_field_after',
-            $result->value->value,
-        );
+        $this->assertEquals('base_field_before_attr_before_attr_after_field_after', $result->value->value,);
     }
 }

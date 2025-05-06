@@ -92,10 +92,7 @@ class FieldValidationManagerAttributeTest extends TestCase
 
         // 属性のみを使用したマネージャー（name プロパティ用）
         $nameValidatorFactory = FunctionValidatorFactory::createFromStorage($fieldValidatorStorage, $this->property);
-        $this->managerWithAttributes = new FieldValidationManager(
-            $this->field,
-            $nameValidatorFactory,
-        );
+        $this->managerWithAttributes = new FieldValidationManager($this->field, $nameValidatorFactory,);
         $this->managerFunctionValidatorDefinitions['name'] = $nameValidatorFactory->createDefinition();
 
         // PlainValidator用のマネージャー
@@ -103,10 +100,7 @@ class FieldValidationManagerAttributeTest extends TestCase
             $fieldValidatorStorage,
             $this->plainProperty,
         );
-        $this->managerWithPlain = new FieldValidationManager(
-            $this->field,
-            $plainValidatorFactory,
-        );
+        $this->managerWithPlain = new FieldValidationManager($this->field, $plainValidatorFactory,);
         $this->managerFunctionValidatorDefinitions['plain'] = $plainValidatorFactory->createDefinition();
 
         // WrapValidator用のマネージャー
@@ -114,10 +108,7 @@ class FieldValidationManagerAttributeTest extends TestCase
             $fieldValidatorStorage,
             $this->wrapProperty,
         );
-        $this->managerWithWrap = new FieldValidationManager(
-            $this->field,
-            $wrapValidatorFactory,
-        );
+        $this->managerWithWrap = new FieldValidationManager($this->field, $wrapValidatorFactory,);
         $this->managerFunctionValidatorDefinitions['wrap'] = $wrapValidatorFactory->createDefinition();
 
         $this->validatorDefinitions = (new ValidatorDefinitions())->registerMultiple(
@@ -140,7 +131,6 @@ class FieldValidationManagerAttributeTest extends TestCase
         $this->validatorDefinitions->registerMultiple(
             $operator->metadata,
             $this->managerFunctionValidatorDefinitions['name'],
-
         );
 
         $this->expectException(ValidationException::class);

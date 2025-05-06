@@ -26,8 +26,7 @@ class FieldValidationManager
     public function __construct(
         private readonly BaseField $field,
         private readonly FunctionValidatorFactory $functionValidatorFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * バリデータクラスを取得する。

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Support\FieldValidationManager;
 
-use PHPUnit\TextUI\XmlConfiguration\Validator;
 use PhpValueObject\Config\FieldConfig;
 use PhpValueObject\Config\ModelConfig;
 use PhpValueObject\Core\ValidatorDefinitions;

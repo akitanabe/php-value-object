@@ -12,7 +12,6 @@ use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
 use PhpValueObject\Core\Validators\Validatorable;
 use PhpValueObject\Validators\ValidatorQueue;
-use PhpValueObject\Helpers\ValidatorHelper;
 use PhpValueObject\Core\ValidatorDefinitions;
 
 /**
