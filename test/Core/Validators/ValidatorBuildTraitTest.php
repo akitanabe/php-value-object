@@ -163,9 +163,7 @@ class TestValidatorWithoutTypeHint implements Validatorable
 
 
     // @phpstan-ignore missingType.parameter,constructor.unusedParameter
-    public function __construct($dependency)
-    {
-    }
+    public function __construct($dependency) {}
 
     public function validate(mixed $value, ?ValidatorFunctionWrapHandler $handler = null): mixed
     {
