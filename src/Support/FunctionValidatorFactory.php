@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Support;
 
+use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
 use PhpValueObject\Core\Validators\FunctionBeforeValidator;
 use PhpValueObject\Core\Validators\FunctionAfterValidator;
 use PhpValueObject\Core\Validators\FunctionValidator;
@@ -82,5 +83,20 @@ final class FunctionValidatorFactory
             },
             [...$this->fieldValidators, ...$this->functionalValidators,],
         );
+    }
+
+    /**
+     * @return class-string<FunctionValidator>[]
+     */
+    public function getValidators(): array
+    {
+        $count = count([...$this->fieldValidators, ...$this->functionalValidators,]);
+
+        return array_fill(0, $count, FunctionValidator::class);
+    }
+
+    public function createDefinition(): FunctionValidatorDefinition
+    {
+        return new FunctionValidatorDefinition([...$this->fieldValidators, ...$this->functionalValidators,]);
     }
 }

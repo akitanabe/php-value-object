@@ -4,32 +4,35 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Validators;
 
+use PhpValueObject\Core\ValidatorDefinitions;
 use PhpValueObject\Core\Validators\IdenticalValidator;
-use SplQueue;
 use LogicException;
 use PhpValueObject\Exceptions\ValidationException;
 use PhpValueObject\Core\Validators\Validatorable;
 
-/**
- * @phpstan-type validator_queue SplQueue<Validatorable>
- */
 final class ValidatorFunctionWrapHandler
 {
     private Validatorable $validator;
 
     private ?self $nextHandler = null;
 
+    private readonly ValidatorQueue $validatorQueue;
+
     /**
-     * @var validator_queue
+     * バリデータのビルドに必要な定義
      */
-    private readonly SplQueue $validatorQueue;
+    private readonly ValidatorDefinitions $validatorDefinitions;
+
     /**
-     * @param validator_queue $validatorQueue
+     * @param ValidatorQueue $validatorQueue バリデータクラス名のキュー
+     * @param ValidatorDefinitions $validatorDefinitions バリデータ定義
      */
     public function __construct(
-        SplQueue $validatorQueue,
+        ValidatorQueue $validatorQueue,
+        ValidatorDefinitions $validatorDefinitions,
     ) {
         $this->validatorQueue = $validatorQueue;
+        $this->validatorDefinitions = $validatorDefinitions;
     }
 
     /**
@@ -62,7 +65,14 @@ final class ValidatorFunctionWrapHandler
             return;
         }
 
-        $this->validator = $this->validatorQueue->dequeue();
-        $this->nextHandler = new self($this->validatorQueue);
+        // バリデータクラス名を取得
+        $validatorClass = $this->validatorQueue->dequeue();
+
+        // Validatorableインターフェースのbuildメソッドを使用してインスタンス化
+        /** @var Validatorable */
+        $this->validator = $validatorClass::build($this->validatorDefinitions);
+
+        // 次のハンドラーを作成
+        $this->nextHandler = new self($this->validatorQueue, $this->validatorDefinitions);
     }
 }

@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace PhpValueObject\Test\Validators;
 
+use PhpValueObject\Core\ValidatorDefinitions;
+use PhpValueObject\Support\FunctionValidatorFactory;
+use PhpValueObject\Validators\AfterValidator;
+use PhpValueObject\Validators\BeforeValidator;
+use PhpValueObject\Validators\PlainValidator;
+use PhpValueObject\Validators\WrapValidator;
 use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Core\Validators\FunctionBeforeValidator;
-use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Core\Validators\FunctionPlainValidator;
-use PhpValueObject\Core\Validators\FunctionWrapValidator;
-use PhpValueObject\Helpers\ValidatorHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PhpValueObject\Validators\ValidatorQueue;
 
 /**
  * ValidatorFunctionWrapHandlerのテストクラス
@@ -24,6 +26,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ValidatorFunctionWrapHandler::class)]
 class ValidatorFunctionWrapHandlerTest extends TestCase
 {
+    protected ValidatorDefinitions $validatorDefinitions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->validatorDefinitions = new ValidatorDefinitions();
+    }
+
     /**
      * PLAINモードのvalidatorが設定されている場合、他のvalidatorが実行されないことを確認
      */
@@ -31,11 +41,14 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     public function shouldStopChainWhenPlainValidatorExists(): void
     {
         // 実際のPlainValidatorとAfterValidatorを使用
-        $plainValidator = new FunctionPlainValidator(fn($value) => $value . '_plain');
-        $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_after');
+        $plainValidator = new PlainValidator(fn($value) => $value . '_plain');
+        $afterValidator = new AfterValidator(fn($value) => $value . '_after');
 
-        $validators = ValidatorHelper::createValidatorQueue([$plainValidator, $afterValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $functionValidatorFactory = new FunctionValidatorFactory([], [$plainValidator, $afterValidator]);
+        $validatorQueue = new ValidatorQueue($functionValidatorFactory->getValidators());
+
+        $this->validatorDefinitions->register($functionValidatorFactory->createDefinition());
+        $handler = new ValidatorFunctionWrapHandler($validatorQueue, $this->validatorDefinitions);
 
         $result = $handler('test');
 
@@ -51,11 +64,14 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     public function shouldExecuteAllValidatorsWhenNoPlainValidator(): void
     {
         // 実際のBeforeValidatorとAfterValidatorを使用
-        $beforeValidator = new FunctionBeforeValidator(fn($value) => $value . '_before');
-        $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_after');
+        $beforeValidator = new BeforeValidator(fn($value) => $value . '_before');
+        $afterValidator = new AfterValidator(fn($value) => $value . '_after');
 
-        $validators = ValidatorHelper::createValidatorQueue([$beforeValidator, $afterValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $functionValidatorFactory = new FunctionValidatorFactory([], [$beforeValidator, $afterValidator]);
+        $validatorQueue = new ValidatorQueue($functionValidatorFactory->getValidators());
+
+        $this->validatorDefinitions->register($functionValidatorFactory->createDefinition());
+        $handler = new ValidatorFunctionWrapHandler($validatorQueue, $this->validatorDefinitions);
 
         $result = $handler('test');
 
@@ -72,11 +88,14 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     public function shouldWorkCorrectlyWithPlainValidatorInAnyPosition(): void
     {
         // 実際のバリデータを使用
-        $beforeValidator = new FunctionBeforeValidator(fn($value) => $value . '_before');
-        $plainValidator = new FunctionPlainValidator(fn($value) => $value . '_plain');
+        $beforeValidator = new BeforeValidator(fn($value) => $value . '_before');
+        $plainValidator = new PlainValidator(fn($value) => $value . '_plain');
 
-        $validators = ValidatorHelper::createValidatorQueue([$beforeValidator, $plainValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $functionValidatorFactory = new FunctionValidatorFactory([], [$beforeValidator, $plainValidator]);
+        $validatorQueue = new ValidatorQueue($functionValidatorFactory->getValidators());
+
+        $this->validatorDefinitions->register($functionValidatorFactory->createDefinition());
+        $handler = new ValidatorFunctionWrapHandler($validatorQueue, $this->validatorDefinitions);
 
         // 実行して結果を検証
         $result = $handler('test');
@@ -96,11 +115,14 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     public function shouldExecuteValidatorsInChainWithModifiedImplementation(): void
     {
         // 実際のバリデータを使用
-        $beforeValidator = new FunctionBeforeValidator(fn($value) => $value . '_before');
-        $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_after');
+        $beforeValidator = new BeforeValidator(fn($value) => $value . '_before');
+        $afterValidator = new AfterValidator(fn($value) => $value . '_after');
 
-        $validators = ValidatorHelper::createValidatorQueue([$beforeValidator, $afterValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $functionValidatorFactory = new FunctionValidatorFactory([], [$beforeValidator, $afterValidator]);
+        $validatorQueue = new ValidatorQueue($functionValidatorFactory->getValidators());
+
+        $this->validatorDefinitions->register($functionValidatorFactory->createDefinition());
+        $handler = new ValidatorFunctionWrapHandler($validatorQueue, $this->validatorDefinitions);
 
         // 実行して結果を検証
         $result = $handler('test');
@@ -117,8 +139,8 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     #[Test]
     public function shouldPassHandlerToWrapValidatorFunction(): void
     {
-        // 実際のWrapValidatorを使用
-        $wrapValidator = new FunctionWrapValidator(function ($value, $handler) {
+        // WrapValidatorとAfterValidatorを使用
+        $wrapValidator = new WrapValidator(function ($value, $handler) {
             // 値を大文字に変換し、条件に応じて次のハンドラーを呼び出す
             $upperValue = strtoupper($value);
             // 値が'END'の場合は次のハンドラーを呼び出さない
@@ -128,11 +150,13 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
             // それ以外は次のハンドラーを呼び出す
             return $handler($upperValue);
         });
+        $afterValidator = new AfterValidator(fn($value) => $value . '_processed');
 
-        // 次のバリデータとしてAfterValidatorを使用
-        $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_processed');
-        $validators = ValidatorHelper::createValidatorQueue([$wrapValidator, $afterValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $functionValidatorFactory = new FunctionValidatorFactory([], [$wrapValidator, $afterValidator]);
+        $validatorQueue = new ValidatorQueue($functionValidatorFactory->getValidators());
+
+        $this->validatorDefinitions->register($functionValidatorFactory->createDefinition());
+        $handler = new ValidatorFunctionWrapHandler($validatorQueue, $this->validatorDefinitions);
 
         // 実行して結果を検証
         $result = $handler('test');
@@ -149,8 +173,8 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
     #[Test]
     public function shouldAllowWrapValidatorToSkipNextHandler(): void
     {
-        // 実際のWrapValidatorを使用
-        $wrapValidator = new FunctionWrapValidator(function ($value, $handler) {
+        // WrapValidatorとAfterValidatorを使用
+        $wrapValidator = new WrapValidator(function ($value, $handler) {
             // 値を大文字に変換し、条件に応じて次のハンドラーを呼び出さない
             $upperValue = strtoupper($value);
             // 値が'END'の場合は次のハンドラーを呼び出さない
@@ -160,11 +184,13 @@ class ValidatorFunctionWrapHandlerTest extends TestCase
             // それ以外は次のハンドラーを呼び出す
             return $handler($upperValue);
         });
+        $afterValidator = new AfterValidator(fn($value) => $value . '_should_not_execute');
 
-        // 次のバリデータを追加（呼び出されないはず）
-        $afterValidator = new FunctionAfterValidator(fn($value) => $value . '_should_not_execute');
-        $validators = ValidatorHelper::createValidatorQueue([$wrapValidator, $afterValidator]);
-        $handler = new ValidatorFunctionWrapHandler($validators);
+        $functionValidatorFactory = new FunctionValidatorFactory([], [$wrapValidator, $afterValidator]);
+        $validatorQueue = new ValidatorQueue($functionValidatorFactory->getValidators());
+
+        $this->validatorDefinitions->register($functionValidatorFactory->createDefinition());
+        $handler = new ValidatorFunctionWrapHandler($validatorQueue, $this->validatorDefinitions);
 
         // 'end'を渡すと大文字化して'END'になり、次のハンドラーは呼び出されない
         $result = $handler('end');
