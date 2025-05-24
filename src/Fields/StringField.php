@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Fields;
+namespace PhSculptis\Fields;
 
 use Attribute;
 use Closure;
-use PhpValueObject\Core\Definitions\StringValidatorDefinition;
-use PhpValueObject\Core\Validators\StringValidator;
+use PhSculptis\Core\Definitions\StringValidatorDefinition;
+use PhSculptis\Core\Validators\StringValidator;
 
 /**
  * StringField

@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject;
+namespace PhSculptis;
 
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Helpers\AssertionHelper;
-use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Support\FieldValidatorStorage;
-use PhpValueObject\Support\FunctionValidatorFactory;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Support\FieldValidationManager;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Exceptions\InheritableClassException;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Helpers\AssertionHelper;
+use PhSculptis\Helpers\FieldsHelper;
+use PhSculptis\Support\FieldValidatorStorage;
+use PhSculptis\Support\FunctionValidatorFactory;
+use PhSculptis\Support\InputData;
+use PhSculptis\Support\PropertyOperator;
+use PhSculptis\Support\FieldValidationManager;
 use ReflectionClass;
 use stdClass;
 use TypeError;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
 
 abstract class BaseModel
 {

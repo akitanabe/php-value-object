@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
-use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
-use PhpValueObject\Core\Validators\FunctionValidator;
-use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\FunctionalValidator;
+use PhSculptis\Core\Definitions\FunctionValidatorDefinition;
+use PhSculptis\Core\Validators\FunctionValidator;
+use PhSculptis\Helpers\AttributeHelper;
+use PhSculptis\Validators\FieldValidator;
+use PhSculptis\Validators\FunctionalValidator;
 use ReflectionAttribute;
 use ReflectionProperty;
 

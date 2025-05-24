@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Definitions;
+namespace PhSculptis\Core\Definitions;
 
 /**
  * リスト（配列）バリデーションの定義を保持するクラス

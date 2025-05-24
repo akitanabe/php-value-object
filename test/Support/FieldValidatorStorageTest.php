@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support;
+namespace PhSculptis\Test\Support;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Support\FieldValidatorStorage;
-use PhpValueObject\Validators\ValidatorMode;
+use PhSculptis\Validators\FieldValidator;
+use PhSculptis\Support\FieldValidatorStorage;
+use PhSculptis\Validators\ValidatorMode;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -64,7 +64,7 @@ class FieldValidatorStorageTest extends TestCase
         // Act & Assert
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Method PhpValueObject\Test\Support\TestClassWithNonStaticValidator::validateName must be static for use with FieldValidator',
+            'Method PhSculptis\Test\Support\TestClassWithNonStaticValidator::validateName must be static for use with FieldValidator',
         );
         FieldValidatorStorage::createFromClass($refClass);
     }
@@ -83,7 +83,7 @@ class FieldValidatorStorageTest extends TestCase
         // Act & Assert
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            "Property 'nonExistentProperty' referenced in PhpValueObject\Test\Support\TestClassWithInvalidPropertyName::validateNonExistent does not exist",
+            "Property 'nonExistentProperty' referenced in PhSculptis\Test\Support\TestClassWithInvalidPropertyName::validateNonExistent does not exist",
         );
         FieldValidatorStorage::createFromClass($refClass);
     }

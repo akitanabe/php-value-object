@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
-use PhpValueObject\Core\Validators\DecimalValidator;
-use PhpValueObject\Core\Validators\ValidatorBuildTrait;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Core\Validators\Validatorable;
-use PhpValueObject\Validators\ValidatorQueue;
-use PhpValueObject\Core\ValidatorDefinitions;
+use PhSculptis\Core\Definitions\DecimalValidatorDefinition;
+use PhSculptis\Core\Validators\DecimalValidator;
+use PhSculptis\Core\Validators\ValidatorBuildTrait;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\Validators\Validatorable;
+use PhSculptis\Validators\ValidatorQueue;
+use PhSculptis\Core\ValidatorDefinitions;
 
 /**
  * DecimalValidatorのテストクラス

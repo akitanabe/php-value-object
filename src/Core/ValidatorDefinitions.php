@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core;
+namespace PhSculptis\Core;
 
 use LogicException;
 

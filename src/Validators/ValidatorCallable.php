@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhSculptis\Validators;
 
 use Closure;
 

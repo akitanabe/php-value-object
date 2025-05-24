@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Fields;
+namespace PhSculptis\Fields;
 
 use Closure;
-use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Core\Validators\Validatorable;
+use PhSculptis\Helpers\FieldsHelper;
+use PhSculptis\Core\Validators\Validatorable;
 
 /**
  * フィールドの基底クラス

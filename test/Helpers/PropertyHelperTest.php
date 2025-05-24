@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Helpers;
+namespace PhSculptis\Test\Helpers;
 
-use PhpValueObject\Fields\Field;
-use PhpValueObject\Helpers\PropertyHelper;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Support\InputData;
+use PhSculptis\Fields\Field;
+use PhSculptis\Helpers\PropertyHelper;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Support\InputData;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionProperty;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core;
+namespace PhSculptis\Test\Core;
 
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Core\ValidatorDefinitions;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Core\ValidatorDefinitions;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 

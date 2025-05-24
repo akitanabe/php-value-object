@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
-use PhpValueObject\Enums\TypeHintType;
+use PhSculptis\Enums\TypeHintType;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\InitializationStateValidator;
-use PhpValueObject\Core\Validators\MixedTypeValidator;
-use PhpValueObject\Core\Validators\NoneTypeValidator;
-use PhpValueObject\Core\Validators\PrimitiveTypeValidator;
-use PhpValueObject\Validators\ValidatorQueue;
-use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Core\Validators\Validatorable;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Core\Validators\InitializationStateValidator;
+use PhSculptis\Core\Validators\MixedTypeValidator;
+use PhSculptis\Core\Validators\NoneTypeValidator;
+use PhSculptis\Core\Validators\PrimitiveTypeValidator;
+use PhSculptis\Validators\ValidatorQueue;
+use PhSculptis\Fields\BaseField;
+use PhSculptis\Core\Validators\Validatorable;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 単一のプロパティに対するバリデーション処理を管理するクラス

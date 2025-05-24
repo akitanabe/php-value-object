@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test;
+namespace PhSculptis\Test;
 
-use PhpValueObject\BaseModel;
+use PhSculptis\BaseModel;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

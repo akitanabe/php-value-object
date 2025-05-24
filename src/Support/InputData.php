@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
 class InputData
 {

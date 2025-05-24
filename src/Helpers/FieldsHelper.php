@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Helpers;
+namespace PhSculptis\Helpers;
 
 use Closure;
 use InvalidArgumentException;
-use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Fields\Field;
+use PhSculptis\Fields\BaseField;
+use PhSculptis\Fields\Field;
 use ReflectionAttribute;
 use ReflectionProperty;
 

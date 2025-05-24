@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support;
+namespace PhSculptis\Test\Support;
 
-use PhpValueObject\Core\Definitions\NoneDefinition;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Support\PropertyValue;
-use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\AfterValidator;
+use PhSculptis\Core\Definitions\NoneDefinition;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Fields\BaseField;
+use PhSculptis\Support\InputData;
+use PhSculptis\Support\PropertyOperator;
+use PhSculptis\Support\PropertyMetadata;
+use PhSculptis\Support\PropertyValue;
+use PhSculptis\Support\TypeHint;
+use PhSculptis\Validators\BeforeValidator;
+use PhSculptis\Validators\AfterValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use PhpValueObject\Core\Validators\IdenticalValidator;
+use PhSculptis\Core\Validators\IdenticalValidator;
 
 class PropertyOperatorTest extends TestCase
 {

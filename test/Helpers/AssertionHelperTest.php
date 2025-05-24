@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Helpers;
+namespace PhSculptis\Test\Helpers;
 
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Exceptions\InheritableClassException;
-use PhpValueObject\Helpers\AssertionHelper;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Exceptions\InheritableClassException;
+use PhSculptis\Helpers\AssertionHelper;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
-use PhpValueObject\BaseModel;
+use PhSculptis\BaseModel;
 
 // テスト用のクラス定義
 final class FinalClass extends BaseModel {}

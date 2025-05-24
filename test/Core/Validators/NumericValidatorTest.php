@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
-use PhpValueObject\Core\Validators\NumericValidator;
-use PhpValueObject\Exceptions\ValidationException;
+use PhSculptis\Core\Definitions\NumericValidatorDefinition;
+use PhSculptis\Core\Validators\NumericValidator;
+use PhSculptis\Exceptions\ValidationException;
 
 class NumericValidatorTest extends TestCase
 {

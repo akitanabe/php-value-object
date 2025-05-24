@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Fields;
+namespace PhSculptis\Test\Fields;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Fields\DecimalField;
-use PhpValueObject\Core\Validators\DecimalValidator;
-use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
+use PhSculptis\Fields\DecimalField;
+use PhSculptis\Core\Validators\DecimalValidator;
+use PhSculptis\Core\Definitions\DecimalValidatorDefinition;
 
 class DecimalFieldValidateTestClass
 {

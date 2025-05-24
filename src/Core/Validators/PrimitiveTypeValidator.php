@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Support\PropertyValue;
-use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Support\PropertyMetadata;
+use PhSculptis\Support\PropertyValue;
+use PhSculptis\Support\TypeHint;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 use TypeError;
 
 /**

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 入力値をそのまま返すバリデーターを実装するクラス

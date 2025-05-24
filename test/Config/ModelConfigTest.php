@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Config;
+namespace PhSculptis\Test\Config;
 
-use PhpValueObject\BaseModel;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Exceptions\InheritableClassException;
+use PhSculptis\BaseModel;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Exceptions\InheritableClassException;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
 
 #[ModelConfig(allowUninitializedProperty: false)]
 class NotAllowUninitializedPropertyClassModel extends BaseModel

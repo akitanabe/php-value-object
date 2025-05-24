@@ -1,9 +1,9 @@
 <?php
 
-namespace PhpValueObject\Core\Definitions;
+namespace PhSculptis\Core\Definitions;
 
 use SplQueue;
-use PhpValueObject\Validators\ValidatorCallable;
+use PhSculptis\Validators\ValidatorCallable;
 
 /**
  * ValidaotorCallableをimplementsしているクラスをキューとして管理

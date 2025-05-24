@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhSculptis\Test\Validators;
 
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Support\FunctionValidatorFactory;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\PlainValidator;
-use PhpValueObject\Validators\WrapValidator;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Support\FunctionValidatorFactory;
+use PhSculptis\Validators\AfterValidator;
+use PhSculptis\Validators\BeforeValidator;
+use PhSculptis\Validators\PlainValidator;
+use PhSculptis\Validators\WrapValidator;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PhpValueObject\Validators\ValidatorQueue;
+use PhSculptis\Validators\ValidatorQueue;
 
 /**
  * ValidatorFunctionWrapHandlerのテストクラス

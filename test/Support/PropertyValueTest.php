@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support;
+namespace PhSculptis\Test\Support;
 
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Support\PropertyValue;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Support\PropertyValue;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;

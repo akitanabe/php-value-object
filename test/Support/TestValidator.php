@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support;
+namespace PhSculptis\Test\Support;
 
-use PhpValueObject\Exceptions\ValidationException;
+use PhSculptis\Exceptions\ValidationException;
 
 class TestValidator
 {

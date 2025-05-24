@@ -1,11 +1,11 @@
 <?php
 
-namespace PhpValueObject\Helpers;
+namespace PhSculptis\Helpers;
 
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Exceptions\InheritableClassException;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Exceptions\InheritableClassException;
 use ReflectionClass;
-use PhpValueObject\BaseModel;
+use PhSculptis\BaseModel;
 
 class AssertionHelper
 {

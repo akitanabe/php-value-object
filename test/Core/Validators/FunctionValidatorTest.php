@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
 use LogicException;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\FunctionValidator;
-use PhpValueObject\Core\Validators\FunctionBeforeValidator;
-use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Core\Validators\FunctionWrapValidator;
-use PhpValueObject\Core\Validators\FunctionPlainValidator;
-use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\WrapValidator;
-use PhpValueObject\Validators\PlainValidator;
+use PhSculptis\Core\Definitions\FunctionValidatorDefinition;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Core\Validators\FunctionValidator;
+use PhSculptis\Core\Validators\FunctionBeforeValidator;
+use PhSculptis\Core\Validators\FunctionAfterValidator;
+use PhSculptis\Core\Validators\FunctionWrapValidator;
+use PhSculptis\Core\Validators\FunctionPlainValidator;
+use PhSculptis\Validators\BeforeValidator;
+use PhSculptis\Validators\AfterValidator;
+use PhSculptis\Validators\WrapValidator;
+use PhSculptis\Validators\PlainValidator;
 
 /**
  * FunctionValidatorのビルドメソッドのテストクラス

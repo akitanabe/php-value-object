@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Helpers;
+namespace PhSculptis\Test\Helpers;
 
 use InvalidArgumentException;
-use PhpValueObject\BaseModel;
+use PhSculptis\BaseModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Helpers\FieldsHelper;
-use PhpValueObject\Test\Support\TestValidator;
-use PhpValueObject\Validators\FieldValidator;
+use PhSculptis\Helpers\FieldsHelper;
+use PhSculptis\Test\Support\TestValidator;
+use PhSculptis\Validators\FieldValidator;
 use DateTime;
 
 class DateTimeFactory

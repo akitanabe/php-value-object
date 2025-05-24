@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support\FieldValidationManager;
+namespace PhSculptis\Test\Support\FieldValidationManager;
 
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Fields\StringField;
-use PhpValueObject\Support\FieldValidationManager;
-use PhpValueObject\Support\FunctionValidatorFactory;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\PropertyOperator;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\BeforeValidator;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Fields\StringField;
+use PhSculptis\Support\FieldValidationManager;
+use PhSculptis\Support\FunctionValidatorFactory;
+use PhSculptis\Support\InputData;
+use PhSculptis\Support\PropertyOperator;
+use PhSculptis\Validators\AfterValidator;
+use PhSculptis\Validators\BeforeValidator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
-use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validators\FunctionalValidator;
+use PhSculptis\Helpers\AttributeHelper;
+use PhSculptis\Validators\FunctionalValidator;
 use ReflectionAttribute;
 
 // テスト用のバリデータクラス

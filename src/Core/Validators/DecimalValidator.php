@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\Definitions\DecimalValidatorDefinition;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 小数値のバリデーターを実装するクラス

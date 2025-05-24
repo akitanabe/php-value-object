@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Fields;
+namespace PhSculptis\Fields;
 
 use Attribute;
 use Closure;
-use PhpValueObject\Core\Definitions\ListValidatorDefinition;
-use PhpValueObject\Core\Validators\ListValidator;
+use PhSculptis\Core\Definitions\ListValidatorDefinition;
+use PhSculptis\Core\Validators\ListValidator;
 
 /**
  * ListField

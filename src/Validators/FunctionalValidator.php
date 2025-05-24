@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhSculptis\Validators;
 
 use Closure;
-use PhpValueObject\Helpers\FieldsHelper;
+use PhSculptis\Helpers\FieldsHelper;
 use InvalidArgumentException;
 
 /**

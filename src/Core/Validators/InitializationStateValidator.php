@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
-use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Support\PropertyMetadata;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * プロパティの初期化状態を検証するValidator

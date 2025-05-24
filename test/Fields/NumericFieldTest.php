@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Fields;
+namespace PhSculptis\Test\Fields;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Fields\NumericField;
-use PhpValueObject\Core\Validators\NumericValidator;
-use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
+use PhSculptis\Fields\NumericField;
+use PhSculptis\Core\Validators\NumericValidator;
+use PhSculptis\Core\Definitions\NumericValidatorDefinition;
 
 /**
  * NumericFieldクラスのテスト

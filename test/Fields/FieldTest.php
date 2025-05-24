@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Fields;
+namespace PhSculptis\Test\Fields;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use DateTime;
-use PhpValueObject\Fields\Field;
-use PhpValueObject\Core\Validators\IdenticalValidator;
-use PhpValueObject\Core\Definitions\NoneDefinition;
+use PhSculptis\Fields\Field;
+use PhSculptis\Core\Validators\IdenticalValidator;
+use PhSculptis\Core\Definitions\NoneDefinition;
 
 use function strtolower as _strtolower;
 

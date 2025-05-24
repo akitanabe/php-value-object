@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Helpers;
+namespace PhSculptis\Helpers;
 
-use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Support\InputData;
+use PhSculptis\Support\TypeHint;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Fields\BaseField;
+use PhSculptis\Support\InputData;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;

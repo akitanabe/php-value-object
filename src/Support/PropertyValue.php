@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Helpers\PropertyHelper;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Helpers\PropertyHelper;
 
 /**
  * プロパティの値と型情報を保持するクラス

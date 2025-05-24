@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Fields;
+namespace PhSculptis\Test\Fields;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Fields\ListField;
-use PhpValueObject\Core\Validators\ListValidator;
-use PhpValueObject\Core\Definitions\ListValidatorDefinition;
+use PhSculptis\Fields\ListField;
+use PhSculptis\Core\Validators\ListValidator;
+use PhSculptis\Core\Definitions\ListValidatorDefinition;
 
 class ListFieldValidateTestClass
 {

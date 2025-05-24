@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Core\Definitions\StringValidatorDefinition;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\Definitions\StringValidatorDefinition;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 文字列のバリデーターを実装するクラス

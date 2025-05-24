@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Validators;
+namespace PhSculptis\Validators;
 
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\IdenticalValidator;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Core\Validators\IdenticalValidator;
 use LogicException;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Core\Validators\Validatorable;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Core\Validators\Validatorable;
 
 class ValidatorFunctionWrapHandler
 {

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
-use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Support\TypeHint;
-use PhpValueObject\Core\Validators\MixedTypeValidator;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Enums\TypeHintType;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Support\PropertyMetadata;
+use PhSculptis\Support\TypeHint;
+use PhSculptis\Core\Validators\MixedTypeValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 

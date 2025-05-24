@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Fields;
+namespace PhSculptis\Test\Fields;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Fields\StringField;
-use PhpValueObject\Core\Validators\StringValidator;
-use PhpValueObject\Core\Definitions\StringValidatorDefinition;
+use PhSculptis\Fields\StringField;
+use PhSculptis\Core\Validators\StringValidator;
+use PhSculptis\Core\Definitions\StringValidatorDefinition;
 
 class StringFieldValidateTestClass
 {

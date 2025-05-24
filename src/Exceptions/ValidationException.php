@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpValueObject\Exceptions;
+namespace PhSculptis\Exceptions;
 
 use Exception;
 

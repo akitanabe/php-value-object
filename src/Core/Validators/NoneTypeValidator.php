@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
-use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Enums\TypeHintType;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Support\PropertyMetadata;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 型が指定されていないプロパティを検証するバリデータ

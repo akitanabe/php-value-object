@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhSculptis\Test\Validators;
 
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Core\Validators\InitializationStateValidator;
-use PhpValueObject\Core\Validators\ValidatorBuildTrait;
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
-use PhpValueObject\Support\PropertyMetadata;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\ValidatorQueue;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Core\Validators\InitializationStateValidator;
+use PhSculptis\Core\Validators\ValidatorBuildTrait;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Support\PropertyMetadata;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Validators\ValidatorQueue;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\Validatorable;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Core\Validators\Validatorable;
 
 class InitializationStateValidatorTest extends TestCase
 {

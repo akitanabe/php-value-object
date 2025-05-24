@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Helpers;
+namespace PhSculptis\Helpers;
 
 use ReflectionAttribute;
 use ReflectionClass;

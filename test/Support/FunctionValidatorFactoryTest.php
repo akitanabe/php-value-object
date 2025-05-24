@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support;
+namespace PhSculptis\Test\Support;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
-use PhpValueObject\Core\Validators\FunctionValidator;
-use PhpValueObject\Support\FieldValidatorStorage;
-use PhpValueObject\Support\FunctionValidatorFactory;
-use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\ValidatorMode;
+use PhSculptis\Core\Definitions\FunctionValidatorDefinition;
+use PhSculptis\Core\Validators\FunctionValidator;
+use PhSculptis\Support\FieldValidatorStorage;
+use PhSculptis\Support\FunctionValidatorFactory;
+use PhSculptis\Validators\BeforeValidator;
+use PhSculptis\Validators\AfterValidator;
+use PhSculptis\Validators\FieldValidator;
+use PhSculptis\Validators\ValidatorMode;
 use ReflectionClass;
 
 class FunctionValidatorFactoryTest extends TestCase

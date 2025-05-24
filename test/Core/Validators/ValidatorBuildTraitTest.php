@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Core\Validators\Validatorable;
-use PhpValueObject\Core\Validators\ValidatorBuildTrait;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Core\Validators\Validatorable;
+use PhSculptis\Core\Validators\ValidatorBuildTrait;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 use InvalidArgumentException;
 
 /**

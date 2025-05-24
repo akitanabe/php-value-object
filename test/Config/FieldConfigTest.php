@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Config;
+namespace PhSculptis\Test\Config;
 
-use PhpValueObject\BaseModel;
-use PhpValueObject\Config\FieldConfig;
+use PhSculptis\BaseModel;
+use PhSculptis\Config\FieldConfig;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
 
 class NotAllowUninitializedPropertyFieldModel extends BaseModel
 {

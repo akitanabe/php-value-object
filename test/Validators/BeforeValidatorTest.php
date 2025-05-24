@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhSculptis\Test\Validators;
 
-use PhpValueObject\Validators\BeforeValidator;
-use PhpValueObject\Validators\ValidatorMode;
+use PhSculptis\Validators\BeforeValidator;
+use PhSculptis\Validators\ValidatorMode;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;

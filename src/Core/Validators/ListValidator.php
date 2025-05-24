@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Core\Definitions\ListValidatorDefinition;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Enums\PropertyValueType;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\Definitions\ListValidatorDefinition;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Enums\PropertyValueType;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * リスト（配列）のバリデーターを実装するクラス

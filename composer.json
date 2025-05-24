@@ -1,6 +1,6 @@
 {
-  "name": "akitanabe/php-value-object",
-  "description": "php value object",
+  "name": "akitanabe/phsculptis",
+  "description": "PhSculptis - Elegant data validation and modeling for PHP, inspired by Pydantic",
   "type": "library",
   "require-dev": {
     "phpunit/phpunit": "^11.2",
@@ -13,7 +13,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "PhpValueObject\\": "src/"
+      "PhSculptis\\": "src/"
     },
     "files": [
       "src/Polyfills/array_any.php",
@@ -22,7 +22,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "PhpValueObject\\Test\\": "test/"
+      "PhSculptis\\Test\\": "test/"
     }
   },
   "authors": [

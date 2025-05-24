@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 use LogicException;
 
 /**

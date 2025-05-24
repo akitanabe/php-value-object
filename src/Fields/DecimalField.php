@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Fields;
+namespace PhSculptis\Fields;
 
 use Attribute;
 use Closure;
-use PhpValueObject\Core\Definitions\DecimalValidatorDefinition;
-use PhpValueObject\Core\Validators\DecimalValidator;
+use PhSculptis\Core\Definitions\DecimalValidatorDefinition;
+use PhSculptis\Core\Validators\DecimalValidator;
 
 /**
  * DecimalField

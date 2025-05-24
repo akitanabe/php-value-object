@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Config;
+namespace PhSculptis\Config;
 
 use Attribute;
-use PhpValueObject\Helpers\AttributeHelper;
+use PhSculptis\Helpers\AttributeHelper;
 use ReflectionProperty;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]

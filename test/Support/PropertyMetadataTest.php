@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Support;
+namespace PhSculptis\Test\Support;
 
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Fields\Field;
-use PhpValueObject\Support\InputData;
-use PhpValueObject\Support\PropertyMetadata;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Enums\TypeHintType;
+use PhSculptis\Fields\Field;
+use PhSculptis\Support\InputData;
+use PhSculptis\Support\PropertyMetadata;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Support\TypeHint;
+use PhSculptis\Support\TypeHint;
 use ReflectionProperty;
 
 /**

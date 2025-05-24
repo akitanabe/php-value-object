@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Validators;
+namespace PhSculptis\Test\Validators;
 
-use PhpValueObject\Validators\FieldValidator;
-use PhpValueObject\Validators\ValidatorMode;
-use PhpValueObject\Validators\ValidatorCallable;
-use PhpValueObject\Core\Validators\FunctionPlainValidator;
-use PhpValueObject\Core\Validators\FunctionWrapValidator;
-use PhpValueObject\Core\Validators\FunctionBeforeValidator;
-use PhpValueObject\Core\Validators\FunctionAfterValidator;
+use PhSculptis\Validators\FieldValidator;
+use PhSculptis\Validators\ValidatorMode;
+use PhSculptis\Validators\ValidatorCallable;
+use PhSculptis\Core\Validators\FunctionPlainValidator;
+use PhSculptis\Core\Validators\FunctionWrapValidator;
+use PhSculptis\Core\Validators\FunctionBeforeValidator;
+use PhSculptis\Core\Validators\FunctionAfterValidator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PhpValueObject\Core\Validators\FunctionValidator;
+use PhSculptis\Core\Validators\FunctionValidator;
 use ReflectionClass;
 use RuntimeException;
 

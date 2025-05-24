@@ -1,86 +1,94 @@
-# php-value-object
+# PhSculptis
 
-PHP で DDD を実装する際に 以下の制約を満たす ValueObject を作成できます。
+PHP でエレガントなデータバリデーションとモデリングを提供するライブラリです。Python の Pydantic にインスパイアされ、型安全性とバリデーション機能を組み合わせて、美しく堅牢なデータモデルを簡単に構築できます。
 
+## ✨ 特徴
+
+### 🛡️ 型安全性の強制
 - 継承可能クラスの禁止(final キーワードの必須化)
 - 型が指定されていないプロパティの禁止
 - 初期化されていないプロパティの禁止
 - mixed 型の禁止
 
-また以下の機能を付加しています。
-
+### 🚀 自動化機能
 - 名前付き引数によるプロパティ自動入力
 - 親コンストラクタを呼び出すことによる自動入力
-- Attribute による制約の緩和
-- Attribute によるバリデーション
 - clone 時のオブジェクト自動 clone
 
-## 基本的な使い方
+### 🎯 柔軟性
+- Attribute による制約の緩和
+- カスタムバリデーションの実装
+- 豊富な組み込みバリデーター
 
-コンストラクタに渡した名前付き引数と同じ名前のプロパティに入力されます。
+## 📦 インストール
 
-存在しないプロパティ名を渡しても入力されません。
-
+```bash
+composer require akitanabe/phsculptis
 ```
+
+## 🚀 基本的な使い方
+
+コンストラクタに渡した名前付き引数と同じ名前のプロパティに自動的に値が設定されます。
+
+```php
 <?php
 
-use PhpValueObject\BaseValueObject;
+use PhSculptis\BaseModel;
 
-final class BasicValue extends BaseValueObject
+final class UserModel extends BaseModel
 {
-    public string $stringVal;
-    public int $intVal;
-    public float $floatVal = 0.01;
-    public bool $boolVal = false;
+    public string $name;
+    public int $age;
+    public string $email;
+    public bool $isActive = true;
 }
 
-$value = new BasicValue(
-            stringVal: 'string',
-            intVal: 1,
-            floatVal: 0.1,
-         );
+$user = new UserModel(
+    name: 'John Doe',
+    age: 30,
+    email: 'john@example.com'
+);
 
-$value->stringVal === 'string'; // true
-$value->intVal === 1; // true
-$value->floatVal === 0.1; // true
-$value->boolVal === false; // true
-
-
+echo $user->name; // 'John Doe'
+echo $user->age; // 30
+echo $user->email; // 'john@example.com'
+echo $user->isActive; // true (デフォルト値)
 ```
 
-## 子クラスのコンストラクタを使いたい場合
+## カスタムコンストラクタ
 
-親クラスのコンストラクタに ...func_get_args() を使って渡します。
+独自のコンストラクタロジックが必要な場合は、親コンストラクタを呼び出して自動入力機能を利用できます。
 
-コンストラクタ引数以外にプロパティがある場合はコンストラクタ引数に名前付き引数で渡します。
-
-```
-final class ChildCustomValue extends BaseValueObject
+```php
+final class ProductModel extends BaseModel
 {
-    public bool $boolVal;
+    public string $name;
+    public int $price;
+    public string $sku;
+    public bool $inStock;
 
     public function __construct(
-        public string $stringVal,
-        public int $intVal,
-        public float $floatVal = 0.01,
-    ){
-        // コンストラクタ引数以外に入力値が存在する場合は名前付き引数で指定
-        parent::__construct(...func_get_args(), boolVal: true);
-
-        // 順番が同じなら直接書いてもOK
-        parent::__construct($stringVal, $intVal, $floatVal, boolVal: true);
-
-        // 名前付き引数で入力してもOK
+        string $name,
+        int $price,
+        ?string $sku = null
+    ) {
+        // SKUが指定されていない場合は自動生成
+        $generatedSku = $sku ?? strtoupper(substr(md5($name), 0, 8));
+        
         parent::__construct(
-            stringVal: $stringVal,
-            intVal: $intVal,
-            floatVal: $floatVal,
-            boolVal: true
+            name: $name,
+            price: $price,
+            sku: $generatedSku,
+            inStock: $price > 0
         );
     }
 }
 
-
+$product = new ProductModel(
+    name: 'Laptop',
+    price: 999
+);
+// SKUは自動生成され、inStockはtrueになる
 ```
 
 ## 制約の緩和
@@ -112,23 +120,36 @@ $value->uninitialized;
 
 ## バリデーション
 
-各プロパティの Attribute に Validator を指定してください。
+プロパティにバリデーター Attribute を指定することで、データの整合性を保証できます。
 
-```
-use PhpValueObject\Attribute\Validator\NotEmptyStringValidator;
+```php
+use PhSculptis\Validators\StringValidator;
+use PhSculptis\Validators\NumericValidator;
 
-final class ValidationValue extends BaseValueObject
+final class RegisterUserModel extends BaseModel
 {
-    #[NotEmptyStringValidator]
-    public string $string;
+    #[StringValidator(minLength: 3, maxLength: 50)]
+    public string $username;
+    
+    #[NumericValidator(min: 18, max: 120)]
+    public int $age;
+    
+    public string $email;
 }
 
-// OK
-$value = new $ValidationValue(string: "string");
+// ✅ 正常なケース
+$user = new RegisterUserModel(
+    username: 'john_doe',
+    age: 25,
+    email: 'john@example.com'
+);
 
-// NG
-$value = new $ValidationValue(string: "");
-
+// ❌ バリデーションエラー - 文字数不足
+$user = new RegisterUserModel(
+    username: 'jo', // StringValidatorによりエラー
+    age: 25,
+    email: 'john@example.com'
+);
 ```
 
 ### 現在用意されているバリデーション
@@ -142,9 +163,9 @@ $value = new $ValidationValue(string: "");
 
 Validation\Validatable インターフェースを実装したアトリビュートクラスを作成してください。
 
-```
+```php
 use Attribute;
-use PhpValueObject\Validation\Validatable;
+use PhSculptis\Validation\Validatable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class CustomValidator implements Validatable
@@ -164,7 +185,7 @@ final class CustomValidator implements Validatable
     }
 }
 
-final class CustomValidationValue extends BaseValueObject
+final class CustomValidationValue extends BaseModel
 {
     #[CustomValidator]
     public string $string;
@@ -175,6 +196,43 @@ $customValue = new CustomValidationValue(string: "custom");
 
 // エラー
 $customValue = new CustomValidationValue(string: "not-custom");
-
-
 ```
+
+## 使用例：API リクエストモデル
+
+```php
+use PhSculptis\BaseModel;
+use PhSculptis\Validators\StringValidator;
+use PhSculptis\Validators\NumericValidator;
+
+final class CreateUserRequest extends BaseModel
+{
+    #[StringValidator(minLength: 2, maxLength: 50)]
+    public string $name;
+    
+    #[StringValidator(pattern: '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/')]
+    public string $email;
+    
+    #[NumericValidator(min: 18)]
+    public int $age;
+    
+    public bool $newsletter = false;
+}
+
+// APIエンドポイントでの使用例
+function createUser(array $requestData): array
+{
+    try {
+        $request = new CreateUserRequest(...$requestData);
+        
+        // バリデーションが成功した場合のみここに到達
+        $user = saveUser($request);
+        
+        return ['success' => true, 'user' => $user];
+    } catch (ValidationException $e) {
+        return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+```
+
+このライブラリを使用することで、型安全でバリデーション機能を持つデータモデルを簡潔に定義でき、APIやフォーム処理などで堅牢なデータハンドリングが可能になります。

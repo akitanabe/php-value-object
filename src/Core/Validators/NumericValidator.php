@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Core\Definitions\NumericValidatorDefinition;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Core\Definitions\NumericValidatorDefinition;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * 数値のバリデーターを実装するクラス

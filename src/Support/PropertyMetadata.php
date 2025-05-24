@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
-use PhpValueObject\Enums\PropertyInitializedStatus;
-use PhpValueObject\Fields\BaseField;
-use PhpValueObject\Helpers\PropertyHelper;
+use PhSculptis\Enums\PropertyInitializedStatus;
+use PhSculptis\Fields\BaseField;
+use PhSculptis\Helpers\PropertyHelper;
 use ReflectionProperty;
 
 /**

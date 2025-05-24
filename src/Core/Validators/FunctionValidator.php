@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
 use Closure;
 use LogicException;
-use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
-use PhpValueObject\Core\ValidatorDefinitions;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\ValidatorMode;
+use PhSculptis\Core\Definitions\FunctionValidatorDefinition;
+use PhSculptis\Core\ValidatorDefinitions;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Validators\ValidatorMode;
 
 /**
  * ユーザー入力バリデーション処理の基底クラス

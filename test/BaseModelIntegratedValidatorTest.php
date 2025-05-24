@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test;
+namespace PhSculptis\Test;
 
-use PhpValueObject\BaseModel;
-use PhpValueObject\Config\FieldConfig;
-use PhpValueObject\Config\ModelConfig;
-use PhpValueObject\Exceptions\InvalidPropertyStateException;
+use PhSculptis\BaseModel;
+use PhSculptis\Config\FieldConfig;
+use PhSculptis\Config\ModelConfig;
+use PhSculptis\Exceptions\InvalidPropertyStateException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TypeError;

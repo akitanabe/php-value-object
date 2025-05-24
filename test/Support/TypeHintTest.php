@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Support;
 
-use PhpValueObject\Enums\TypeHintType;
-use PhpValueObject\Support\TypeHint;
+use PhSculptis\Enums\TypeHintType;
+use PhSculptis\Support\TypeHint;
 use PHPUnit\Framework\TestCase;
 use ReflectionIntersectionType;
 use ReflectionNamedType;

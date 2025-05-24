@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
 use LogicException;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
 
 /**
  * ユーザー入力バリデーションを実行するクラス

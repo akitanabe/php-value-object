@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Enums;
+namespace PhSculptis\Enums;
 
 enum TypeHintType: string
 {

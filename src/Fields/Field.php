@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Fields;
+namespace PhSculptis\Fields;
 
 use Attribute;
-use PhpValueObject\Core\Definitions\NoneDefinition;
-use PhpValueObject\Core\Validators\IdenticalValidator;
+use PhSculptis\Core\Definitions\NoneDefinition;
+use PhSculptis\Core\Validators\IdenticalValidator;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Field extends BaseField

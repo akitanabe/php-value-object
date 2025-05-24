@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Support;
+namespace PhSculptis\Support;
 
 use InvalidArgumentException;
-use PhpValueObject\Helpers\AttributeHelper;
-use PhpValueObject\Validators\FieldValidator;
+use PhSculptis\Helpers\AttributeHelper;
+use PhSculptis\Validators\FieldValidator;
 use ReflectionClass;
 use ReflectionProperty;
 use SplObjectStorage;

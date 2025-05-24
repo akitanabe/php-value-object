@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
 use LogicException;
-use PhpValueObject\Core\Definitions\FunctionValidatorDefinition;
-use PhpValueObject\Core\Validators\FunctionWrapValidator;
-use PhpValueObject\Core\Validators\FunctionAfterValidator;
-use PhpValueObject\Validators\AfterValidator;
-use PhpValueObject\Validators\ValidatorFunctionWrapHandler;
-use PhpValueObject\Validators\ValidatorQueue;
-use PhpValueObject\Core\ValidatorDefinitions;
+use PhSculptis\Core\Definitions\FunctionValidatorDefinition;
+use PhSculptis\Core\Validators\FunctionWrapValidator;
+use PhSculptis\Core\Validators\FunctionAfterValidator;
+use PhSculptis\Validators\AfterValidator;
+use PhSculptis\Validators\ValidatorFunctionWrapHandler;
+use PhSculptis\Validators\ValidatorQueue;
+use PhSculptis\Core\ValidatorDefinitions;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;

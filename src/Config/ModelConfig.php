@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Config;
+namespace PhSculptis\Config;
 
 use Attribute;
-use PhpValueObject\Helpers\AttributeHelper;
+use PhSculptis\Helpers\AttributeHelper;
 use ReflectionClass;
-use PhpValueObject\BaseModel;
+use PhSculptis\BaseModel;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 final class ModelConfig extends BaseConfig

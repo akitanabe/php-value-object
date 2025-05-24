@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Config;
+namespace PhSculptis\Config;
 
 final class NotAllow implements Allowable
 {

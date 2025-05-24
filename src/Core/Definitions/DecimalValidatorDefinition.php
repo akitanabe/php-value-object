@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Definitions;
+namespace PhSculptis\Core\Definitions;
 
 /**
  * 小数値バリデーションの定義を保持するクラス

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Core\Validators;
+namespace PhSculptis\Core\Validators;
 
-use PhpValueObject\Core\ValidatorDefinitions;
+use PhSculptis\Core\ValidatorDefinitions;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionParameter;

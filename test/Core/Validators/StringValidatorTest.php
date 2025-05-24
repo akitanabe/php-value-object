@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpValueObject\Test\Core\Validators;
+namespace PhSculptis\Test\Core\Validators;
 
 use PHPUnit\Framework\TestCase;
-use PhpValueObject\Core\Definitions\StringValidatorDefinition;
-use PhpValueObject\Exceptions\ValidationException;
-use PhpValueObject\Core\Validators\StringValidator;
+use PhSculptis\Core\Definitions\StringValidatorDefinition;
+use PhSculptis\Exceptions\ValidationException;
+use PhSculptis\Core\Validators\StringValidator;
 
 class StringValidatorTest extends TestCase
 {
